@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stavian Metal Dashboard</title>
+  <title>Stavian Metal</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +14,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     html,
     body {
@@ -61,12 +65,18 @@
       font-weight: 800;
       letter-spacing: -0.04em;
       color: #0f172a;
+      background: rgba(255, 255, 255, 0.4);
+      padding: 6px 16px 6px 6px;
+      border-radius: 999px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
     }
 
     .brand-mark {
       width: 44px;
       height: 44px;
-      border-radius: 9px;
+      border-radius: 50%;
       object-fit: cover;
     }
 
@@ -75,6 +85,12 @@
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
+      background: rgba(255, 255, 255, 0.4);
+      padding: 6px;
+      border-radius: 14px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
     }
 
     .tab-btn {
@@ -88,8 +104,14 @@
       transition: 0.2s ease;
     }
 
-    .tab-btn:hover { background: rgba(0, 0, 0, 0.1); }
-    .tab-btn.active { background: #000; color: #fff; }
+    .tab-btn:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-btn.active {
+      background: #000;
+      color: #fff;
+    }
 
     .dashboard {
       background: rgba(255, 255, 255, 0.65);
@@ -144,8 +166,13 @@
       backdrop-filter: blur(10px);
     }
 
-    .select option { color: #0f172a; }
-    .input { min-width: 260px; }
+    .select option {
+      color: #0f172a;
+    }
+
+    .input {
+      min-width: 260px;
+    }
 
     .refresh-btn {
       height: 40px;
@@ -158,7 +185,9 @@
       cursor: pointer;
     }
 
-    .refresh-btn:hover { background: #1d4ed8; }
+    .refresh-btn:hover {
+      background: #1d4ed8;
+    }
 
     .summary-grid {
       display: grid;
@@ -190,98 +219,107 @@
       color: #0f172a;
     }
 
-    .news-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+    .bbc-news-container {
+      background: #141414;
+      color: #ffffff;
+      padding: 24px;
+      border-radius: 12px;
+      margin-top: 10px;
     }
 
-    .date-group {
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 10px;
-      overflow: hidden;
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(16px);
-    }
-
-    .date-header {
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.7);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-      color: #0f172a;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .date-header span {
-      opacity: 0.78;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .metal-grid {
+    .bbc-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0;
+      gap: 24px;
     }
 
-    .metal-card {
-      padding: 16px;
-      border-right: 1px solid rgba(0, 0, 0, 0.05);
-      min-height: 170px;
-    }
-
-    .metal-card:last-child { border-right: 0; }
-
-    .metal-head {
+    .bbc-panel {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
+      flex-direction: column;
+      gap: 20px;
     }
 
-    .metal-name {
+    .bbc-panel-title {
+      font-size: 24px;
       font-weight: 800;
-      font-size: 17px;
-      color: #0f172a;
+      color: #ffffff;
+      border-bottom: 2px solid #b80000;
+      padding-bottom: 10px;
+      margin: 0 0 10px 0;
     }
 
-    .badge {
-      padding: 5px 9px;
-      border-radius: 9px;
-      font-size: 12px;
-      font-weight: 800;
+    .bbc-panel-title.aluminum {
+      border-bottom-color: #3b82f6;
     }
 
-    .badge-aluminum { background: #dbeafe; color: #1d4ed8; }
-    .badge-copper { background: #ffedd5; color: #c2410c; }
-    .badge-zinc { background: #fef3c7; color: #a16207; }
+    .bbc-panel-title.copper {
+      border-bottom-color: #f97316;
+    }
 
-    .summary {
-      white-space: pre-line;
-      color: #334155;
+    .bbc-panel-title.zinc {
+      border-bottom-color: #eab308;
+    }
+
+    .bbc-card {
+      border-bottom: 1px solid #333333;
+      padding-bottom: 16px;
+    }
+
+    .bbc-card:last-child {
+      border-bottom: none;
+    }
+
+    .bbc-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin: 0 0 8px 0;
+      color: #ffffff;
+      transition: color 0.2s;
+    }
+
+    .bbc-title-link {
+      text-decoration: none;
+    }
+
+    .bbc-title-link:hover .bbc-title {
+      color: #b80000;
+    }
+
+    .bbc-summary {
       font-size: 14px;
-      line-height: 1.55;
+      line-height: 1.5;
+      color: #cccccc;
+      margin: 0 0 12px 0;
+      white-space: pre-line;
     }
 
-    .meta {
-      margin-top: 12px;
+    .bbc-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      color: #64748b;
+      gap: 12px;
       font-size: 12px;
+      color: #888888;
+      align-items: center;
     }
 
-    .meta-pill {
-      padding: 6px 8px;
-      border-radius: 9px;
-      background: rgba(0, 0, 0, 0.05);
-      color: #475569;
+    .bbc-source {
+      font-weight: 600;
+      color: #aaaaaa;
+    }
+
+    .bbc-read-more {
+      color: #ffffff;
       font-weight: 700;
+      text-decoration: none;
+      padding: 4px 8px;
+      border: 1px solid #555555;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .bbc-read-more:hover {
+      background: #333333;
     }
 
     .empty {
@@ -323,8 +361,13 @@
     }
 
     td:last-child,
-    th:last-child { border-right: none; }
-    tr:hover td { background: rgba(0, 0, 0, 0.02); }
+    th:last-child {
+      border-right: none;
+    }
+
+    tr:hover td {
+      background: rgba(0, 0, 0, 0.02);
+    }
 
     tr:first-child td,
     thead th {
@@ -348,27 +391,84 @@
       white-space: nowrap;
     }
 
-    .cb-green { background: #d1fae5; color: #065f46; }
-    .cb-red { background: #fee2e2; color: #991b1b; }
-    .cb-yellow { background: #fef08a; color: #854d0e; }
-    .cb-blue { background: #dbeafe; color: #1e40af; }
-    .cb-gray { background: #f1f5f9; color: #475569; }
+    .cb-green {
+      background: #d1fae5;
+      color: #065f46;
+    }
 
-    .text-green { color: #059669; font-weight: 700; }
-    .text-red { color: #dc2626; font-weight: 700; }
-    .text-orange { color: #d97706; font-weight: 700; }
+    .cb-red {
+      background: #fee2e2;
+      color: #991b1b;
+    }
 
-    .col-al { background: rgba(59, 130, 246, 0.15) !important; }
-    .col-cu { background: rgba(249, 115, 22, 0.15) !important; }
-    .col-zn { background: rgba(234, 179, 8, 0.15) !important; }
+    .cb-yellow {
+      background: #fef08a;
+      color: #854d0e;
+    }
 
-    tr:hover td.col-al { background: rgba(59, 130, 246, 0.25) !important; }
-    tr:hover td.col-cu { background: rgba(249, 115, 22, 0.25) !important; }
-    tr:hover td.col-zn { background: rgba(234, 179, 8, 0.25) !important; }
+    .cb-blue {
+      background: #dbeafe;
+      color: #1e40af;
+    }
 
-    tr:first-child td.col-al { background: rgba(59, 130, 246, 0.25) !important; border-bottom: 2px solid rgba(59, 130, 246, 0.3) !important; }
-    tr:first-child td.col-cu { background: rgba(249, 115, 22, 0.25) !important; border-bottom: 2px solid rgba(249, 115, 22, 0.3) !important; }
-    tr:first-child td.col-zn { background: rgba(234, 179, 8, 0.25) !important; border-bottom: 2px solid rgba(234, 179, 8, 0.3) !important; }
+    .cb-gray {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .text-green {
+      color: #059669;
+      font-weight: 700;
+    }
+
+    .text-red {
+      color: #dc2626;
+      font-weight: 700;
+    }
+
+    .text-orange {
+      color: #d97706;
+      font-weight: 700;
+    }
+
+    .col-al {
+      background: rgba(59, 130, 246, 0.15) !important;
+    }
+
+    .col-cu {
+      background: rgba(249, 115, 22, 0.15) !important;
+    }
+
+    .col-zn {
+      background: rgba(234, 179, 8, 0.15) !important;
+    }
+
+    tr:hover td.col-al {
+      background: rgba(59, 130, 246, 0.25) !important;
+    }
+
+    tr:hover td.col-cu {
+      background: rgba(249, 115, 22, 0.25) !important;
+    }
+
+    tr:hover td.col-zn {
+      background: rgba(234, 179, 8, 0.25) !important;
+    }
+
+    tr:first-child td.col-al {
+      background: rgba(59, 130, 246, 0.25) !important;
+      border-bottom: 2px solid rgba(59, 130, 246, 0.3) !important;
+    }
+
+    tr:first-child td.col-cu {
+      background: rgba(249, 115, 22, 0.25) !important;
+      border-bottom: 2px solid rgba(249, 115, 22, 0.3) !important;
+    }
+
+    tr:first-child td.col-zn {
+      background: rgba(234, 179, 8, 0.25) !important;
+      border-bottom: 2px solid rgba(234, 179, 8, 0.3) !important;
+    }
 
     .error-box {
       border: 1px dashed #ef4444;
@@ -382,12 +482,20 @@
     }
 
     @media (max-width: 980px) {
+
       .summary-grid,
-      .metal-grid { grid-template-columns: 1fr; }
-      .metal-card { border-right: 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-      .metal-card:last-child { border-bottom: 0; }
-      .navbar { align-items: flex-start; flex-direction: column; }
-      .input { min-width: 100%; }
+      .bbc-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .navbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .input {
+        min-width: 100%;
+      }
     }
   </style>
 </head>
@@ -399,8 +507,10 @@
   <main class="page">
     <nav class="navbar">
       <div class="brand">
-        <img class="brand-mark" src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg" alt="Logo" />
-        <div>Stavian Metal Monitor</div>
+        <img class="brand-mark"
+          src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg"
+          alt="Logo" />
+        <div>Stavian Metal</div>
       </div>
 
       <div class="tabs">
@@ -506,7 +616,7 @@
 
       if (sheetName === 'News') {
         pageTitle.textContent = 'Tin tức kim loại';
-        pageSubtitle.textContent = 'Theo dõi tin tức Nhôm, Đồng, Kẽm từ bảng metal_news.';
+        pageSubtitle.textContent = '';
         searchInput.placeholder = 'Tìm kiếm tin tức, nguồn, kim loại...';
         dateFilter.style.display = '';
       } else if (sheetName === 'View') {
@@ -678,48 +788,72 @@
         return;
       }
 
-      const groups = groupByDate(rows);
-      const sortedDates = Object.keys(groups).sort((a, b) => parseDateForSort(b).localeCompare(parseDateForSort(a)));
-
-      contentArea.innerHTML = sortedDates.map(date => {
-        const groupRows = groups[date];
-        return `
-          <section class="date-group">
-            <div class="date-header">
-              <div>${escapeHtml(date || 'Chưa có ngày')}</div>
-              <span>${groupRows.length} dòng tin</span>
-            </div>
-            ${groupRows.map(row => renderNewsRow(row)).join('')}
-          </section>
-        `;
-      }).join('');
-    }
-
-    function renderNewsRow(row) {
-      return `
-        <div class="metal-grid">
-          ${renderMetalCard('Nhôm', row.aluminum, 'badge-aluminum')}
-          ${renderMetalCard('Đồng', row.copper, 'badge-copper')}
-          ${renderMetalCard('Kẽm', row.zinc, 'badge-zinc')}
+      contentArea.innerHTML = `
+        <div class="bbc-news-container">
+          <div class="bbc-grid">
+            <section class="bbc-panel">
+              <h2 class="bbc-panel-title copper">Đồng</h2>
+              ${rows.map(row => renderBbcCard(row.date, row.copper)).join('')}
+            </section>
+            <section class="bbc-panel">
+              <h2 class="bbc-panel-title aluminum">Nhôm</h2>
+              ${rows.map(row => renderBbcCard(row.date, row.aluminum)).join('')}
+            </section>
+            <section class="bbc-panel">
+              <h2 class="bbc-panel-title zinc">Kẽm</h2>
+              ${rows.map(row => renderBbcCard(row.date, row.zinc)).join('')}
+            </section>
+          </div>
         </div>
       `;
     }
 
-    function renderMetalCard(name, data, badgeClass) {
-      const summary = data && data.summary ? data.summary : 'Chưa có tin riêng.';
-      const source = data && data.source ? data.source : '-';
-      const time = data && data.time ? data.time : '-';
+    function renderBbcCard(date, data) {
+      if (!data || !data.summary) return '';
+
+      const rawSummary = data.summary;
+      const lines = rawSummary.split('\n').map(l => l.trim()).filter(l => l);
+      const title = lines.length > 0 ? lines[0] : 'Không có tiêu đề';
+      const summaryText = lines.slice(1).join('\n');
+
+      const source = data.source ? data.source : '';
+      let sourceName = source;
+      let sourceLink = '';
+
+      if (source.includes('http')) {
+        const urlMatch = source.match(/https?:\/\/[^\s]+/);
+        if (urlMatch) {
+          sourceLink = urlMatch[0];
+          sourceName = source.replace(sourceLink, '').trim();
+          if (!sourceName) {
+            try {
+              sourceName = new URL(sourceLink).hostname.replace('www.', '');
+            } catch (e) {
+              sourceName = 'Link';
+            }
+          }
+        }
+      }
+
+      const time = data.time ? data.time : '';
+
+      let titleHtml = `<h3 class="bbc-title">${escapeHtml(title)}</h3>`;
+      if (sourceLink) {
+        titleHtml = `<a href="${sourceLink}" target="_blank" class="bbc-title-link">${titleHtml}</a>`;
+      }
+
+      const summaryHtml = summaryText ? `<p class="bbc-summary">${escapeHtml(summaryText)}</p>` : '';
+      const sourceNameHtml = sourceName ? `<span class="bbc-source">${escapeHtml(sourceName)}</span>` : '';
+      const readMoreHtml = sourceLink ? `<a href="${sourceLink}" target="_blank" class="bbc-read-more">Chi tiết hơn</a>` : '';
 
       return `
-        <article class="metal-card">
-          <div class="metal-head">
-            <div class="metal-name">${escapeHtml(name)}</div>
-            <div class="badge ${badgeClass}">${escapeHtml(name)}</div>
-          </div>
-          <div class="summary">${escapeHtml(summary)}</div>
-          <div class="meta">
-            <div class="meta-pill">Nguồn: ${escapeHtml(source)}</div>
-            <div class="meta-pill">Thời gian: ${escapeHtml(time)}</div>
+        <article class="bbc-card">
+          ${titleHtml}
+          ${summaryHtml}
+          <div class="bbc-meta">
+            <span>${escapeHtml(date)} ${escapeHtml(time)}</span>
+            ${sourceNameHtml}
+            ${readMoreHtml}
           </div>
         </article>
       `;
@@ -752,7 +886,11 @@
         }
       }
 
+      const isView = payload.sheet === 'View';
+      const noMergeCols = isView ? [4, 6, 8, 12, 13, 14] : [];
+
       for (let c = 0; c < numCols; c++) {
+        if (noMergeCols.includes(c)) continue;
         for (let r = 1; r < filteredValues.length; r++) {
           if (skip[r][c]) continue;
           let span = 1;
@@ -776,32 +914,31 @@
         }
       }
 
-      const isView = payload.sheet === 'View';
+      const tbodyHtml = filteredValues.map((row, rowIndex) => {
+        const trHtml = row.map((cell, colIndex) => {
+          if (rowIndex > 0 && skip[rowIndex][colIndex]) return '';
+          
+          let cls = '';
+          if (isView) {
+             if ([3, 4, 12].includes(colIndex)) cls = 'col-al';
+             else if ([5, 6, 13].includes(colIndex)) cls = 'col-cu';
+             else if ([7, 8, 14].includes(colIndex)) cls = 'col-zn';
+          }
+          
+          const spanAttr = (rowIndex > 0 && rowSpans[rowIndex][colIndex] > 1) 
+                         ? ` rowspan="${rowSpans[rowIndex][colIndex]}"` : '';
+          const classAttr = cls ? ` class="${cls}"` : '';
+          
+          return `<td${spanAttr}${classAttr}>${formatTableCell(cell, rowIndex === 0)}</td>`;
+        }).join('');
+        return `<tr>${trHtml}</tr>`;
+      }).join('');
 
       contentArea.innerHTML = `
         <div class="generic-table-wrap">
           <table>
             <tbody>
-              ${filteredValues.map((row, rowIndex) => `
-                <tr>
-                  ${row.map((cell, colIndex) => {
-                    if (rowIndex > 0 && skip[rowIndex][colIndex]) return '';
-                    
-                    let cls = '';
-                    if (isView) {
-                       if ([3, 4, 12].includes(colIndex)) cls = 'col-al';
-                       else if ([5, 6, 13].includes(colIndex)) cls = 'col-cu';
-                       else if ([7, 8, 14].includes(colIndex)) cls = 'col-zn';
-                    }
-                    
-                    const spanAttr = (rowIndex > 0 && rowSpans[rowIndex][colIndex] > 1) 
-                                   ? ` rowspan="${rowSpans[rowIndex][colIndex]}"` : '';
-                    const classAttr = cls ? ` class="${cls}"` : '';
-                    
-                    return `<td${spanAttr}${classAttr}>${formatTableCell(cell, rowIndex === 0)}</td>`;
-                  }).join('')}
-                </tr>
-              `).join('')}
+              ${tbodyHtml}
             </tbody>
           </table>
         </div>
@@ -851,23 +988,23 @@
       const message = error && error.message ? error.message : (error.error || 'Không rõ lỗi.');
       contentArea.innerHTML = `
         <div class="error-box">
-          Không tải được dữ liệu Supabase:<br>
-          ${escapeHtml(message)}<br><br>
+          Không tải được dữ liệu Supabase:<br/>
+          ${escapeHtml(message)}<br/><br/>
           Kiểm tra lại: Project URL, Publishable key, tên bảng và RLS policy.
         </div>
       `;
     }
 
-    function formatDateVN(dateStr) {
+              function formatDateVN(dateStr) {
       if (!dateStr) return '';
-      const parts = String(dateStr).split('-');
-      if (parts.length !== 3) return String(dateStr);
-      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+              const parts = String(dateStr).split('-');
+              if (parts.length !== 3) return String(dateStr);
+              return `${parts[2]}/${parts[1]}/${parts[0]}`;
     }
 
-    function parseDateForSort(dateStr) {
+              function parseDateForSort(dateStr) {
       const parts = String(dateStr || '').split('/');
-      return parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : String(dateStr || '');
+              return parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : String(dateStr || '');
     }
 
     function normalize(value) {

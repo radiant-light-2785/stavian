@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stavian Admin</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,8 +21,8 @@
       padding: 0;
       min-height: 100%;
       font-family: Inter, Arial, sans-serif;
-      color: #f8fafc;
-      background: #000;
+      color: #0f172a;
+      background: #f8fafc;
     }
 
     body { overflow-x: hidden; }
@@ -54,30 +55,46 @@
       font-size: 22px;
       font-weight: 800;
       letter-spacing: -0.04em;
-      color: #fff;
+      color: #0f172a;
+      background: rgba(255, 255, 255, 0.4);
+      padding: 6px 16px 6px 6px;
+      border-radius: 999px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
     }
 
     .brand-mark {
       width: 44px;
       height: 44px;
-      border-radius: 10px;
+      border-radius: 50%;
       object-fit: cover;
     }
 
-    .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      background: rgba(255, 255, 255, 0.4);
+      padding: 6px;
+      border-radius: 999px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
 
     .tab-btn {
       border: 0;
       padding: 10px 16px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.1);
-      color: #cbd5e1;
+      background: rgba(0, 0, 0, 0.05);
+      color: #475569;
       cursor: pointer;
       font-weight: 800;
       transition: 0.2s ease;
     }
 
-    .tab-btn.active { background: #fff; color: #000; }
+    .tab-btn.active { background: #000; color: #fff; }
 
     .layout {
       display: grid;
@@ -86,20 +103,20 @@
     }
 
     .panel {
-      background: rgba(0, 0, 0, 0.48);
+      background: rgba(255, 255, 255, 0.65);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.6);
       border-radius: 24px;
       padding: 20px;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.1);
     }
 
     h1, h2, h3 { margin: 0; letter-spacing: -0.04em; }
 
     .sub {
       margin: 6px 0 18px;
-      color: #cbd5e1;
+      color: #475569;
       font-size: 14px;
       line-height: 1.5;
     }
@@ -110,7 +127,7 @@
     label {
       font-size: 12px;
       font-weight: 800;
-      color: #cbd5e1;
+      color: #475569;
       text-transform: uppercase;
       letter-spacing: 0.06em;
     }
@@ -118,9 +135,9 @@
     input, textarea, select {
       width: 100%;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(0, 0, 0, 0.36);
-      color: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.5);
+      color: #0f172a;
       padding: 11px 12px;
       outline: none;
       font-size: 14px;
@@ -164,7 +181,7 @@
     }
 
     .btn-primary { background: #2563eb; color: #fff; }
-    .btn-secondary { background: rgba(255, 255, 255, 0.12); color: #fff; }
+    .btn-secondary { background: rgba(0, 0, 0, 0.05); color: #475569; border: 1px solid rgba(0, 0, 0, 0.1); }
     .btn-danger { background: #dc2626; color: #fff; }
     .btn-small { padding: 7px 9px; border-radius: 9px; font-size: 12px; }
 
@@ -181,7 +198,7 @@
 
     .status {
       margin-top: 12px;
-      color: #cbd5e1;
+      color: #475569;
       font-size: 13px;
       line-height: 1.5;
       white-space: pre-line;
@@ -190,22 +207,22 @@
     .table-wrap {
       overflow: auto;
       border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.5);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       min-width: 980px;
-      background: rgba(0, 0, 0, 0.35);
     }
 
     th, td {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      border-right: 1px solid rgba(0, 0, 0, 0.05);
       padding: 10px;
       vertical-align: top;
-      color: #f8fafc;
+      color: #0f172a;
       font-size: 13px;
       line-height: 1.45;
       white-space: pre-line;
@@ -214,20 +231,21 @@
     th {
       position: sticky;
       top: 0;
-      background: rgba(15, 23, 42, 0.96);
-      color: #38bdf8;
+      background: rgba(255, 255, 255, 0.8);
+      color: #0284c7;
       z-index: 1;
       text-align: left;
+      border-bottom: 2px solid rgba(0, 0, 0, 0.1);
     }
 
-    tr:hover td { background: rgba(255, 255, 255, 0.05); }
+    tr:hover td { background: rgba(0, 0, 0, 0.02); }
 
     .pill {
       display: inline-flex;
       padding: 5px 8px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.12);
-      color: #cbd5e1;
+      background: rgba(0, 0, 0, 0.05);
+      color: #475569;
       font-weight: 800;
       font-size: 12px;
       margin: 2px;
@@ -238,9 +256,9 @@
     .notice {
       padding: 12px 14px;
       border-radius: 14px;
-      border: 1px solid rgba(251, 191, 36, 0.3);
-      background: rgba(251, 191, 36, 0.12);
-      color: #fde68a;
+      border: 1px solid rgba(217, 119, 6, 0.3);
+      background: rgba(254, 243, 199, 0.6);
+      color: #92400e;
       font-size: 13px;
       line-height: 1.5;
       margin-bottom: 14px;
@@ -257,19 +275,19 @@
 
     .login-card {
       width: min(420px, 100%);
-      background: rgba(0, 0, 0, 0.58);
+      background: rgba(255, 255, 255, 0.65);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.6);
       border-radius: 26px;
       padding: 26px;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.1);
     }
 
     .login-logo {
       width: 56px;
       height: 56px;
-      border-radius: 14px;
+      border-radius: 50%;
       object-fit: cover;
       margin-bottom: 14px;
     }
@@ -282,7 +300,7 @@
     }
 
     .login-subtitle {
-      color: #cbd5e1;
+      color: #475569;
       font-size: 14px;
       line-height: 1.5;
       margin: 0 0 18px;
@@ -293,9 +311,9 @@
       margin-top: 12px;
       padding: 10px 12px;
       border-radius: 12px;
-      background: rgba(220, 38, 38, 0.18);
+      background: rgba(254, 226, 226, 0.6);
       border: 1px solid rgba(248, 113, 113, 0.35);
-      color: #fecaca;
+      color: #991b1b;
       font-size: 13px;
       font-weight: 700;
     }
@@ -305,8 +323,8 @@
     }
 
     .logout-btn {
-      background: rgba(220, 38, 38, 0.18);
-      color: #fecaca;
+      background: rgba(254, 226, 226, 0.6);
+      color: #991b1b;
       border: 1px solid rgba(248, 113, 113, 0.35);
     }
 
@@ -325,9 +343,7 @@
 
   <section id="authScreen" class="auth-screen">
     <form id="loginForm" class="login-card">
-      <img class="login-logo"
-        src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg"
-        alt="Logo" />
+      <img class="login-logo" src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg" alt="Logo" />
       <div class="login-title">Stavian Admin</div>
       <p class="login-subtitle">Đăng nhập để thêm, sửa, xóa tin tức kim loại và view hàng ngày.</p>
 
@@ -350,9 +366,7 @@
   <main id="adminApp" class="page hidden">
     <nav class="navbar">
       <div class="brand">
-        <img class="brand-mark"
-          src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg"
-          alt="Logo" />
+        <img class="brand-mark" src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg" alt="Logo" />
         <div>Stavian Admin</div>
       </div>
 
@@ -384,12 +398,12 @@
             <h3>Nhôm</h3>
             <div class="field">
               <label>Tóm tắt Nhôm</label>
-              <textarea id="alSummary" placeholder="Nhập tin Nhôm..."></textarea>
+              <textarea id="alSummary" placeholder="Dòng 1: Tiêu đề tiếng Việt\nCác dòng sau: Nội dung tóm tắt..."></textarea>
             </div>
             <div class="two-col">
               <div class="field">
-                <label>Nguồn</label>
-                <input id="alSource" placeholder="Reuters, Bloomberg..." />
+                <label>Nguồn (kèm Link)</label>
+                <input id="alSource" placeholder="VD: Reuters https://link..." />
               </div>
               <div class="field">
                 <label>Thời gian</label>
@@ -400,12 +414,12 @@
             <h3>Đồng</h3>
             <div class="field">
               <label>Tóm tắt Đồng</label>
-              <textarea id="cuSummary" placeholder="Nhập tin Đồng..."></textarea>
+              <textarea id="cuSummary" placeholder="Dòng 1: Tiêu đề tiếng Việt\nCác dòng sau: Nội dung tóm tắt..."></textarea>
             </div>
             <div class="two-col">
               <div class="field">
-                <label>Nguồn</label>
-                <input id="cuSource" placeholder="Reuters, Bloomberg..." />
+                <label>Nguồn (kèm Link)</label>
+                <input id="cuSource" placeholder="VD: Reuters https://link..." />
               </div>
               <div class="field">
                 <label>Thời gian</label>
@@ -416,12 +430,12 @@
             <h3>Kẽm</h3>
             <div class="field">
               <label>Tóm tắt Kẽm</label>
-              <textarea id="znSummary" placeholder="Nhập tin Kẽm..."></textarea>
+              <textarea id="znSummary" placeholder="Dòng 1: Tiêu đề tiếng Việt\nCác dòng sau: Nội dung tóm tắt..."></textarea>
             </div>
             <div class="two-col">
               <div class="field">
-                <label>Nguồn</label>
-                <input id="znSource" placeholder="Reuters, Bloomberg..." />
+                <label>Nguồn (kèm Link)</label>
+                <input id="znSource" placeholder="VD: Reuters https://link..." />
               </div>
               <div class="field">
                 <label>Thời gian</label>
