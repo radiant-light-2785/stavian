@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stavian Metal Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Inter, Arial, sans-serif;
+      color: #0f172a;
+    }
+
+    body {
+      overflow-x: hidden;
+      background: #f8fafc;
+    }
+
+    .background-video {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .page {
+      position: relative;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #0f172a;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 9px;
+      object-fit: cover;
+    }
+
+    .tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      border: 0;
+      padding: 10px 16px;
+      border-radius: 9px;
+      background: rgba(0, 0, 0, 0.05);
+      color: #475569;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .tab-btn:hover { background: rgba(0, 0, 0, 0.1); }
+    .tab-btn.active { background: #000; color: #fff; }
+
+    .dashboard {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.1);
+      min-height: calc(100vh - 120px);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      color: #0f172a;
+      font-size: 28px;
+      letter-spacing: -0.04em;
+    }
+
+    .title-block p {
+      margin: 6px 0 0;
+      color: #475569;
+      font-size: 14px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .input,
+    .select {
+      height: 40px;
+      border-radius: 9px;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      padding: 0 12px;
+      font-size: 14px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.5);
+      color: #0f172a;
+      backdrop-filter: blur(10px);
+    }
+
+    .select option { color: #0f172a; }
+    .input { min-width: 260px; }
+
+    .refresh-btn {
+      height: 40px;
+      border: 0;
+      border-radius: 9px;
+      padding: 0 14px;
+      background: #2563eb;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .refresh-btn:hover { background: #1d4ed8; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 300px);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .metric-card {
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 10px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: #475569;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .metric-value {
+      margin-top: 6px;
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .date-group {
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(16px);
+    }
+
+    .date-header {
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.7);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      color: #0f172a;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .date-header span {
+      opacity: 0.78;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .metal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+    }
+
+    .metal-card {
+      padding: 16px;
+      border-right: 1px solid rgba(0, 0, 0, 0.05);
+      min-height: 170px;
+    }
+
+    .metal-card:last-child { border-right: 0; }
+
+    .metal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .metal-name {
+      font-weight: 800;
+      font-size: 17px;
+      color: #0f172a;
+    }
+
+    .badge {
+      padding: 5px 9px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .badge-aluminum { background: #dbeafe; color: #1d4ed8; }
+    .badge-copper { background: #ffedd5; color: #c2410c; }
+    .badge-zinc { background: #fef3c7; color: #a16207; }
+
+    .summary {
+      white-space: pre-line;
+      color: #334155;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .meta {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    .meta-pill {
+      padding: 6px 8px;
+      border-radius: 9px;
+      background: rgba(0, 0, 0, 0.05);
+      color: #475569;
+      font-weight: 700;
+    }
+
+    .empty {
+      border: 1px dashed rgba(0, 0, 0, 0.15);
+      border-radius: 10px;
+      padding: 50px 18px;
+      text-align: center;
+      color: #64748b;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      line-height: 1.6;
+    }
+
+    .generic-table-wrap {
+      overflow: auto;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1100px;
+    }
+
+    td,
+    th {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      border-right: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 14px;
+      vertical-align: middle;
+      font-size: 13.5px;
+      white-space: pre-line;
+      color: #0f172a;
+    }
+
+    td:last-child,
+    th:last-child { border-right: none; }
+    tr:hover td { background: rgba(0, 0, 0, 0.02); }
+
+    tr:first-child td,
+    thead th {
+      background: rgba(255, 255, 255, 0.8);
+      color: #0284c7;
+      font-weight: 800;
+      text-align: center;
+      border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .cell-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .cb-green { background: #d1fae5; color: #065f46; }
+    .cb-red { background: #fee2e2; color: #991b1b; }
+    .cb-yellow { background: #fef08a; color: #854d0e; }
+    .cb-blue { background: #dbeafe; color: #1e40af; }
+    .cb-gray { background: #f1f5f9; color: #475569; }
+
+    .text-green { color: #059669; font-weight: 700; }
+    .text-red { color: #dc2626; font-weight: 700; }
+    .text-orange { color: #d97706; font-weight: 700; }
+
+    .col-al { background: rgba(59, 130, 246, 0.15) !important; }
+    .col-cu { background: rgba(249, 115, 22, 0.15) !important; }
+    .col-zn { background: rgba(234, 179, 8, 0.15) !important; }
+
+    tr:hover td.col-al { background: rgba(59, 130, 246, 0.25) !important; }
+    tr:hover td.col-cu { background: rgba(249, 115, 22, 0.25) !important; }
+    tr:hover td.col-zn { background: rgba(234, 179, 8, 0.25) !important; }
+
+    tr:first-child td.col-al { background: rgba(59, 130, 246, 0.25) !important; border-bottom: 2px solid rgba(59, 130, 246, 0.3) !important; }
+    tr:first-child td.col-cu { background: rgba(249, 115, 22, 0.25) !important; border-bottom: 2px solid rgba(249, 115, 22, 0.3) !important; }
+    tr:first-child td.col-zn { background: rgba(234, 179, 8, 0.25) !important; border-bottom: 2px solid rgba(234, 179, 8, 0.3) !important; }
+
+    .error-box {
+      border: 1px dashed #ef4444;
+      border-radius: 10px;
+      padding: 32px 18px;
+      text-align: center;
+      color: #991b1b;
+      background: rgba(254, 226, 226, 0.6);
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 980px) {
+      .summary-grid,
+      .metal-grid { grid-template-columns: 1fr; }
+      .metal-card { border-right: 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+      .metal-card:last-child { border-bottom: 0; }
+      .navbar { align-items: flex-start; flex-direction: column; }
+      .input { min-width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <video class="background-video" autoplay loop muted playsinline
+    src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4"></video>
+
+  <main class="page">
+    <nav class="navbar">
+      <div class="brand">
+        <img class="brand-mark" src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg" alt="Logo" />
+        <div>Stavian Metal Monitor</div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-sheet="News">Tin tức</button>
+        <button class="tab-btn" data-sheet="View">View</button>
+        <button class="tab-btn" data-sheet="Warehouse">Warehouse</button>
+      </div>
+    </nav>
+
+    <section class="dashboard">
+      <div class="toolbar">
+        <div class="title-block">
+          <h1 id="pageTitle">Tin tức kim loại</h1>
+          <p id="pageSubtitle">Dữ liệu lấy từ Supabase Database.</p>
+        </div>
+
+        <div class="filters">
+          <input id="searchInput" class="input" type="text" placeholder="Tìm kiếm tin tức, nguồn, kim loại..." />
+          <select id="dateFilter" class="select">
+            <option value="">Tất cả ngày</option>
+          </select>
+          <button id="refreshBtn" class="refresh-btn">Refresh</button>
+        </div>
+      </div>
+
+      <div class="summary-grid" id="summaryGrid">
+        <div class="metric-card">
+          <div class="metric-label">Cập nhật</div>
+          <div class="metric-value" id="metricUpdated">-</div>
+        </div>
+      </div>
+
+      <div id="contentArea" class="news-list"></div>
+    </section>
+  </main>
+
+  <script>
+    const SUPABASE_URL = 'https://ibwxzixwxfhkrtnatrvs.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_7i8PoAQto66tdXtTb9Lq0Q_2Pwpvclu';
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const TABLES = {
+      News: 'metal_news',
+      View: 'market_views',
+      Warehouse: 'warehouse_records'
+    };
+
+    const VIEW_HEADERS = [
+      'Ngày họp', 'Giờ họp', 'Thành viên',
+      'Nhôm Giá/Vùng', 'Nhôm Hướng',
+      'Đồng Giá/Vùng', 'Đồng Hướng',
+      'Kẽm Giá/Vùng', 'Kẽm Hướng',
+      'Nội dung view tóm tắt', 'Khung thời gian', 'Action',
+      'View Nhôm Đúng/Sai', 'View Đồng Đúng/Sai', 'View Kẽm Đúng/Sai', 'Ghi chú nhanh'
+    ];
+
+    let currentSheet = 'News';
+    let currentPayload = null;
+
+    const contentArea = document.getElementById('contentArea');
+    const searchInput = document.getElementById('searchInput');
+    const dateFilter = document.getElementById('dateFilter');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const pageTitle = document.getElementById('pageTitle');
+    const pageSubtitle = document.getElementById('pageSubtitle');
+    const metricUpdated = document.getElementById('metricUpdated');
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSheet = btn.dataset.sheet;
+        loadSheet(currentSheet);
+      });
+    });
+
+    refreshBtn.addEventListener('click', () => loadSheet(currentSheet));
+    searchInput.addEventListener('input', () => renderCurrentPayload());
+    dateFilter.addEventListener('change', () => renderCurrentPayload());
+
+    async function loadSheet(sheetName) {
+      setLoading(sheetName);
+
+      try {
+        if (sheetName === 'News') {
+          currentPayload = await loadNewsPayload();
+        } else if (sheetName === 'View') {
+          currentPayload = await loadViewPayload();
+        } else {
+          currentPayload = await loadWarehousePayload();
+        }
+
+        renderCurrentPayload();
+      } catch (err) {
+        showPayloadError(err);
+      }
+    }
+
+    function setLoading(sheetName) {
+      contentArea.innerHTML = '<div class="empty">Đang tải dữ liệu từ Supabase...</div>';
+      metricUpdated.textContent = '-';
+
+      if (sheetName === 'News') {
+        pageTitle.textContent = 'Tin tức kim loại';
+        pageSubtitle.textContent = 'Theo dõi tin tức Nhôm, Đồng, Kẽm từ bảng metal_news.';
+        searchInput.placeholder = 'Tìm kiếm tin tức, nguồn, kim loại...';
+        dateFilter.style.display = '';
+      } else if (sheetName === 'View') {
+        pageTitle.textContent = 'View';
+        pageSubtitle.textContent = 'Dữ liệu view thị trường lấy từ bảng market_views.';
+        searchInput.placeholder = 'Tìm kiếm trong bảng View...';
+        dateFilter.style.display = 'none';
+      } else {
+        pageTitle.textContent = 'Warehouse';
+        pageSubtitle.textContent = 'Dữ liệu tồn kho lấy từ bảng warehouse_records nếu đã tạo.';
+        searchInput.placeholder = 'Tìm kiếm trong bảng Warehouse...';
+        dateFilter.style.display = 'none';
+      }
+    }
+
+    async function loadNewsPayload() {
+      const { data, error } = await supabaseClient
+        .from(TABLES.News)
+        .select('*')
+        .order('news_date', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const rows = (data || []).map(item => ({
+        id: item.id,
+        date: formatDateVN(item.news_date),
+        aluminum: {
+          summary: item.al_summary || '',
+          source: item.al_source || '',
+          time: item.al_time || ''
+        },
+        copper: {
+          summary: item.cu_summary || '',
+          source: item.cu_source || '',
+          time: item.cu_time || ''
+        },
+        zinc: {
+          summary: item.zn_summary || '',
+          source: item.zn_source || '',
+          time: item.zn_time || ''
+        }
+      }));
+
+      return {
+        success: true,
+        sheet: 'News',
+        updatedAt: new Date().toLocaleString('vi-VN'),
+        count: rows.length,
+        rows,
+        dates: [...new Set(rows.map(row => row.date).filter(Boolean))]
+      };
+    }
+
+    async function loadViewPayload() {
+      const { data, error } = await supabaseClient
+        .from(TABLES.View)
+        .select('*')
+        .order('meeting_date', { ascending: false, nullsFirst: false })
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const values = [VIEW_HEADERS].concat((data || []).map(item => [
+        formatDateVN(item.meeting_date),
+        item.meeting_time || '',
+        item.member || '',
+        item.al_price_zone || '',
+        item.al_direction || '',
+        item.cu_price_zone || '',
+        item.cu_direction || '',
+        item.zn_price_zone || '',
+        item.zn_direction || '',
+        item.summary_view || '',
+        item.time_frame || '',
+        item.action_plan || '',
+        item.al_result || '',
+        item.cu_result || '',
+        item.zn_result || '',
+        item.quick_note || ''
+      ]));
+
+      return {
+        success: true,
+        sheet: 'View',
+        updatedAt: new Date().toLocaleString('vi-VN'),
+        count: Math.max(values.length - 1, 0),
+        values
+      };
+    }
+
+    async function loadWarehousePayload() {
+      const { data, error } = await supabaseClient
+        .from(TABLES.Warehouse)
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        return {
+          success: true,
+          sheet: 'Warehouse',
+          updatedAt: new Date().toLocaleString('vi-VN'),
+          count: 0,
+          values: [[
+            'Warehouse chưa được cấu hình',
+            'Hãy tạo bảng warehouse_records trong Supabase hoặc đổi tên bảng trong biến TABLES.Warehouse.'
+          ]]
+        };
+      }
+
+      const rows = data || [];
+      const headers = rows.length ? Object.keys(rows[0]) : ['Thông báo'];
+      const values = rows.length
+        ? [headers].concat(rows.map(item => headers.map(h => item[h] ?? '')))
+        : [['Warehouse'], ['Chưa có dữ liệu.']];
+
+      return {
+        success: true,
+        sheet: 'Warehouse',
+        updatedAt: new Date().toLocaleString('vi-VN'),
+        count: rows.length,
+        values
+      };
+    }
+
+    function renderCurrentPayload() {
+      if (!currentPayload) return;
+
+      if (!currentPayload.success) {
+        showPayloadError(currentPayload);
+        return;
+      }
+
+      metricUpdated.textContent = currentPayload.updatedAt || '-';
+
+      if (currentPayload.sheet === 'News') {
+        renderNews(currentPayload);
+      } else {
+        renderGenericTable(currentPayload);
+      }
+    }
+
+    function renderNews(payload) {
+      const query = normalize(searchInput.value);
+      const selectedDate = dateFilter.value;
+
+      updateDateOptions(payload.dates || []);
+
+      let rows = payload.rows || [];
+
+      if (selectedDate) {
+        rows = rows.filter(row => row.date === selectedDate);
+      }
+
+      if (query) {
+        rows = rows.filter(row => {
+          const haystack = normalize([
+            row.date,
+            'nhôm', row.aluminum?.summary, row.aluminum?.source, row.aluminum?.time,
+            'đồng', row.copper?.summary, row.copper?.source, row.copper?.time,
+            'kẽm', row.zinc?.summary, row.zinc?.source, row.zinc?.time
+          ].join(' '));
+          return haystack.includes(query);
+        });
+      }
+
+      if (!rows.length) {
+        contentArea.innerHTML = '<div class="empty">Không có dữ liệu phù hợp.</div>';
+        return;
+      }
+
+      const groups = groupByDate(rows);
+      const sortedDates = Object.keys(groups).sort((a, b) => parseDateForSort(b).localeCompare(parseDateForSort(a)));
+
+      contentArea.innerHTML = sortedDates.map(date => {
+        const groupRows = groups[date];
+        return `
+          <section class="date-group">
+            <div class="date-header">
+              <div>${escapeHtml(date || 'Chưa có ngày')}</div>
+              <span>${groupRows.length} dòng tin</span>
+            </div>
+            ${groupRows.map(row => renderNewsRow(row)).join('')}
+          </section>
+        `;
+      }).join('');
+    }
+
+    function renderNewsRow(row) {
+      return `
+        <div class="metal-grid">
+          ${renderMetalCard('Nhôm', row.aluminum, 'badge-aluminum')}
+          ${renderMetalCard('Đồng', row.copper, 'badge-copper')}
+          ${renderMetalCard('Kẽm', row.zinc, 'badge-zinc')}
+        </div>
+      `;
+    }
+
+    function renderMetalCard(name, data, badgeClass) {
+      const summary = data && data.summary ? data.summary : 'Chưa có tin riêng.';
+      const source = data && data.source ? data.source : '-';
+      const time = data && data.time ? data.time : '-';
+
+      return `
+        <article class="metal-card">
+          <div class="metal-head">
+            <div class="metal-name">${escapeHtml(name)}</div>
+            <div class="badge ${badgeClass}">${escapeHtml(name)}</div>
+          </div>
+          <div class="summary">${escapeHtml(summary)}</div>
+          <div class="meta">
+            <div class="meta-pill">Nguồn: ${escapeHtml(source)}</div>
+            <div class="meta-pill">Thời gian: ${escapeHtml(time)}</div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderGenericTable(payload) {
+      const values = payload.values || [];
+      const query = normalize(searchInput.value);
+      let filteredValues = values;
+
+      if (query) {
+        filteredValues = values.filter((row, idx) => idx === 0 || normalize(row.join(' ')).includes(query));
+      }
+
+      if (!filteredValues.length) {
+        contentArea.innerHTML = '<div class="empty">Không có dữ liệu phù hợp.</div>';
+        return;
+      }
+
+      const numCols = filteredValues[0] ? filteredValues[0].length : 0;
+      const rowSpans = [];
+      const skip = [];
+      
+      for (let r = 0; r < filteredValues.length; r++) {
+        rowSpans[r] = [];
+        skip[r] = [];
+        for (let c = 0; c < numCols; c++) {
+          rowSpans[r][c] = 1;
+          skip[r][c] = false;
+        }
+      }
+
+      for (let c = 0; c < numCols; c++) {
+        for (let r = 1; r < filteredValues.length; r++) {
+          if (skip[r][c]) continue;
+          let span = 1;
+          const val = String(filteredValues[r][c] || '').trim();
+          
+          if (val !== '') { 
+            for (let nextR = r + 1; nextR < filteredValues.length; nextR++) {
+              const nextVal = String(filteredValues[nextR][c] || '').trim();
+              const baseCol0 = String(filteredValues[r][0] || '').trim();
+              const nextCol0 = String(filteredValues[nextR][0] || '').trim();
+              
+              if (nextVal === val && baseCol0 === nextCol0) {
+                span++;
+                skip[nextR][c] = true;
+              } else {
+                break;
+              }
+            }
+          }
+          rowSpans[r][c] = span;
+        }
+      }
+
+      const isView = payload.sheet === 'View';
+
+      contentArea.innerHTML = `
+        <div class="generic-table-wrap">
+          <table>
+            <tbody>
+              ${filteredValues.map((row, rowIndex) => `
+                <tr>
+                  ${row.map((cell, colIndex) => {
+                    if (rowIndex > 0 && skip[rowIndex][colIndex]) return '';
+                    
+                    let cls = '';
+                    if (isView) {
+                       if ([3, 4, 12].includes(colIndex)) cls = 'col-al';
+                       else if ([5, 6, 13].includes(colIndex)) cls = 'col-cu';
+                       else if ([7, 8, 14].includes(colIndex)) cls = 'col-zn';
+                    }
+                    
+                    const spanAttr = (rowIndex > 0 && rowSpans[rowIndex][colIndex] > 1) 
+                                   ? ` rowspan="${rowSpans[rowIndex][colIndex]}"` : '';
+                    const classAttr = cls ? ` class="${cls}"` : '';
+                    
+                    return `<td${spanAttr}${classAttr}>${formatTableCell(cell, rowIndex === 0)}</td>`;
+                  }).join('')}
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function formatTableCell(text, isHeader) {
+      if (text === null || text === undefined) return '';
+      let val = escapeHtml(String(text).trim());
+      if (isHeader) return val;
+
+      const lower = val.toLowerCase();
+      if (lower === '↑ tăng' || lower === 'tăng') return '<span class="cell-badge cb-green">↑ Tăng</span>';
+      if (lower === '↓ giảm' || lower === 'giảm') return '<span class="cell-badge cb-red">↓ Giảm</span>';
+      if (lower === '↕ mixed' || lower === 'mixed') return '<span class="cell-badge cb-blue">↕ Mixed</span>';
+      if (lower === 'đúng') return '<span class="cell-badge cb-green">Đúng</span>';
+      if (lower === 'sai') return '<span class="cell-badge cb-red">Sai</span>';
+      if (lower === 'gần đúng') return '<span class="cell-badge cb-yellow">Gần đúng</span>';
+      if (lower === 'sideway' || lower === 'sideways') return '<span class="cell-badge cb-gray">Sideway</span>';
+      if (lower === '-') return '<span class="cell-badge cb-gray">-</span>';
+
+      val = val.replace(/(tăng)/gi, '<span class="text-green">$1</span>');
+      val = val.replace(/(giảm)/gi, '<span class="text-red">$1</span>');
+      val = val.replace(/(sideway)/gi, '<span class="text-orange">$1</span>');
+      return val;
+    }
+
+    function updateDateOptions(dates) {
+      const currentValue = dateFilter.value;
+      const sortedDates = [...dates].sort((a, b) => parseDateForSort(b).localeCompare(parseDateForSort(a)));
+      const options = ['<option value="">Tất cả ngày</option>']
+        .concat(sortedDates.map(date => `<option value="${escapeHtml(date)}">${escapeHtml(date)}</option>`));
+      dateFilter.innerHTML = options.join('');
+      if (dates.includes(currentValue)) dateFilter.value = currentValue;
+    }
+
+    function groupByDate(rows) {
+      return rows.reduce((acc, row) => {
+        const key = row.date || 'Chưa có ngày';
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(row);
+        return acc;
+      }, {});
+    }
+
+    function showPayloadError(error) {
+      const message = error && error.message ? error.message : (error.error || 'Không rõ lỗi.');
+      contentArea.innerHTML = `
+        <div class="error-box">
+          Không tải được dữ liệu Supabase:<br>
+          ${escapeHtml(message)}<br><br>
+          Kiểm tra lại: Project URL, Publishable key, tên bảng và RLS policy.
+        </div>
+      `;
+    }
+
+    function formatDateVN(dateStr) {
+      if (!dateStr) return '';
+      const parts = String(dateStr).split('-');
+      if (parts.length !== 3) return String(dateStr);
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    function parseDateForSort(dateStr) {
+      const parts = String(dateStr || '').split('/');
+      return parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : String(dateStr || '');
+    }
+
+    function normalize(value) {
+      return String(value || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim();
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    loadSheet('News');
+  </script>
+</body>
+
+</html>

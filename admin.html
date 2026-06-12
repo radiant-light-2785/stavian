@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stavian Admin</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Inter, Arial, sans-serif;
+      color: #f8fafc;
+      background: #000;
+    }
+
+    body { overflow-x: hidden; }
+
+    .background-video {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .page { min-height: 100vh; padding: 24px; }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #fff;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .tab-btn {
+      border: 0;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      cursor: pointer;
+      font-weight: 800;
+      transition: 0.2s ease;
+    }
+
+    .tab-btn.active { background: #fff; color: #000; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(360px, 460px) minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    .panel {
+      background: rgba(0, 0, 0, 0.48);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+    }
+
+    h1, h2, h3 { margin: 0; letter-spacing: -0.04em; }
+
+    .sub {
+      margin: 6px 0 18px;
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .form-grid { display: grid; gap: 12px; }
+    .field { display: grid; gap: 6px; }
+
+    label {
+      font-size: 12px;
+      font-weight: 800;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(0, 0, 0, 0.36);
+      color: #fff;
+      padding: 11px 12px;
+      outline: none;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    select option { color: #0f172a; }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 14px;
+      cursor: pointer;
+      font-weight: 800;
+      font-family: inherit;
+    }
+
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-secondary { background: rgba(255, 255, 255, 0.12); color: #fff; }
+    .btn-danger { background: #dc2626; color: #fff; }
+    .btn-small { padding: 7px 9px; border-radius: 9px; font-size: 12px; }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .search { max-width: 360px; }
+
+    .status {
+      margin-top: 12px;
+      color: #cbd5e1;
+      font-size: 13px;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    th, td {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      vertical-align: top;
+      color: #f8fafc;
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: pre-line;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: rgba(15, 23, 42, 0.96);
+      color: #38bdf8;
+      z-index: 1;
+      text-align: left;
+    }
+
+    tr:hover td { background: rgba(255, 255, 255, 0.05); }
+
+    .pill {
+      display: inline-flex;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      font-weight: 800;
+      font-size: 12px;
+      margin: 2px;
+    }
+
+    .hidden { display: none !important; }
+
+    .notice {
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      background: rgba(251, 191, 36, 0.12);
+      color: #fde68a;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+
+
+    .auth-screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      width: min(420px, 100%);
+      background: rgba(0, 0, 0, 0.58);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 26px;
+      padding: 26px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+    }
+
+    .login-logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      object-fit: cover;
+      margin-bottom: 14px;
+    }
+
+    .login-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      margin-bottom: 6px;
+    }
+
+    .login-subtitle {
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0 0 18px;
+    }
+
+    .login-error {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(220, 38, 38, 0.18);
+      border: 1px solid rgba(248, 113, 113, 0.35);
+      color: #fecaca;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .login-error.show {
+      display: block;
+    }
+
+    .logout-btn {
+      background: rgba(220, 38, 38, 0.18);
+      color: #fecaca;
+      border: 1px solid rgba(248, 113, 113, 0.35);
+    }
+
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 1fr; }
+      .two-col, .three-col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <video class="background-video" autoplay loop muted playsinline
+    src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4"></video>
+
+
+
+  <section id="authScreen" class="auth-screen">
+    <form id="loginForm" class="login-card">
+      <img class="login-logo"
+        src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg"
+        alt="Logo" />
+      <div class="login-title">Stavian Admin</div>
+      <p class="login-subtitle">Đăng nhập để thêm, sửa, xóa tin tức kim loại và view hàng ngày.</p>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Tài khoản</label>
+          <input id="loginUsername" type="text" autocomplete="username" placeholder="admin" required />
+        </div>
+        <div class="field">
+          <label>Mật khẩu</label>
+          <input id="loginPassword" type="password" autocomplete="current-password" placeholder="123456" required />
+        </div>
+        <button class="btn-primary" type="submit">Đăng nhập</button>
+      </div>
+
+      <div id="loginError" class="login-error">Sai tài khoản hoặc mật khẩu.</div>
+    </form>
+  </section>
+
+  <main id="adminApp" class="page hidden">
+    <nav class="navbar">
+      <div class="brand">
+        <img class="brand-mark"
+          src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg"
+          alt="Logo" />
+        <div>Stavian Admin</div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-admin-tab="news">Tin tức kim loại</button>
+        <button class="tab-btn" data-admin-tab="view">View hàng ngày</button>
+        <button id="logoutBtn" class="logout-btn" type="button">Đăng xuất</button>
+      </div>
+    </nav>
+
+    <section class="layout">
+      <aside class="panel">
+        <div class="notice">
+          Trang admin yêu cầu đăng nhập nội bộ. Lưu ý: đây là lớp khóa ở giao diện; để bảo mật thật cần cấu hình Supabase Auth/RLS.
+        </div>
+
+        <div id="newsFormPanel">
+          <h1>Admin Tin tức</h1>
+          <p class="sub">Thêm / chỉnh sửa / xóa tin tức Nhôm, Đồng, Kẽm trên bảng metal_news.</p>
+
+          <form id="newsForm" class="form-grid">
+            <input type="hidden" id="newsId" />
+
+            <div class="field">
+              <label>Ngày</label>
+              <input id="newsDate" type="date" required />
+            </div>
+
+            <h3>Nhôm</h3>
+            <div class="field">
+              <label>Tóm tắt Nhôm</label>
+              <textarea id="alSummary" placeholder="Nhập tin Nhôm..."></textarea>
+            </div>
+            <div class="two-col">
+              <div class="field">
+                <label>Nguồn</label>
+                <input id="alSource" placeholder="Reuters, Bloomberg..." />
+              </div>
+              <div class="field">
+                <label>Thời gian</label>
+                <input id="alTime" placeholder="08:09" />
+              </div>
+            </div>
+
+            <h3>Đồng</h3>
+            <div class="field">
+              <label>Tóm tắt Đồng</label>
+              <textarea id="cuSummary" placeholder="Nhập tin Đồng..."></textarea>
+            </div>
+            <div class="two-col">
+              <div class="field">
+                <label>Nguồn</label>
+                <input id="cuSource" placeholder="Reuters, Bloomberg..." />
+              </div>
+              <div class="field">
+                <label>Thời gian</label>
+                <input id="cuTime" placeholder="08:09" />
+              </div>
+            </div>
+
+            <h3>Kẽm</h3>
+            <div class="field">
+              <label>Tóm tắt Kẽm</label>
+              <textarea id="znSummary" placeholder="Nhập tin Kẽm..."></textarea>
+            </div>
+            <div class="two-col">
+              <div class="field">
+                <label>Nguồn</label>
+                <input id="znSource" placeholder="Reuters, Bloomberg..." />
+              </div>
+              <div class="field">
+                <label>Thời gian</label>
+                <input id="znTime" placeholder="08:09" />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn-primary" type="submit" id="saveNewsBtn">Thêm tin tức</button>
+              <button class="btn-secondary" type="button" onclick="resetNewsForm()">Reset</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="viewFormPanel" class="hidden">
+          <h1>Admin View</h1>
+          <p class="sub">Thêm / chỉnh sửa / xóa view thị trường hàng ngày trên bảng market_views.</p>
+
+          <form id="viewForm" class="form-grid">
+            <input type="hidden" id="viewId" />
+
+            <div class="two-col">
+              <div class="field">
+                <label>Ngày họp</label>
+                <input id="meetingDate" type="date" />
+              </div>
+              <div class="field">
+                <label>Giờ họp</label>
+                <input id="meetingTime" placeholder="VD: 09:00" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Thành viên</label>
+              <input id="member" placeholder="VD: Anh Huy" />
+            </div>
+
+            <div class="two-col">
+              <div class="field"><label>Nhôm Giá/Vùng</label><textarea id="alPriceZone"></textarea></div>
+              <div class="field"><label>Nhôm Hướng</label><select id="alDirection"><option value=""></option><option value="↑ Tăng">↑ Tăng</option><option value="↓ Giảm">↓ Giảm</option><option value="↕ Mixed">↕ Mixed</option><option value="Sideway">Sideway</option></select></div>
+            </div>
+
+            <div class="two-col">
+              <div class="field"><label>Đồng Giá/Vùng</label><textarea id="cuPriceZone"></textarea></div>
+              <div class="field"><label>Đồng Hướng</label><select id="cuDirection"><option value=""></option><option value="↑ Tăng">↑ Tăng</option><option value="↓ Giảm">↓ Giảm</option><option value="↕ Mixed">↕ Mixed</option><option value="Sideway">Sideway</option></select></div>
+            </div>
+
+            <div class="two-col">
+              <div class="field"><label>Kẽm Giá/Vùng</label><textarea id="znPriceZone"></textarea></div>
+              <div class="field"><label>Kẽm Hướng</label><select id="znDirection"><option value=""></option><option value="↑ Tăng">↑ Tăng</option><option value="↓ Giảm">↓ Giảm</option><option value="↕ Mixed">↕ Mixed</option><option value="Sideway">Sideway</option></select></div>
+            </div>
+
+            <div class="field"><label>Nội dung view tóm tắt</label><textarea id="summaryView"></textarea></div>
+
+            <div class="two-col">
+              <div class="field"><label>Khung thời gian</label><input id="timeFrame" placeholder="Ngày / Tuần / Quý" /></div>
+              <div class="field"><label>Action</label><textarea id="actionPlan"></textarea></div>
+            </div>
+
+            <div class="three-col">
+              <div class="field"><label>View Nhôm Đúng/Sai</label><select id="alResult"><option value=""></option><option value="Đúng">Đúng</option><option value="Sai">Sai</option><option value="Gần đúng">Gần đúng</option></select></div>
+              <div class="field"><label>View Đồng Đúng/Sai</label><select id="cuResult"><option value=""></option><option value="Đúng">Đúng</option><option value="Sai">Sai</option><option value="Gần đúng">Gần đúng</option></select></div>
+              <div class="field"><label>View Kẽm Đúng/Sai</label><select id="znResult"><option value=""></option><option value="Đúng">Đúng</option><option value="Sai">Sai</option><option value="Gần đúng">Gần đúng</option></select></div>
+            </div>
+
+            <div class="field"><label>Ghi chú nhanh</label><textarea id="quickNote"></textarea></div>
+
+            <div class="actions">
+              <button class="btn-primary" type="submit" id="saveViewBtn">Thêm view</button>
+              <button class="btn-secondary" type="button" onclick="resetViewForm()">Reset</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="status" id="status">Sẵn sàng.</div>
+      </aside>
+
+      <section class="panel">
+        <div class="toolbar">
+          <div>
+            <h2 id="tableTitle">Danh sách tin tức</h2>
+            <p class="sub" id="tableSub">Dữ liệu hiện có trên Supabase.</p>
+          </div>
+
+          <div class="actions">
+            <input class="search" id="searchInput" placeholder="Tìm kiếm..." />
+            <button class="btn-secondary" type="button" onclick="loadCurrentTab()">Refresh</button>
+          </div>
+        </div>
+
+        <div id="tableArea" class="table-wrap"></div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const SUPABASE_URL = 'https://ibwxzixwxfhkrtnatrvs.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_7i8PoAQto66tdXtTb9Lq0Q_2Pwpvclu';
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const ADMIN_USERNAME = 'admin';
+    const ADMIN_PASSWORD = '123456';
+    const AUTH_STORAGE_KEY = 'stavian_admin_logged_in';
+
+    const authScreen = document.getElementById('authScreen');
+    const adminApp = document.getElementById('adminApp');
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    const TABLES = {
+      news: 'metal_news',
+      view: 'market_views'
+    };
+
+    let currentTab = 'news';
+    let newsRows = [];
+    let viewRows = [];
+
+    const statusEl = document.getElementById('status');
+    const tableArea = document.getElementById('tableArea');
+    const tableTitle = document.getElementById('tableTitle');
+    const tableSub = document.getElementById('tableSub');
+    const searchInput = document.getElementById('searchInput');
+
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value;
+
+      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        sessionStorage.setItem(AUTH_STORAGE_KEY, 'true');
+        loginError.classList.remove('show');
+        showAdminApp();
+        return;
+      }
+
+      loginError.classList.add('show');
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      sessionStorage.removeItem(AUTH_STORAGE_KEY);
+      adminApp.classList.add('hidden');
+      authScreen.classList.remove('hidden');
+      document.getElementById('loginPassword').value = '';
+      statusEl.textContent = 'Đã đăng xuất.';
+    });
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        currentTab = btn.dataset.adminTab;
+        document.getElementById('newsFormPanel').classList.toggle('hidden', currentTab !== 'news');
+        document.getElementById('viewFormPanel').classList.toggle('hidden', currentTab !== 'view');
+        searchInput.value = '';
+        loadCurrentTab();
+      });
+    });
+
+    searchInput.addEventListener('input', renderCurrentTable);
+
+    document.getElementById('newsForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!requireAuth()) return;
+      const id = val('newsId');
+      const payload = getNewsFormPayload();
+
+      try {
+        statusEl.textContent = id ? 'Đang cập nhật tin tức...' : 'Đang thêm tin tức...';
+        const query = id
+          ? supabaseClient.from(TABLES.news).update(payload).eq('id', id)
+          : supabaseClient.from(TABLES.news).insert(payload);
+
+        const { error } = await query;
+        if (error) throw error;
+
+        statusEl.textContent = id ? 'Đã cập nhật tin tức.' : 'Đã thêm tin tức.';
+        resetNewsForm();
+        await loadCurrentTab();
+      } catch (err) {
+        statusEl.textContent = 'Lỗi: ' + err.message;
+      }
+    });
+
+    document.getElementById('viewForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!requireAuth()) return;
+      const id = val('viewId');
+      const payload = getViewFormPayload();
+
+      try {
+        statusEl.textContent = id ? 'Đang cập nhật view...' : 'Đang thêm view...';
+        const query = id
+          ? supabaseClient.from(TABLES.view).update(payload).eq('id', id)
+          : supabaseClient.from(TABLES.view).insert(payload);
+
+        const { error } = await query;
+        if (error) throw error;
+
+        statusEl.textContent = id ? 'Đã cập nhật view.' : 'Đã thêm view.';
+        resetViewForm();
+        await loadCurrentTab();
+      } catch (err) {
+        statusEl.textContent = 'Lỗi: ' + err.message;
+      }
+    });
+
+    function isAuthenticated() {
+      return sessionStorage.getItem(AUTH_STORAGE_KEY) === 'true';
+    }
+
+    function showAdminApp() {
+      authScreen.classList.add('hidden');
+      adminApp.classList.remove('hidden');
+      loadCurrentTab();
+    }
+
+    function requireAuth() {
+      if (isAuthenticated()) return true;
+      adminApp.classList.add('hidden');
+      authScreen.classList.remove('hidden');
+      return false;
+    }
+
+    function getNewsFormPayload() {
+      return {
+        news_date: val('newsDate') || null,
+        al_summary: val('alSummary'),
+        al_source: val('alSource'),
+        al_time: val('alTime'),
+        cu_summary: val('cuSummary'),
+        cu_source: val('cuSource'),
+        cu_time: val('cuTime'),
+        zn_summary: val('znSummary'),
+        zn_source: val('znSource'),
+        zn_time: val('znTime'),
+        updated_at: new Date().toISOString()
+      };
+    }
+
+    function getViewFormPayload() {
+      return {
+        meeting_date: val('meetingDate') || null,
+        meeting_time: val('meetingTime'),
+        member: val('member'),
+        al_price_zone: val('alPriceZone'),
+        al_direction: val('alDirection'),
+        cu_price_zone: val('cuPriceZone'),
+        cu_direction: val('cuDirection'),
+        zn_price_zone: val('znPriceZone'),
+        zn_direction: val('znDirection'),
+        summary_view: val('summaryView'),
+        time_frame: val('timeFrame'),
+        action_plan: val('actionPlan'),
+        al_result: val('alResult'),
+        cu_result: val('cuResult'),
+        zn_result: val('znResult'),
+        quick_note: val('quickNote'),
+        updated_at: new Date().toISOString()
+      };
+    }
+
+    async function loadCurrentTab() {
+      if (!requireAuth()) return;
+      if (currentTab === 'news') {
+        tableTitle.textContent = 'Danh sách tin tức kim loại';
+        tableSub.textContent = 'Bảng metal_news — có thể sửa/xóa từng dòng.';
+        await loadNewsAdminTable();
+      } else {
+        tableTitle.textContent = 'Danh sách view hàng ngày';
+        tableSub.textContent = 'Bảng market_views — có thể sửa/xóa từng dòng.';
+        await loadViewAdminTable();
+      }
+    }
+
+    async function loadNewsAdminTable() {
+      try {
+        statusEl.textContent = 'Đang tải metal_news...';
+        tableArea.innerHTML = '<table><tbody><tr><td>Đang tải dữ liệu...</td></tr></tbody></table>';
+
+        const { data, error } = await supabaseClient
+          .from(TABLES.news)
+          .select('*')
+          .order('news_date', { ascending: false })
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        newsRows = data || [];
+        statusEl.textContent = 'Đã tải metal_news: ' + newsRows.length + ' dòng.';
+        renderNewsTable();
+      } catch (err) {
+        statusEl.textContent = 'Lỗi tải metal_news: ' + err.message;
+        tableArea.innerHTML = '<table><tbody><tr><td>' + escapeHtml(err.message) + '</td></tr></tbody></table>';
+      }
+    }
+
+    async function loadViewAdminTable() {
+      try {
+        statusEl.textContent = 'Đang tải market_views...';
+        tableArea.innerHTML = '<table><tbody><tr><td>Đang tải dữ liệu...</td></tr></tbody></table>';
+
+        const { data, error } = await supabaseClient
+          .from(TABLES.view)
+          .select('*')
+          .order('meeting_date', { ascending: false, nullsFirst: false })
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        viewRows = data || [];
+        statusEl.textContent = 'Đã tải market_views: ' + viewRows.length + ' dòng.';
+        renderViewTable();
+      } catch (err) {
+        statusEl.textContent = 'Lỗi tải market_views: ' + err.message;
+        tableArea.innerHTML = '<table><tbody><tr><td>' + escapeHtml(err.message) + '</td></tr></tbody></table>';
+      }
+    }
+
+    function renderCurrentTable() {
+      if (currentTab === 'news') renderNewsTable();
+      else renderViewTable();
+    }
+
+    function renderNewsTable() {
+      const q = normalize(searchInput.value);
+      let rows = newsRows;
+
+      if (q) {
+        rows = rows.filter(row => normalize([
+          row.news_date,
+          row.al_summary, row.al_source, row.al_time,
+          row.cu_summary, row.cu_source, row.cu_time,
+          row.zn_summary, row.zn_source, row.zn_time
+        ].join(' ')).includes(q));
+      }
+
+      tableArea.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Ngày</th>
+              <th>Nhôm</th>
+              <th>Đồng</th>
+              <th>Kẽm</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(row => `
+              <tr>
+                <td><span class="pill">${escapeHtml(formatDateVN(row.news_date))}</span></td>
+                <td>${escapeHtml(row.al_summary || '')}<br><br><span class="pill">${escapeHtml(row.al_source || '-')}</span><span class="pill">${escapeHtml(row.al_time || '-')}</span></td>
+                <td>${escapeHtml(row.cu_summary || '')}<br><br><span class="pill">${escapeHtml(row.cu_source || '-')}</span><span class="pill">${escapeHtml(row.cu_time || '-')}</span></td>
+                <td>${escapeHtml(row.zn_summary || '')}<br><br><span class="pill">${escapeHtml(row.zn_source || '-')}</span><span class="pill">${escapeHtml(row.zn_time || '-')}</span></td>
+                <td>
+                  <button class="btn-secondary btn-small" onclick='editNews(${JSON.stringify(row).replace(/'/g, "&#039;")})'>Sửa</button>
+                  <button class="btn-danger btn-small" onclick="deleteRow('news', '${row.id}')">Xóa</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderViewTable() {
+      const q = normalize(searchInput.value);
+      let rows = viewRows;
+
+      if (q) {
+        rows = rows.filter(row => normalize(Object.values(row).join(' ')).includes(q));
+      }
+
+      tableArea.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Ngày</th>
+              <th>Thành viên</th>
+              <th>View tóm tắt</th>
+              <th>Action</th>
+              <th>Kết quả</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(row => `
+              <tr>
+                <td><span class="pill">${escapeHtml(formatDateVN(row.meeting_date))}</span><br><span class="pill">${escapeHtml(row.meeting_time || '-')}</span></td>
+                <td>${escapeHtml(row.member || '')}</td>
+                <td>
+                  <b>Nhôm:</b> ${escapeHtml(row.al_price_zone || '')} <span class="pill">${escapeHtml(row.al_direction || '-')}</span><br>
+                  <b>Đồng:</b> ${escapeHtml(row.cu_price_zone || '')} <span class="pill">${escapeHtml(row.cu_direction || '-')}</span><br>
+                  <b>Kẽm:</b> ${escapeHtml(row.zn_price_zone || '')} <span class="pill">${escapeHtml(row.zn_direction || '-')}</span><br><br>
+                  ${escapeHtml(row.summary_view || '')}
+                </td>
+                <td>${escapeHtml(row.action_plan || '')}<br><br><span class="pill">${escapeHtml(row.time_frame || '-')}</span></td>
+                <td>
+                  <span class="pill">Nhôm: ${escapeHtml(row.al_result || '-')}</span><br>
+                  <span class="pill">Đồng: ${escapeHtml(row.cu_result || '-')}</span><br>
+                  <span class="pill">Kẽm: ${escapeHtml(row.zn_result || '-')}</span><br><br>
+                  ${escapeHtml(row.quick_note || '')}
+                </td>
+                <td>
+                  <button class="btn-secondary btn-small" onclick='editView(${JSON.stringify(row).replace(/'/g, "&#039;")})'>Sửa</button>
+                  <button class="btn-danger btn-small" onclick="deleteRow('view', '${row.id}')">Xóa</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function editNews(row) {
+      document.getElementById('newsId').value = row.id || '';
+      document.getElementById('newsDate').value = row.news_date || '';
+      document.getElementById('alSummary').value = row.al_summary || '';
+      document.getElementById('alSource').value = row.al_source || '';
+      document.getElementById('alTime').value = row.al_time || '';
+      document.getElementById('cuSummary').value = row.cu_summary || '';
+      document.getElementById('cuSource').value = row.cu_source || '';
+      document.getElementById('cuTime').value = row.cu_time || '';
+      document.getElementById('znSummary').value = row.zn_summary || '';
+      document.getElementById('znSource').value = row.zn_source || '';
+      document.getElementById('znTime').value = row.zn_time || '';
+      document.getElementById('saveNewsBtn').textContent = 'Lưu chỉnh sửa';
+      statusEl.textContent = 'Đang sửa tin ngày ' + formatDateVN(row.news_date);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function editView(row) {
+      document.getElementById('viewId').value = row.id || '';
+      document.getElementById('meetingDate').value = row.meeting_date || '';
+      document.getElementById('meetingTime').value = row.meeting_time || '';
+      document.getElementById('member').value = row.member || '';
+      document.getElementById('alPriceZone').value = row.al_price_zone || '';
+      document.getElementById('alDirection').value = row.al_direction || '';
+      document.getElementById('cuPriceZone').value = row.cu_price_zone || '';
+      document.getElementById('cuDirection').value = row.cu_direction || '';
+      document.getElementById('znPriceZone').value = row.zn_price_zone || '';
+      document.getElementById('znDirection').value = row.zn_direction || '';
+      document.getElementById('summaryView').value = row.summary_view || '';
+      document.getElementById('timeFrame').value = row.time_frame || '';
+      document.getElementById('actionPlan').value = row.action_plan || '';
+      document.getElementById('alResult').value = row.al_result || '';
+      document.getElementById('cuResult').value = row.cu_result || '';
+      document.getElementById('znResult').value = row.zn_result || '';
+      document.getElementById('quickNote').value = row.quick_note || '';
+      document.getElementById('saveViewBtn').textContent = 'Lưu chỉnh sửa';
+      statusEl.textContent = 'Đang sửa view của ' + (row.member || 'dòng đã chọn');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function deleteRow(type, id) {
+      if (!requireAuth()) return;
+      const label = type === 'news' ? 'tin tức' : 'view';
+      const ok = confirm('Bạn chắc chắn muốn xóa ' + label + ' này?');
+      if (!ok) return;
+
+      try {
+        statusEl.textContent = 'Đang xóa...';
+        const table = TABLES[type];
+        const { error } = await supabaseClient.from(table).delete().eq('id', id);
+        if (error) throw error;
+        statusEl.textContent = 'Đã xóa.';
+        await loadCurrentTab();
+      } catch (err) {
+        statusEl.textContent = 'Lỗi xóa: ' + err.message;
+      }
+    }
+
+    function resetNewsForm() {
+      document.getElementById('newsForm').reset();
+      document.getElementById('newsId').value = '';
+      document.getElementById('saveNewsBtn').textContent = 'Thêm tin tức';
+      statusEl.textContent = 'Đã reset form Tin tức.';
+    }
+
+    function resetViewForm() {
+      document.getElementById('viewForm').reset();
+      document.getElementById('viewId').value = '';
+      document.getElementById('saveViewBtn').textContent = 'Thêm view';
+      statusEl.textContent = 'Đã reset form View.';
+    }
+
+    function val(id) { return document.getElementById(id).value.trim(); }
+
+    function formatDateVN(dateStr) {
+      if (!dateStr) return '';
+      const parts = String(dateStr).split('-');
+      if (parts.length !== 3) return String(dateStr);
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    function normalize(value) {
+      return String(value || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim();
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    if (isAuthenticated()) {
+      showAdminApp();
+    } else {
+      authScreen.classList.remove('hidden');
+      adminApp.classList.add('hidden');
+    }
+  </script>
+</body>
+
+</html>
