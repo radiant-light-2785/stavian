@@ -24,12 +24,12 @@
       padding: 0;
       min-height: 100%;
       font-family: Inter, Arial, sans-serif;
-      color: #0f172a;
+      color: #f8fafc;
     }
 
     body {
       overflow-x: hidden;
-      background: #f8fafc;
+      background: #000000;
     }
 
     .background-video {
@@ -64,13 +64,13 @@
       font-size: 22px;
       font-weight: 800;
       letter-spacing: -0.04em;
-      color: #0f172a;
-      background: rgba(255, 255, 255, 0.4);
+      color: #f8fafc;
+      background: transparent;
       padding: 6px 16px 6px 6px;
       border-radius: 999px;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .brand-mark {
@@ -85,42 +85,42 @@
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
-      background: rgba(255, 255, 255, 0.4);
+      background: transparent;
       padding: 6px;
       border-radius: 14px;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .tab-btn {
       border: 0;
       padding: 10px 16px;
       border-radius: 9px;
-      background: rgba(0, 0, 0, 0.05);
-      color: #475569;
+      background: transparent;
+      color: #cbd5e1;
       cursor: pointer;
       font-weight: 700;
       transition: 0.2s ease;
     }
 
     .tab-btn:hover {
-      background: rgba(0, 0, 0, 0.1);
+      background: transparent;
     }
 
     .tab-btn.active {
-      background: #000;
+      background: transparent;
       color: #fff;
     }
 
     .dashboard {
-      background: rgba(255, 255, 255, 0.65);
+      background: transparent;
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 10px;
       padding: 20px;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
       min-height: calc(100vh - 120px);
     }
 
@@ -135,14 +135,14 @@
 
     .title-block h1 {
       margin: 0;
-      color: #0f172a;
+      color: #f8fafc;
       font-size: 28px;
       letter-spacing: -0.04em;
     }
 
     .title-block p {
       margin: 6px 0 0;
-      color: #475569;
+      color: #cbd5e1;
       font-size: 14px;
     }
 
@@ -157,17 +157,17 @@
     .select {
       height: 40px;
       border-radius: 9px;
-      border: 1px solid rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       padding: 0 12px;
       font-size: 14px;
       outline: none;
-      background: rgba(255, 255, 255, 0.5);
-      color: #0f172a;
+      background: transparent;
+      color: #f8fafc;
       backdrop-filter: blur(10px);
     }
 
     .select option {
-      color: #0f172a;
+      color: #f8fafc;
     }
 
     .input {
@@ -179,14 +179,14 @@
       border: 0;
       border-radius: 9px;
       padding: 0 14px;
-      background: #2563eb;
+      background: #3b82f6;
       color: #fff;
       font-weight: 700;
       cursor: pointer;
     }
 
     .refresh-btn:hover {
-      background: #1d4ed8;
+      background: #2563eb;
     }
 
     .summary-grid {
@@ -197,16 +197,16 @@
     }
 
     .metric-card {
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 10px;
       padding: 14px;
-      background: rgba(255, 255, 255, 0.5);
+      background: transparent;
       backdrop-filter: blur(10px);
     }
 
     .metric-label {
       font-size: 12px;
-      color: #475569;
+      color: #cbd5e1;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -216,11 +216,11 @@
       margin-top: 6px;
       font-size: 16px;
       font-weight: 800;
-      color: #0f172a;
+      color: #f8fafc;
     }
 
     .bbc-news-container {
-      background: #141414;
+      background: transparent;
       color: #ffffff;
       padding: 24px;
       border-radius: 12px;
@@ -243,7 +243,7 @@
       font-size: 24px;
       font-weight: 800;
       color: #ffffff;
-      border-bottom: 2px solid #b80000;
+      border-bottom: 2px solid #ef4444;
       padding-bottom: 10px;
       margin: 0 0 10px 0;
     }
@@ -261,7 +261,7 @@
     }
 
     .bbc-card {
-      border-bottom: 1px solid #333333;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 16px;
     }
 
@@ -289,7 +289,7 @@
     .bbc-summary {
       font-size: 14px;
       line-height: 1.5;
-      color: #cccccc;
+      color: #cbd5e1;
       margin: 0 0 12px 0;
       white-space: pre-line;
     }
@@ -299,13 +299,13 @@
       flex-wrap: wrap;
       gap: 12px;
       font-size: 12px;
-      color: #888888;
+      color: #94a3b8;
       align-items: center;
     }
 
     .bbc-source {
       font-weight: 600;
-      color: #aaaaaa;
+      color: #e2e8f0;
     }
 
     .bbc-read-more {
@@ -313,34 +313,124 @@
       font-weight: 700;
       text-decoration: none;
       padding: 4px 8px;
-      border: 1px solid #555555;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 4px;
       transition: background 0.2s;
     }
 
     .bbc-read-more:hover {
-      background: #333333;
+      background: transparent;
+    }
+
+    .live-feeds-container {
+      margin-top: 20px;
+    }
+    .feed-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding: 14px;
+      background: transparent;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+    }
+    .live-feeds-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .feed-card {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 16px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+    .feed-card:hover {
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+      border-color: #3b82f6;
+    }
+    .feed-card.high-risk {
+      border-color: rgba(248, 113, 113, 0.5);
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .feed-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .feed-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #93c5fd;
+      text-decoration: none;
+      line-height: 1.4;
+    }
+    .feed-title:hover {
+      text-decoration: underline;
+    }
+    .feed-score {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .score-high { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border-color: rgba(248, 113, 113, 0.5); }
+    .score-med { background: rgba(245, 158, 11, 0.2); color: #fcd34d; border-color: rgba(251, 191, 36, 0.5); }
+    .score-low { background: transparent; color: #cbd5e1; border-color: rgba(255, 255, 255, 0.2); }
+    .feed-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+      align-items: center;
+      font-size: 12px;
+    }
+    .feed-badge {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: transparent;
+      border-radius: 999px;
+      padding: 4px 10px;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+    .feed-time {
+      color: #94a3b8;
+      font-weight: 500;
+    }
+    .feed-summary {
+      font-size: 14px;
+      color: #cbd5e1;
+      margin: 0;
+      line-height: 1.5;
     }
 
     .empty {
-      border: 1px dashed rgba(0, 0, 0, 0.15);
+      border: 1px dashed rgba(255, 255, 255, 0.2);
       border-radius: 10px;
       padding: 50px 18px;
       text-align: center;
-      color: #64748b;
+      color: #94a3b8;
       font-weight: 700;
-      background: rgba(255, 255, 255, 0.5);
+      background: transparent;
       backdrop-filter: blur(10px);
       line-height: 1.6;
     }
 
     .generic-table-wrap {
       overflow: auto;
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 10px;
-      background: rgba(255, 255, 255, 0.6);
+      background: transparent;
       backdrop-filter: blur(16px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 
     table {
@@ -351,13 +441,13 @@
 
     td,
     th {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-      border-right: 1px solid rgba(0, 0, 0, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
       padding: 14px;
       vertical-align: middle;
       font-size: 13.5px;
       white-space: pre-line;
-      color: #0f172a;
+      color: #f8fafc;
     }
 
     td:last-child,
@@ -366,16 +456,16 @@
     }
 
     tr:hover td {
-      background: rgba(0, 0, 0, 0.02);
+      background: transparent;
     }
 
     tr:first-child td,
     thead th {
-      background: rgba(255, 255, 255, 0.8);
-      color: #0284c7;
+      background: transparent;
+      color: #60a5fa;
       font-weight: 800;
       text-align: center;
-      border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.15);
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
@@ -392,81 +482,81 @@
     }
 
     .cb-green {
-      background: #d1fae5;
-      color: #065f46;
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
     }
 
     .cb-red {
-      background: #fee2e2;
-      color: #991b1b;
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
     }
 
     .cb-yellow {
-      background: #fef08a;
-      color: #854d0e;
+      background: rgba(234, 179, 8, 0.2);
+      color: #fde047;
     }
 
     .cb-blue {
-      background: #dbeafe;
-      color: #1e40af;
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
     }
 
     .cb-gray {
-      background: #f1f5f9;
-      color: #475569;
+      background: transparent;
+      color: #cbd5e1;
     }
 
     .text-green {
-      color: #059669;
+      color: #10b981;
       font-weight: 700;
     }
 
     .text-red {
-      color: #dc2626;
+      color: #ef4444;
       font-weight: 700;
     }
 
     .text-orange {
-      color: #d97706;
+      color: #f59e0b;
       font-weight: 700;
     }
 
     .col-al {
-      background: rgba(59, 130, 246, 0.15) !important;
+      background: rgba(59, 130, 246, 0.1) !important;
     }
 
     .col-cu {
-      background: rgba(249, 115, 22, 0.15) !important;
+      background: rgba(249, 115, 22, 0.1) !important;
     }
 
     .col-zn {
-      background: rgba(234, 179, 8, 0.15) !important;
+      background: rgba(234, 179, 8, 0.1) !important;
     }
 
     tr:hover td.col-al {
-      background: rgba(59, 130, 246, 0.25) !important;
+      background: rgba(59, 130, 246, 0.2) !important;
     }
 
     tr:hover td.col-cu {
-      background: rgba(249, 115, 22, 0.25) !important;
+      background: rgba(249, 115, 22, 0.2) !important;
     }
 
     tr:hover td.col-zn {
-      background: rgba(234, 179, 8, 0.25) !important;
+      background: rgba(234, 179, 8, 0.2) !important;
     }
 
     tr:first-child td.col-al {
-      background: rgba(59, 130, 246, 0.25) !important;
+      background: rgba(59, 130, 246, 0.2) !important;
       border-bottom: 2px solid rgba(59, 130, 246, 0.3) !important;
     }
 
     tr:first-child td.col-cu {
-      background: rgba(249, 115, 22, 0.25) !important;
+      background: rgba(249, 115, 22, 0.2) !important;
       border-bottom: 2px solid rgba(249, 115, 22, 0.3) !important;
     }
 
     tr:first-child td.col-zn {
-      background: rgba(234, 179, 8, 0.25) !important;
+      background: rgba(234, 179, 8, 0.2) !important;
       border-bottom: 2px solid rgba(234, 179, 8, 0.3) !important;
     }
 
@@ -475,8 +565,8 @@
       border-radius: 10px;
       padding: 32px 18px;
       text-align: center;
-      color: #991b1b;
-      background: rgba(254, 226, 226, 0.6);
+      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.1);
       font-weight: 700;
       line-height: 1.6;
     }
@@ -497,12 +587,246 @@
         min-width: 100%;
       }
     }
+
+    .desk-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 1024px) {
+      .desk-grid { grid-template-columns: 1fr; }
+    }
+    .desk-card {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      margin-bottom: 24px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .desk-card-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin: 0 0 4px 0;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .desk-card-desc {
+      font-size: 13px;
+      color: #94a3b8;
+      margin: 0 0 16px 0;
+      line-height: 1.5;
+    }
+    .desk-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .desk-tab {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: transparent;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #cbd5e1;
+    }
+    .desk-tab.active {
+      background: #3b82f6;
+      color: #fff;
+      border-color: #2563eb;
+    }
+    .desk-pill {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: transparent;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+    .source-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .source-grid { grid-template-columns: 1fr; }
+    }
+    .source-item {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: transparent;
+      border-radius: 12px;
+      padding: 16px;
+      transition: all 0.2s;
+    }
+    .source-item:hover { border-color: #60a5fa; }
+    .source-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .source-name {
+      font-weight: 700;
+      color: #f8fafc;
+      font-size: 14px;
+      line-height: 1.4;
+      margin: 0;
+    }
+    .source-priority {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+    .pri-high { background: rgba(239, 68, 68, 0.1); color: #fca5a5; border-color: rgba(248, 113, 113, 0.5); }
+    .pri-med { background: rgba(245, 158, 11, 0.1); color: #fcd34d; border-color: rgba(251, 191, 36, 0.5); }
+    .pri-low { background: #0f172a; color: #cbd5e1; border-color: rgba(255, 255, 255, 0.2); }
+    
+    .source-use { font-size: 13px; color: #cbd5e1; margin: 12px 0; line-height: 1.5; }
+    .source-mode { font-size: 11px; color: #94a3b8; margin-bottom: 12px; }
+    .source-actions { display: flex; gap: 8px; }
+    .source-btn {
+      flex: 1;
+      text-align: center;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-open { border: 1px solid rgba(255, 255, 255, 0.1); background: #0f172a; color: #f8fafc; }
+    .btn-open:hover { background: transparent; }
+    .btn-note { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: none; }
+    .btn-note:hover { background: rgba(59, 130, 246, 0.2); }
+
+    .workflow-item {
+      display: flex;
+      gap: 12px;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .wf-time {
+      flex-shrink: 0;
+      width: 80px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #93c5fd;
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4px 8px;
+    }
+    .wf-content { min-width: 0; }
+    .wf-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+    .wf-body { font-size: 13px; color: #cbd5e1; margin-bottom: 8px; line-height: 1.5; }
+    .wf-source { font-size: 11px; color: #94a3b8; }
+
+    .alert-rule {
+      border: 1px solid;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    .rule-red { background: rgba(239, 68, 68, 0.1); border-color: rgba(248, 113, 113, 0.5); color: #fca5a5; }
+    .rule-amber { background: rgba(245, 158, 11, 0.1); border-color: rgba(251, 191, 36, 0.5); color: #fcd34d; }
+    .rule-slate { background: #0f172a; border-color: rgba(255, 255, 255, 0.2); color: #cbd5e1; }
+    .rule-label { font-weight: 600; font-size: 13px; }
+    .rule-impact { font-size: 11px; margin-top: 4px; }
+
+    .checklist-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+    .checklist-item input { margin-top: 3px; }
+    .checklist-item.done span { text-decoration: line-through; color: #94a3b8; }
+
+    .reduced-item {
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .red-name { font-weight: 700; font-size: 13px; }
+    .red-action { font-size: 11px; font-weight: 600; color: #93c5fd; margin-top: 4px; }
+    .red-reason { font-size: 11px; color: #cbd5e1; margin-top: 4px; }
+
+    .desk-textarea {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #0f172a;
+      padding: 12px;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      resize: vertical;
+    }
+    .desk-textarea:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 2px rgba(96,165,250,0.2);
+    }
+    .desk-btn-primary {
+      width: 100%;
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    .desk-btn-primary:hover { background: #2563eb; }
+
+    .blink-dot {
+      width: 8px;
+      height: 8px;
+      background: #ef4444;
+      border-radius: 50%;
+      animation: blink 2s infinite;
+    }
+    .blink-card {
+      border-color: rgba(248, 113, 113, 0.5) !important;
+      animation: blink-card 2s infinite;
+    }
+    @keyframes blink { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0)} 50%{box-shadow:0 0 0 4px rgba(239,68,68,.5)} }
+    @keyframes blink-card { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0)} 50%{box-shadow:0 0 0 4px rgba(239,68,68,.5)} }
+    
+    .feed-container { max-height: 500px; overflow-y: auto; padding-right: 4px; }
+    .feed-container::-webkit-scrollbar { width: 6px; }
+    .feed-container::-webkit-scrollbar-track { background: transparent; }
+    .feed-container::-webkit-scrollbar-thumb { background: transparent; border-radius: 4px; }
+    
+    .flex-row-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
   </style>
 </head>
 
 <body>
-  <video class="background-video" autoplay loop muted playsinline
-    src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4"></video>
+  <!-- <video removed> -->
 
   <main class="page">
     <nav class="navbar">
@@ -517,6 +841,7 @@
         <button class="tab-btn active" data-sheet="News">Tin tức</button>
         <button class="tab-btn" data-sheet="View">View</button>
         <button class="tab-btn" data-sheet="Warehouse">Warehouse</button>
+        <button class="tab-btn" data-sheet="NewsUpdate">Cập nhật tin tức</button>
       </div>
     </nav>
 
@@ -571,6 +896,79 @@
     let currentSheet = 'News';
     let currentPayload = null;
 
+    const SOURCE_CATEGORIES = ['Tất cả','Luôn bật','Check hằng ngày','Check theo sự kiện','Check tuần/tháng','API public'];
+    let deskSourceCategory = 'Tất cả';
+    let deskSourceQuery = '';
+    let deskWorkflowType = 'day';
+
+    const SOURCES = [
+      {name:'Reuters/LSEG Pro - News Alert', priority:'Rất cao', group:'Luôn bật', use:'Nguồn chính để bắt tin mới nhất: Reuters Metals, tariff, supply disruption, strike, shutdown, smelter, China demand, macro.', frequency:'Luôn bật trong phiên', url:'https://www.lseg.com/en/reuters-news', mode:'Có sẵn trong tài khoản. Không tự redisplay full article nếu license không cho phép.'},
+      {name:'Reuters/LSEG Pro - LME data / warehouse / stocks / warrants', priority:'Rất cao', group:'Luôn bật', use:'Check giá LME, stocks, cancelled warrants, warehouse, spread, cash-3M khi có tin hoặc giá chạy.', frequency:'Trong phiên + khi giá biến động mạnh', url:'https://www.lseg.com/en/data-analytics/financial-data/commodities-data/lme-data', mode:'Nguồn chính nếu tài khoản có entitlement.'},
+      {name:'SMM / Shanghai Metals Market', priority:'Rất cao', group:'Check hằng ngày', use:'Physical China: spot premium, SHFE/LME inventory snapshot, import arbitrage, smelter/downstream demand.', frequency:'Sáng + trước phiên Âu/Mỹ', url:'https://www.metal.com/', mode:'Subscription/API risk. Nếu có entitlement trong LSEG thì xem trong LSEG.'},
+      {name:'Fastmarkets Base Metals', priority:'Cao', group:'Check hằng ngày', use:'Premium physical, trade flow, price assessment, supply disruption, market update cho Cu/Al/Zn.', frequency:'1-2 lần/ngày hoặc khi có alert', url:'https://www.fastmarkets.com/metals-and-mining/base-metals/', mode:'Subscription/API risk. Không scrape full content.'},
+      {name:'Macro Calendar: Forex Factory + CME FedWatch', priority:'Cao', group:'Check hằng ngày', use:'CPI, PPI, NFP, jobless claims, Fed speech; FedWatch để xem xác suất Fed sau dữ liệu.', frequency:'Mỗi sáng + 30 phút trước dữ liệu đỏ', url:'https://www.forexfactory.com/calendar', mode:'Manual. Mở FedWatch khi có CPI/PPI/NFP/FOMC.'},
+      {name:'Policy official: USTR + White House + Federal Register', priority:'Rất cao', group:'Check theo sự kiện', use:'Xác nhận tariff, Section 301/232, proclamation, ngày hiệu lực và phạm vi hàng hóa.', frequency:'Ngay khi LSEG báo Trump/tariff/sanction', url:'https://www.federalregister.gov/developers/documentation/api/v1', mode:'Federal Register có API public; USTR/White House chủ yếu mở xác nhận.'},
+      {name:'SHFE Official Weekly Data', priority:'Cao', group:'Check tuần/tháng', use:'Xác nhận tồn kho Trung Quốc chính thức cho Cu/Al/Zn, đặc biệt cuối tuần.', frequency:'Thứ Sáu hằng tuần', url:'https://www.shfe.com.cn/eng/reports/StatisticalData/WeeklyData/', mode:'Manual official.'},
+      {name:'Monthly official balance: ICSG + IAI + ILZSG', priority:'Trung bình-cao', group:'Check tuần/tháng', use:'Báo cáo nền cung cầu Đồng/Nhôm/Kẽm: refined balance, sản lượng, usage, stocks.', frequency:'Hàng tháng', url:'https://icsg.org/', mode:'Manual/monthly. Không dùng cho intraday.'},
+      {name:'Company IR / Mining official sources', priority:'Cao khi có sự kiện', group:'Check theo sự kiện', use:'Xác nhận strike, shutdown, force majeure, output cut của Codelco, Freeport, BHP, Rio, Glencore, Alcoa, Teck, Nexa, Korea Zinc.', frequency:'Chỉ mở khi Reuters/LSEG báo sự kiện supply', url:'#', mode:'Manual event verification.'},
+      {name:'GDELT + Federal Register API public', priority:'Phụ trợ', group:'API public', use:'Nguồn public để web local thử kéo headline/tariff/legal docs mà không đụng license LSEG.', frequency:'Kéo theo nút cập nhật live feed', url:'https://www.gdeltproject.org/', mode:'Free public API; chất lượng thấp hơn Reuters/LSEG.'}
+    ];
+
+    const REDUCED = [
+      {name:'Westmetall', action:'Bỏ khỏi checklist hằng ngày', reason:'LSEG đã có LME data; Westmetall chỉ dùng backup khi LSEG lỗi/chậm hoặc cần đối chiếu nhanh.'},
+      {name:'LME Official website', action:'Giảm tần suất', reason:'Không cần mở liên tục nếu LSEG có warehouse/stocks. Chỉ dùng cuối ngày hoặc khi cần official backup.'},
+      {name:'LME Sanctions & Tariffs riêng', action:'Gom vào Policy official', reason:'Chỉ mở khi có tin sanction/tariff từ LSEG; không cần card riêng.'},
+      {name:'BIS / U.S. Commerce', action:'Gom vào Policy official', reason:'Chỉ cần khi tin Section 232 xuất hiện; không cần check mỗi ngày.'},
+      {name:'NBS China Official', action:'Gom vào Macro calendar', reason:'Chỉ theo lịch công bố lớn; không cần mở nếu không có PMI/production/property data.'},
+      {name:'Cochilco Chile', action:'Gom vào Company IR / Mining official', reason:'Chỉ mở khi có tin Chile/Codelco/output/strike; không cần theo dõi riêng hằng ngày.'},
+      {name:'ICSG, IAI, ILZSG', action:'Gom thành Monthly official balance', reason:'Dùng cho báo cáo tháng, không phải nguồn alert intraday.'}
+    ];
+
+    const ALERT_RULES = [
+      {label:'Tariff / Sanction / Trump / USTR / White House', impact:'Báo ngay', color:'red'},
+      {label:'Strike / Shutdown / Force majeure / Export ban', impact:'Báo ngay', color:'red'},
+      {label:'LME stocks / cancelled warrants / backwardation biến động mạnh', impact:'Báo ngay', color:'red'},
+      {label:'China stimulus / PMI / property / import arbitrage bất thường', impact:'Báo nhanh', color:'amber'},
+      {label:'CPI / PPI / NFP / Fed làm DXY/yields chạy mạnh', impact:'Báo nhanh', color:'amber'},
+      {label:'Rumor từ X/social chưa xác nhận', impact:'Chỉ báo nếu có phản ứng giá; gắn Unconfirmed', color:'slate'},
+      {label:'Forecast / Opinion / Technicals / Market Talk', impact:'Không báo nếu không có event mới', color:'slate'}
+    ];
+
+    const WORKFLOWS = {
+      day: [
+        {time:'Đầu ngày', title:'Quét LSEG overnight', body:'Mở Reuters/LSEG Pro News Alert: lọc tin mới về Cu/Al/Zn, tariff, supply disruption, strike, shutdown, smelter, China demand, macro.', source:'LSEG Reuters News'},
+        {time:'Đầu ngày', title:'Check lịch dữ liệu đỏ', body:'CPI, PPI, NFP, jobless claims, Fed speech, China PMI/industrial production. Đánh dấu giờ ra tin.', source:'Forex Factory + LSEG Calendar'},
+        {time:'Trong phiên', title:'Theo dõi alert realtime', body:'Báo team khi headline là Reuters/Metals/Official và có event thật. Bỏ qua forecast/opinion/market talk nếu không có tin mới.', source:'LSEG Alert'},
+        {time:'Khi giá chạy mạnh', title:'Xác nhận bằng LME data', body:'Check stocks, cancelled warrants, spread, cash-3M, warehouse và SHFE nếu liên quan China.', source:'LSEG LME Data'},
+        {time:'Trước phiên Mỹ', title:'Check USD/Fed risk', body:'DXY, US yields, CME FedWatch, dữ liệu Mỹ sắp ra.', source:'LSEG + CME FedWatch'},
+        {time:'Cuối ngày', title:'Ghi 3-5 tin quan trọng', body:'Lưu headline, tác động, phản ứng giá, link nguồn, tin cần follow-up.', source:'Dashboard note'}
+      ],
+      week: [
+        {time:'Thứ Sáu', title:'Check SHFE inventory tuần', body:'Cu/Al/Zn stocks; so với tuần trước và với biến động LME/SHFE.', source:'SHFE/SMM/LSEG'},
+        {time:'Cuối tuần', title:'Tổng hợp weekly market', body:'Giá LME, stocks, cancelled warrants, SHFE stocks, physical premium, DXY, macro.', source:'LSEG + SMM/Fastmarkets'},
+        {time:'Cuối tuần', title:'Rà policy còn treo', body:'USTR, White House, Federal Register nếu tuần có tin tariff/sanction.', source:'Official policy sources'},
+        {time:'Cuối tuần', title:'Tối ưu LSEG alert', body:'Alert nào bắn rác thì chỉnh source/topic/keyword; thêm zinc alert riêng nếu thiếu kẽm.', source:'LSEG Manage Alerts'},
+        {time:'Đầu tuần', title:'Lập event calendar', body:'CPI/PPI/NFP/FOMC/China PMI/Industrial Production/PMI các vùng.', source:'Forex Factory + LSEG Calendar'}
+      ],
+      month: [
+        {time:'Hàng tháng', title:'Review cung cầu Đồng', body:'Mine/refined copper balance, production/usage, forecast.', source:'ICSG'},
+        {time:'Hàng tháng', title:'Review sản lượng Nhôm', body:'Primary aluminium, alumina production, regional production.', source:'IAI'},
+        {time:'Hàng tháng', title:'Review cung cầu Kẽm', body:'Mine output, refined zinc, usage, stocks.', source:'ILZSG'},
+        {time:'Hàng tháng', title:'Review major miners/smelters', body:'Output guidance, maintenance, strike, force majeure, smelter shutdown.', source:'Company IR + LSEG'},
+        {time:'Hàng tháng', title:'Đánh giá hiệu quả alert', body:'Tin nào làm giá chạy thật, tin nào nhiễu; quyết định cắt/bổ sung nguồn.', source:'LSEG + internal log'}
+      ]
+    };
+
+    const CHECKLIST = [
+      'LSEG News Alert đang ACTIVE',
+      'Check overnight Reuters Metals headlines',
+      'Check lịch dữ liệu đỏ hôm nay',
+      'Check LME warehouse/stocks/cancelled warrants trên LSEG nếu giá chạy',
+      'Check SMM/Fastmarkets nếu cần physical China/premium',
+      'Check USTR/White House/Federal Register nếu có tin tariff',
+      'Ghi lại 3-5 tin quan trọng nhất trong ngày'
+    ];
+
     const contentArea = document.getElementById('contentArea');
     const searchInput = document.getElementById('searchInput');
     const dateFilter = document.getElementById('dateFilter');
@@ -600,8 +998,10 @@
           currentPayload = await loadNewsPayload();
         } else if (sheetName === 'View') {
           currentPayload = await loadViewPayload();
-        } else {
+        } else if (sheetName === 'Warehouse') {
           currentPayload = await loadWarehousePayload();
+        } else if (sheetName === 'NewsUpdate') {
+          currentPayload = await loadNewsUpdatePayload();
         }
 
         renderCurrentPayload();
@@ -611,7 +1011,7 @@
     }
 
     function setLoading(sheetName) {
-      contentArea.innerHTML = '<div class="empty">Đang tải dữ liệu từ Supabase...</div>';
+      contentArea.innerHTML = '<div class="empty">Đang tải dữ liệu...</div>';
       metricUpdated.textContent = '-';
 
       if (sheetName === 'News') {
@@ -624,10 +1024,15 @@
         pageSubtitle.textContent = 'Dữ liệu view thị trường lấy từ bảng market_views.';
         searchInput.placeholder = 'Tìm kiếm trong bảng View...';
         dateFilter.style.display = 'none';
-      } else {
+      } else if (sheetName === 'Warehouse') {
         pageTitle.textContent = 'Warehouse';
         pageSubtitle.textContent = 'Dữ liệu tồn kho lấy từ bảng warehouse_records nếu đã tạo.';
         searchInput.placeholder = 'Tìm kiếm trong bảng Warehouse...';
+        dateFilter.style.display = 'none';
+      } else if (sheetName === 'NewsUpdate') {
+        pageTitle.textContent = 'Cập nhật tin tức live';
+        pageSubtitle.textContent = 'Live feed từ Federal Register, GDELT và nguồn public khác.';
+        searchInput.placeholder = 'Tìm kiếm feed...';
         dateFilter.style.display = 'none';
       }
     }
@@ -754,6 +1159,8 @@
 
       if (currentPayload.sheet === 'News') {
         renderNews(currentPayload);
+      } else if (currentPayload.sheet === 'NewsUpdate') {
+        renderNewsUpdate(currentPayload);
       } else {
         renderGenericTable(currentPayload);
       }
@@ -988,11 +1395,350 @@
       const message = error && error.message ? error.message : (error.error || 'Không rõ lỗi.');
       contentArea.innerHTML = `
         <div class="error-box">
-          Không tải được dữ liệu Supabase:<br/>
-          ${escapeHtml(message)}<br/><br/>
-          Kiểm tra lại: Project URL, Publishable key, tên bảng và RLS policy.
+          Không tải được dữ liệu:<br/>
+          ${escapeHtml(message)}
         </div>
       `;
+    }
+
+    let liveFeedsCategory = 'Tất cả';
+
+    function scoreFeed(item){
+      const t=(item.title+' '+(item.summary||'')).toLowerCase(); let score=0, cat='Watch';
+      if(/tariff|sanction|section 232|section 301|white house|ustr|trump/.test(t)){score+=5; cat='Policy';}
+      if(/strike|shutdown|force majeure|export ban|curtailment|smelter|mine|refinery|output|production/.test(t)){score+=4; cat='Supply';}
+      if(/inventory|inventories|stocks|warehouse|warrant|backwardation|contango|cash-3m/.test(t)){score+=3; cat='Inventory';}
+      if(/china|shfe|smm|premium|arbitrage|property|stimulus|pmi/.test(t)){score+=2; cat='China';}
+      if(/fed|powell|cpi|ppi|payrolls|dxy|dollar|yields|inflation/.test(t)){score+=2; cat='Macro';}
+      if(/forecast|opinion|technical|market talk|preview/.test(t)){score-=3;}
+      return {score, category:cat};
+    }
+
+    async function fetchFederalRegister(){
+      const url='https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=(copper%20OR%20aluminum%20OR%20aluminium%20OR%20zinc%20OR%20tariff%20OR%20section%20232%20OR%20section%20301)&order=newest&per_page=5';
+      const res=await fetch(url); if(!res.ok) throw new Error('Federal Register API lỗi');
+      const data=await res.json();
+      return (data.results||[]).map(d=>{ const scored=scoreFeed({title:d.title, summary:d.abstract||''}); return {title:d.title, source:'Federal Register', time:d.publication_date, url:d.html_url, category:scored.category, score:scored.score, summary:d.abstract || d.type || 'Official legal document'}; });
+    }
+
+    async function fetchGdelt(){
+      const query=encodeURIComponent('(copper OR aluminium OR aluminum OR zinc) (LME OR smelter OR mine OR tariff OR China OR inventory OR strike)');
+      const url=`https://api.gdeltproject.org/api/v2/doc/doc?query=${query}&mode=artlist&maxrecords=10&format=json&sort=hybridrel`;
+      const res=await fetch(url); if(!res.ok) throw new Error('GDELT API lỗi');
+      const data=await res.json();
+      return (data.articles||[]).map(a=>{ const scored=scoreFeed({title:a.title, summary:a.seendate}); return {title:a.title, source:'GDELT', time:a.seendate || 'N/A', url:a.url, category:scored.category, score:scored.score, summary:'Public web scan.'}; });
+    }
+
+    function mockCoreFeed(){
+      return [
+        {title:'LSEG alert placeholder: Reuters Metals headline sẽ được nhập/copy thủ công theo license', source:'LSEG Pro manual', time:new Date().toLocaleTimeString('vi-VN'), url:'https://www.lseg.com/en/reuters-news', category:'Watch', score:5, summary:'Không tự gọi LSEG API trong file local để tránh license/redistribution.'},
+        {title:'Mô phỏng: LME copper stocks move sharply; check cancelled warrants and cash-3M spread', source:'Workflow reminder', time:'Live check', url:'https://www.lme.com/market-data/reports-and-data', category:'Inventory', score:6, summary:'Nếu có giá chạy mạnh, mở LSEG LME data trước, LME official chỉ làm backup.'},
+        {title:'Mô phỏng: China physical premium changes; check SMM/Fastmarkets before Europe/US session', source:'Workflow reminder', time:'Live check', url:'https://www.metal.com/', category:'China', score:5, summary:'Physical China là nguồn ngoài còn cần giữ hằng ngày.'}
+      ];
+    }
+
+    async function loadNewsUpdatePayload() {
+      let results=[];
+      try{ 
+        const [fr, gd] = await Promise.allSettled([fetchFederalRegister(), fetchGdelt()]); 
+        if(fr.status==='fulfilled') results.push(...fr.value); 
+        if(gd.status==='fulfilled') results.push(...gd.value); 
+      } catch(e){}
+      
+      results.push(...mockCoreFeed());
+      const liveFeeds = results.sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,25);
+      
+      return {
+        success: true,
+        sheet: 'NewsUpdate',
+        updatedAt: new Date().toLocaleString('vi-VN'),
+        count: liveFeeds.length,
+        feeds: liveFeeds
+      };
+    }
+
+    function renderNewsUpdate(payload) {
+      const isFirstRender = !document.getElementById('newsDeskContainer');
+      
+      if (isFirstRender) {
+        contentArea.innerHTML = `
+          <div id="newsDeskContainer" class="desk-grid">
+            <div class="desk-main">
+              <!-- Nguồn đọc -->
+              <div class="desk-card">
+                <div class="flex-row-between">
+                  <div>
+                    <h2 class="desk-card-title">Nguồn đọc đã rút gọn</h2>
+                    <p class="desk-card-desc">Ưu tiên nguồn mở hằng ngày. Nguồn giảm/bỏ gom riêng tránh rối.</p>
+                  </div>
+                  <input id="deskSourceSearch" class="input" style="width:250px" placeholder="Tìm nguồn, mục đích..." oninput="deskSourceQuery=this.value; renderDeskSources();" />
+                </div>
+                <div class="desk-tabs" id="deskSourceTabs"></div>
+                <div id="deskSourceGrid" class="source-grid"></div>
+              </div>
+
+              <!-- Workflow -->
+              <div class="desk-card">
+                <div class="flex-row-between">
+                  <div>
+                    <h2 class="desk-card-title">Workflow cập nhật tin</h2>
+                    <p class="desk-card-desc">Chọn theo ngày, tuần hoặc tháng để biết đúng việc cần làm.</p>
+                  </div>
+                  <select id="deskWorkflowSelect" class="select" onchange="deskWorkflowType=this.value; renderDeskWorkflows();">
+                    <option value="day">Theo ngày</option>
+                    <option value="week">Theo tuần</option>
+                    <option value="month">Theo tháng</option>
+                  </select>
+                </div>
+                <div id="deskWorkflowList"></div>
+              </div>
+
+              <!-- Live Feeds -->
+              <div class="desk-card">
+                <div class="flex-row-between">
+                  <div>
+                    <h2 class="desk-card-title"><div class="blink-dot"></div> Live feed API/mô phỏng</h2>
+                    <p class="desk-card-desc">Không kéo full article LSEG/SMM để tránh license. Dùng public API và dữ liệu mô phỏng.</p>
+                  </div>
+                  <select id="deskFeedCategory" class="select" onchange="liveFeedsCategory=this.value; updateDeskFeeds();">
+                    <option value="Tất cả">Tất cả</option>
+                    <option value="Policy">Policy</option>
+                    <option value="Supply">Supply</option>
+                    <option value="Inventory">Inventory</option>
+                    <option value="China">China</option>
+                    <option value="Macro">Macro</option>
+                    <option value="Watch">Watch</option>
+                  </select>
+                </div>
+                <div id="deskFeedList" class="feed-container live-feeds-list"></div>
+              </div>
+              
+              <!-- Reduced -->
+              <div class="desk-card">
+                <h2 class="desk-card-title">Nguồn đã giảm hoặc bỏ</h2>
+                <p class="desk-card-desc">Không xoá khỏi tư duy phân tích, nhưng không cần mở mỗi ngày.</p>
+                <div id="deskReducedGrid" class="source-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));"></div>
+              </div>
+            </div>
+
+            <div class="desk-sidebar">
+              <!-- Alerts -->
+              <div class="desk-card">
+                <h2 class="desk-card-title">Cảnh báo cần báo ngay</h2>
+                <p class="desk-card-desc">Dùng quyết định có báo phái sinh ngay không.</p>
+                <div id="deskAlerts"></div>
+              </div>
+
+              <!-- Checklist -->
+              <div class="desk-card">
+                <div class="flex-row-between">
+                  <div>
+                    <h2 class="desk-card-title">Checklist hôm nay</h2>
+                    <p class="desk-card-desc">Đã rút gọn, tự reset theo ngày.</p>
+                  </div>
+                  <button onclick="deskResetChecklist()" style="background:none; border:none; color:#2563eb; cursor:pointer; font-weight:700; font-size:12px;">Reset</button>
+                </div>
+                <div id="deskChecklist"></div>
+              </div>
+
+              <!-- Mẫu báo -->
+              <div class="desk-card">
+                <h2 class="desk-card-title">Mẫu báo nhanh</h2>
+                <p class="desk-card-desc">Copy mẫu này khi có headline quan trọng.</p>
+                <textarea id="deskTemplateText" class="desk-textarea" rows="6">[METALS ALERT - CU/AL/ZN]
+Nguồn: Reuters/LSEG / Official
+Tin: ...
+Nhóm tác động: Tariff / Supply / Inventory / China / Macro / Physical
+Tác động nhanh: Bullish / Bearish / Watch
+Cần check thêm: Warehouse / DXY / SHFE / SMM
+Mức độ tin cậy: Official / Confirmed / Unconfirmed</textarea>
+                <button onclick="deskCopyTemplate()" class="desk-btn-primary">Copy mẫu</button>
+              </div>
+
+              <!-- Ghi chú -->
+              <div class="desk-card">
+                <h2 class="desk-card-title">Ghi chú analyst</h2>
+                <p class="desk-card-desc">Lưu local trên trình duyệt.</p>
+                <textarea id="deskNotes" class="desk-textarea" rows="10" placeholder="Ghi nhận tin hôm nay..."></textarea>
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('deskNotes').value = localStorage.getItem('stavian_desk_notes') || '';
+        document.getElementById('deskNotes').addEventListener('input', e => localStorage.setItem('stavian_desk_notes', e.target.value));
+
+        renderDeskSourceTabs();
+        renderDeskSources();
+        renderDeskWorkflows();
+        renderDeskAlerts();
+        renderDeskChecklist();
+        renderDeskReduced();
+      }
+
+      window.deskCurrentFeeds = payload.feeds || [];
+      if (document.getElementById('deskFeedCategory') && liveFeedsCategory) {
+        document.getElementById('deskFeedCategory').value = liveFeedsCategory;
+      }
+      updateDeskFeeds();
+    }
+
+    function updateDeskFeeds() {
+      const query = normalize(searchInput.value);
+      const catBox = document.getElementById('deskFeedCategory');
+      const cat = catBox ? catBox.value : liveFeedsCategory;
+      
+      const feeds = window.deskCurrentFeeds || [];
+      const filtered = feeds.filter(f => {
+        if (cat !== 'Tất cả' && f.category !== cat) return false;
+        if (!query) return true;
+        const text = normalize([f.title, f.summary, f.source, f.category].join(' '));
+        return text.includes(query);
+      });
+
+      const box = document.getElementById('deskFeedList');
+      if (!box) return;
+
+      if (!filtered.length) {
+        box.innerHTML = '<div class="empty" style="padding:20px;">Không có feed phù hợp.</div>';
+        return;
+      }
+
+      box.innerHTML = filtered.map(f => {
+        const isHighRisk = f.score >= 5;
+        const scoreClass = f.score >= 5 ? 'high' : (f.score >= 3 ? 'med' : 'low');
+        const blinkClass = f.score >= 7 ? 'blink-card' : '';
+        return `<article class="feed-card ${blinkClass} ${isHighRisk ? 'high-risk' : ''}" style="margin-bottom:12px;">
+                 <div class="feed-header">
+                   <a href="${escapeHtml(f.url)}" target="_blank" class="feed-title">${escapeHtml(f.title)}</a>
+                   <span class="feed-score score-${scoreClass}">Score ${f.score}</span>
+                 </div>
+                 <div class="feed-meta">
+                   <span class="feed-badge">${escapeHtml(f.source)}</span>
+                   <span class="feed-badge">${escapeHtml(f.category)}</span>
+                   <span class="feed-time">${escapeHtml(f.time)}</span>
+                 </div>
+                 <p class="feed-summary">${escapeHtml(f.summary || '')}</p>
+               </article>`;
+      }).join('');
+    }
+
+    function renderDeskSourceTabs() {
+      const box = document.getElementById('deskSourceTabs');
+      if (!box) return;
+      box.innerHTML = SOURCE_CATEGORIES.map(c => 
+        `<button class="desk-tab ${c === deskSourceCategory ? 'active' : ''}" onclick="deskSourceCategory='${c}'; renderDeskSourceTabs(); renderDeskSources();">${c}</button>`
+      ).join('');
+    }
+
+    function renderDeskSources() {
+      const box = document.getElementById('deskSourceGrid');
+      if (!box) return;
+      const q = normalize(deskSourceQuery);
+      const data = SOURCES.filter(s => (deskSourceCategory === 'Tất cả' || s.group === deskSourceCategory) && normalize([s.name,s.use,s.frequency,s.group,s.mode].join(' ')).includes(q));
+      
+      box.innerHTML = data.map(s => {
+        const pClass = s.priority.includes('Rất cao') ? 'pri-high' : s.priority.includes('Cao') ? 'pri-med' : 'pri-low';
+        return `<div class="source-item">
+          <div class="source-header">
+            <h3 class="source-name">${escapeHtml(s.name)}</h3>
+            <span class="source-priority ${pClass}">${escapeHtml(s.priority)}</span>
+          </div>
+          <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;">
+            <span class="desk-pill">${escapeHtml(s.group)}</span>
+            <span class="desk-pill">${escapeHtml(s.frequency)}</span>
+          </div>
+          <p class="source-use">${escapeHtml(s.use)}</p>
+          <p class="source-mode"><b>API/License:</b> ${escapeHtml(s.mode)}</p>
+          <div class="source-actions">
+            <a href="${escapeHtml(s.url)}" target="_blank" class="source-btn btn-open">Mở nguồn</a>
+            <button onclick="deskAddNote('${escapeHtml(s.name).replace(/'/g, "\\'")}')" class="source-btn btn-note">Ghi chú</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderDeskWorkflows() {
+      const box = document.getElementById('deskWorkflowList');
+      if (!box) return;
+      box.innerHTML = WORKFLOWS[deskWorkflowType].map((r, idx) => 
+        `<div class="workflow-item">
+          <div class="wf-time">${escapeHtml(r.time)}</div>
+          <div class="wf-content">
+            <div class="wf-title">${idx + 1}. ${escapeHtml(r.title)}</div>
+            <div class="wf-body">${escapeHtml(r.body)}</div>
+            <div class="wf-source"><b>Nguồn:</b> ${escapeHtml(r.source)}</div>
+          </div>
+        </div>`
+      ).join('');
+    }
+
+    function renderDeskAlerts() {
+      const box = document.getElementById('deskAlerts');
+      if (!box) return;
+      box.innerHTML = ALERT_RULES.map(r => {
+        const cls = r.color === 'red' ? 'rule-red' : r.color === 'amber' ? 'rule-amber' : 'rule-slate';
+        return `<div class="alert-rule ${cls}">
+          <div class="rule-label">${escapeHtml(r.label)}</div>
+          <div class="rule-impact">${escapeHtml(r.impact)}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function deskChecklistState() {
+      const key = 'stavian_desk_checklist_' + new Date().toISOString().slice(0,10);
+      return { key, data: JSON.parse(localStorage.getItem(key) || '{}') };
+    }
+
+    function renderDeskChecklist() {
+      const box = document.getElementById('deskChecklist');
+      if (!box) return;
+      const { data } = deskChecklistState();
+      box.innerHTML = CHECKLIST.map((t, i) => 
+        `<label class="checklist-item ${data[i] ? 'done' : ''}">
+          <input type="checkbox" ${data[i] ? 'checked' : ''} onchange="deskToggleChecklist(${i}, this.checked)">
+          <span>${escapeHtml(t)}</span>
+        </label>`
+      ).join('');
+    }
+
+    function deskToggleChecklist(i, val) {
+      const s = deskChecklistState();
+      s.data[i] = val;
+      localStorage.setItem(s.key, JSON.stringify(s.data));
+      renderDeskChecklist();
+    }
+
+    function deskResetChecklist() {
+      const s = deskChecklistState();
+      localStorage.removeItem(s.key);
+      renderDeskChecklist();
+    }
+
+    function renderDeskReduced() {
+      const box = document.getElementById('deskReducedGrid');
+      if (!box) return;
+      box.innerHTML = REDUCED.map(s => 
+        `<div class="reduced-item">
+          <div class="red-name">${escapeHtml(s.name)}</div>
+          <div class="red-action">${escapeHtml(s.action)}</div>
+          <div class="red-reason">${escapeHtml(s.reason)}</div>
+        </div>`
+      ).join('');
+    }
+
+    function deskAddNote(name) {
+      const ta = document.getElementById('deskNotes');
+      if (!ta) return;
+      ta.value += '\\n[' + new Date().toLocaleString('vi-VN') + '] Cần check nguồn: ' + name + '\\n';
+      localStorage.setItem('stavian_desk_notes', ta.value);
+    }
+
+    function deskCopyTemplate() {
+      const el = document.getElementById('deskTemplateText');
+      if (!el) return;
+      navigator.clipboard.writeText(el.value);
+      alert('Đã copy mẫu báo team!');
     }
 
               function formatDateVN(dateStr) {
