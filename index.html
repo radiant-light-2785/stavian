@@ -928,6 +928,14 @@
     #reportArea .hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
     @media (max-width: 900px) { #reportArea .top { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 560px) { #reportArea .top { grid-template-columns: 1fr; } }
+    /* Excel-like cell selection styles */
+    td.selected, th.selected {
+      background-color: #e6f2ff !important;
+      outline: 1px solid #1d766f;
+    }
+    table {
+      user-select: none; /* We will handle selection manually */
+    }
   </style>
 </head>
 
@@ -995,6 +1003,53 @@
         <input id="feeMt" type="number" value="0.572" step="0.001" min="0" onchange="renderClosedOutput()"/>
         <span>USD/MT&nbsp;·&nbsp;1 lot&nbsp;25T</span>
       </div>
+    </div>
+    <div class="box" style="margin-bottom:0">
+      <label>Cấu hình AI API</label>
+      <select id="aiProvider" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; margin-bottom: 4px;">
+        <option value="gemini">Gemini (Google) - Miễn phí</option>
+        <option value="openai">OpenAI Compatible (DeepSeek, ChatGPT, OpenRouter...)</option>
+        <option value="claude">Claude (Anthropic)</option>
+      </select>
+      <input id="aiBaseUrl" type="text" placeholder="Base URL (VD: https://api.deepseek.com/v1) - Bỏ trống để mặc định" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 4px; display: none;" />
+      <input id="aiModel" type="text" placeholder="Tên Model (VD: gemini-2.0-flash-exp, gemini-1.5-pro) - Bỏ trống để mặc định" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 4px;" />
+      <input id="geminiApiKey" type="password" placeholder="Nhập API Key vào đây..." style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 4px;" />
+      <button onclick="saveAiConfig()" class="btn" style="width: 100%; margin-top: 4px;">Lưu Cấu Hình</button>
+      <div id="aiHint" style="font-size: 12px; color: #666; margin-top: 8px;">Lưu ý: API phải hỗ trợ đọc ảnh (Vision). DeepSeek gốc hiện chưa hỗ trợ đọc ảnh, hãy dùng Gemini (miễn phí) hoặc OpenRouter.</div>
+      
+      <div style="background: #f4faf9; border: 1px dashed #1d766f; padding: 10px; border-radius: 4px; margin-top: 12px; font-size: 13px; line-height: 1.5;">
+        <strong style="color: #1d766f;">💡 Hướng dẫn cấu hình chuẩn:</strong><br>
+        <b>Cấu Hình:</b> Gemini<br>
+        <b>Tên Model:</b> gemini-2.5-flash-lite
+      </div>
+
+      <script>
+        document.getElementById('aiProvider').value = localStorage.getItem('stavian_ai_provider') || 'gemini';
+        document.getElementById('aiBaseUrl').value = localStorage.getItem('stavian_ai_base_url') || '';
+        let savedModel = localStorage.getItem('stavian_ai_model');
+        if (!savedModel || savedModel.includes('preview') || savedModel.includes('exp') || savedModel === 'gemini-1.5-flash') {
+            savedModel = 'gemini-2.5-flash-lite';
+        }
+        document.getElementById('aiModel').value = savedModel;
+        
+        let savedKey = localStorage.getItem('stavian_gemini_api_key') || '';
+        document.getElementById('geminiApiKey').value = savedKey;
+        
+        function toggleAiFields() {
+          const p = document.getElementById('aiProvider').value;
+          document.getElementById('aiBaseUrl').style.display = (p === 'openai' || p === 'claude') ? 'block' : 'none';
+        }
+        document.getElementById('aiProvider').addEventListener('change', toggleAiFields);
+        toggleAiFields();
+
+        function saveAiConfig() {
+          localStorage.setItem('stavian_ai_provider', document.getElementById('aiProvider').value);
+          localStorage.setItem('stavian_ai_base_url', document.getElementById('aiBaseUrl').value);
+          localStorage.setItem('stavian_ai_model', document.getElementById('aiModel').value);
+          localStorage.setItem('stavian_gemini_api_key', document.getElementById('geminiApiKey').value);
+          alert('Đã lưu cấu hình AI!');
+        }
+      </script>
     </div>
     <div class="box" style="margin-bottom:0">
       <label>📸 Ảnh vị thế đang có — tab "Trạng thái"</label>
@@ -1996,31 +2051,140 @@ function getMediaType(file) {
   return 'image/jpeg';
 }
 
-async function callGemini(b64, mt, prompt) {
-  const apiKey = 'AIzaSyBUSpFTAzUXAMRidGWU5vymKNrlk26lx5U';
+async function callAI(b64, mt, prompt) {
+  const provider = document.getElementById('aiProvider').value;
+  const apiKey = document.getElementById('geminiApiKey').value.trim();
+  const baseUrl = document.getElementById('aiBaseUrl').value.trim();
+  const model = document.getElementById('aiModel').value.trim();
 
-  const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
-    method : 'POST',
-    headers: {'Content-Type':'application/json'},
-    body   : JSON.stringify({
+  if(!apiKey) throw new Error('Vui lòng nhập API Key và lưu lại.');
+
+  const parseJSON = async (response) => {
+    const text = await response.text();
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${text.slice(0, 150)}`);
+      }
+      throw new Error(`Phản hồi không phải JSON: ${text.slice(0, 100)}`);
+    }
+  };
+
+  let resp, data, raw;
+
+  if (provider === 'gemini') {
+    let geminiModel = model || 'gemini-2.5-flash-lite';
+    let url = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${apiKey}`;
+    
+    const payload = {
       contents: [{
         parts: [
           {text: prompt},
           {inline_data: {mime_type: mt, data: b64}}
         ]
       }],
-      generationConfig: {
-        response_mime_type: "application/json"
+      generationConfig: { response_mime_type: "application/json" }
+    };
+
+    resp = await fetch(url, {
+      method : 'POST',
+      headers: {'Content-Type':'application/json'},
+      body   : JSON.stringify(payload)
+    });
+    data = await parseJSON(resp);
+
+    // Lần cứu hộ 1: Chuyển sang gemini-2.5-flash
+    if (!resp.ok && data.error && (data.error.message.includes('not found') || data.error.message.includes('not supported'))) {
+      geminiModel = 'gemini-2.5-flash';
+      url = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${apiKey}`;
+      resp = await fetch(url, {
+        method : 'POST',
+        headers: {'Content-Type':'application/json'},
+        body   : JSON.stringify(payload)
+      });
+      data = await parseJSON(resp);
+    }
+    
+    // Lần cứu hộ 2 (Cuối cùng): Về lại bản gemini-1.5-flash siêu ổn định
+    if (!resp.ok && data.error && (data.error.message.includes('not found') || data.error.message.includes('not supported'))) {
+      geminiModel = 'gemini-1.5-flash';
+      url = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${apiKey}`;
+      resp = await fetch(url, {
+        method : 'POST',
+        headers: {'Content-Type':'application/json'},
+        body   : JSON.stringify(payload)
+      });
+      data = await parseJSON(resp);
+    }
+
+    if (!resp.ok || data.error) throw new Error(data.error?.message || `HTTP ${resp.status}`);
+    raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  } 
+  else if (provider === 'openai') {
+    const url = baseUrl ? `${baseUrl}/chat/completions`.replace('//chat', '/chat') : 'https://api.openai.com/v1/chat/completions';
+    const reqModel = model || 'gpt-4o-mini';
+    
+    const dataUri = `data:${mt};base64,${b64}`;
+    
+    resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: reqModel,
+        messages: [{
+          role: "user",
+          content: [
+            { type: "text", text: prompt },
+            { type: "image_url", image_url: { url: dataUri } }
+          ]
+        }],
+        response_format: { type: "json_object" }
+      })
+    });
+    data = await parseJSON(resp);
+    if (!resp.ok || data.error) {
+      const errMsg = data.error?.message || `HTTP ${resp.status}`;
+      if (errMsg.includes('image_url') || errMsg.includes('image') || errMsg.includes('vision')) {
+        throw new Error('API này không hỗ trợ phân tích hình ảnh (Vision). Ví dụ: DeepSeek API gốc chưa hỗ trợ đọc ảnh. Vui lòng chọn Gemini (miễn phí), OpenAI, Claude hoặc OpenRouter.');
       }
-    })
-  });
+      throw new Error(errMsg);
+    }
+    raw = data.choices?.[0]?.message?.content || '';
+  }
+  else if (provider === 'claude') {
+    const url = baseUrl || 'https://api.anthropic.com/v1/messages';
+    resp = await fetch(url, {
+      method : 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerously-allow-browser': 'true'
+      },
+      body   : JSON.stringify({
+        model     : model || 'claude-3-5-sonnet-20241022',
+        max_tokens: 1500,
+        messages  : [{
+          role   : 'user',
+          content: [
+            {type:'image', source:{type:'base64', media_type:mt, data:b64}},
+            {type:'text',  text:prompt}
+          ]
+        }]
+      })
+    });
+    data = await parseJSON(resp);
+    if (!resp.ok || data.error) throw new Error(data.error?.message || `HTTP ${resp.status}`);
+    raw = data.content?.[0]?.text || '';
+  }
 
-  const data = await resp.json();
-  if (!resp.ok || data.error) throw new Error(data.error?.message || `HTTP ${resp.status}`);
-
-  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const clean = raw.replace(/^```(?:json)?\s*/m,'').replace(/```\s*$/m,'').trim();
   try {
-    return JSON.parse(raw);
+    return JSON.parse(clean);
   } catch {
     throw new Error(`AI trả về dữ liệu không phải JSON hợp lệ: ${raw.slice(0,200)}`);
   }
@@ -2029,48 +2193,66 @@ async function callGemini(b64, mt, prompt) {
 /* ── Prompts ─────────────────────────────────────────────── */
 const PROMPT_OPEN = `You are reading a screenshot from an LME metals trading platform.
 
-STEP 1 — Identify which tab is visible:
-• "status" tab (Trạng thái): A list of open positions. Each row has a label like M1/M2/M3 (Long/Buy) or B1/B2/B3 (Short/Sell), followed by a contract code (e.g. AHDD11U26, ZDSD11U26, LALZ, LZHZ, LDKZ). Columns on the right show a price and an OTE (unrealised P&L in USD, can be negative).
-• "transactions" tab (Mua & Bán): Shows trade history. Rows contain dates, text like "X lot mua" or "X lot bán", prices, "n/a" markers, and P&L values in USD.
+IDENTIFY the screen type:
 
-STEP 2 — Return ONLY valid JSON with no markdown fences, no extra text:
+OPEN POSITIONS screens — return type="positions":
+• Desktop Vietnamese "Trạng thái" compact: rows have M4/B8 prefix + contract code, two columns on far right (price, OTE in red/green)
+• Desktop Vietnamese "Trạng thái" expanded: M4/B8 header + sub-rows with columns Ngày / Khối lượng / TRUNG BÌNH / OTE
+• Desktop English "Positions"/"Purchase & Sales": same layout but L4/S8 labels, English tab names
+• Mobile "Positions" / "POSITION": rows show "L14", "S6" etc + contract code, then next line "AVG [price]  OTE [value]  Currency: USD"
+
+CLOSED TRADES screens — return type="trades":
+• Desktop "Mua & Bán": rows alternating "Xsố lot mua" / "Xsố lot bán"
+• Mobile "P & S": columns Date | Side (L1,S1,L2,S2) | Price | P/L
+
+Return ONLY valid JSON (no markdown, no text outside JSON):
 {
-  "type": "status" or "transactions",
+  "type": "positions" or "trades",
   "positions": [
     {
-      "code":     "exact contract code (e.g. AHDD11U26, LALZ, ZDSD15U26)",
-      "maturity": "e.g. Tháng 9/2026, or empty string",
+      "code":     "contract code (AHDD04U26, LALZ, ZDSD11U26 etc.)",
+      "maturity": "LUÔN dịch tháng sang tiếng Việt: Tháng 9/2026 (TUYỆT ĐỐI KHÔNG dùng September) hoặc để trống",
       "side":     "Long" or "Short",
-      "price":    number or null,
-      "lots":     integer or null,
-      "ote":      number (USD, can be negative) or null
+      "price":    number,
+      "lots":     integer,
+      "ote":      number or null
     }
   ]
 }
 
-Extraction rules (only for "status" type):
-- Row label M1/M2/M3… → side = "Long"
-- Row label B1/B2/B3… → side = "Short"
-- Code prefixes: AHD…/LALZ = Nhôm (Al), CAD…/LDKZ = Đồng (Cu), ZDS…/LZHZ = Kẽm (Zn)
-- "price": the opening price of the position (Al/Zn ≈ 3200–3900, Cu ≈ 12000–16000)
-- "ote": the rightmost numeric column (USD), negative = loss
-- If type is "transactions", return positions as empty array []`;
+Label rules (ALL formats):
+• M+N or L+N = Long N lots  (M4=4, L14=14)
+• B+N or S+N = Short N lots  (B4=4, S6=6)
+• "AVG" keyword precedes average open price
+• "OTE" keyword precedes unrealised P&L (negative=loss=red, positive=profit=green)
+• Comma decimal: "3623,75" → 3623.75 in JSON numbers
+• Expanded view: if one contract has multiple sub-rows at DIFFERENT prices, return one entry per sub-row
+• If type="trades", return positions as []`;
 
-const PROMPT_CLOSED = `You are reading a screenshot from an LME metals trading platform showing the "Mua & Bán" (Buy & Sell) tab with completed round-trip trades.
+const PROMPT_CLOSED = `You are reading a screenshot from an LME metals trading platform.
 
-STEP 1 — Identify which tab is visible:
-• "transactions" tab (Mua & Bán): Rows show dates, "X lot mua" (buy) or "X lot bán" (sell), a price, then either "n/a" (= the opening row, no P&L yet) or an actual USD value (= the closing row).
-• "status" tab (Trạng thái): A position list with labels M1/M2/B1/B2.
+IDENTIFY the screen type:
 
-STEP 2 — Return ONLY valid JSON with no markdown fences:
+CLOSED TRADES screens — return type="trades":
+• Desktop Vietnamese "Mua & Bán": contract name in section header (e.g. "▼ 40 LALZ ..."), rows alternate:
+  – Opening row: "Xsố lot mua",  price, "n/a"  (X = lot count)
+  – Closing row: "Xsố lot bán",  price, USD P/L value
+• Mobile "P & S" tab: contract name shown in page/title bar, rows with columns Date | Side | Price | P/L:
+  – Opening row: date, "L1" or "L2" (Long N lots), price, no P/L value
+  – Closing row: date, "S1" or "S2" (Sell N lots), price, USD P/L value
+
+OPEN POSITIONS screens — return type="positions":
+• Any screen with M/L/B/S position labels showing AVG/OTE or compact price+OTE columns
+
+Return ONLY valid JSON (no markdown):
 {
-  "type": "transactions" or "status",
+  "type": "trades" or "positions",
   "trades": [
     {
-      "contract":     "e.g. CADD11U26, LALZ, LDKZ, LZHZ",
+      "contract":     "LALZ, LDKZ, CADD11U26 etc.",
       "openDate":     "DD/MM/YY",
       "closeDate":    "DD/MM/YY",
-      "maturityDate": "DD/MM/YY or empty string",
+      "maturityDate": "DD/MM/YY or empty",
       "side":         "Long" or "Short",
       "openPrice":    number,
       "closePrice":   number,
@@ -2079,16 +2261,12 @@ STEP 2 — Return ONLY valid JSON with no markdown fences:
   ]
 }
 
-Pairing rules (only for "transactions" type):
-- Each instrument section has alternating rows: one with "n/a" (open) and one with a USD P&L value (close).
-- LONG trade: "lot mua" row = open, "lot bán" row = close.
-- SHORT trade: "lot bán" row = open, "lot mua" row = close.
-- "lots": the integer directly before the word "lot" (usually 1).
-- openDate = date on the mua/bán opening row; closeDate = date on the closing row.
-- maturityDate: derive from contract code when possible
-  (e.g. CADD11U26 → day 11, letter U = Sep = month 09, year 26 → "11/09/26").
-  For LALZ/LDKZ/LZHZ, use the prompt date visible in the image or leave empty.
-- If type is "status", return trades as empty array [].`;
+Pairing rules:
+• Desktop Mua&Bán: n/a row = OPEN, USD-P/L row = CLOSE. Contract from section header above each group.
+• Mobile P&S: L1/L2 row (no P/L) = OPEN, S1/S2 row (P/L shown) = CLOSE. Contract from page header.
+  Number in L1/L2/S1/S2 = lot count. All from same contract unless header changes.
+• maturityDate from code: e.g. CADD11U26 → "11/09/26"; LALZ/LDKZ/LZHZ → leave empty or read from image.
+• If type="positions", return trades as []`;
 
 /* ── Handlers ─────────────────────────────────────────────── */
 async function handleOpenUpload() {
@@ -2104,11 +2282,11 @@ async function handleOpenUpload() {
   try {
     const b64    = await fileToBase64(file);
     const mt     = getMediaType(file);
-    const result = await callGemini(b64, mt, PROMPT_OPEN);
+    const result = await callAI(b64, mt, PROMPT_OPEN);
 
-    if (result.type === 'transactions') {
+    if (result.type === 'trades') {
       st.className = 'status warn';
-      st.textContent = '⚠️ Ảnh này là tab "Mua & Bán" — ô này cần ảnh tab "Trạng thái" (vị thế đang có). Hãy đổi lại ảnh.';
+      st.textContent = '⚠️ Ảnh này là màn hình lịch sử giao dịch (Mua & Bán / P&S). Ô này cần ảnh màn hình vị thế đang mở (Trạng thái / Positions). Hãy đổi lại ảnh.';
       return;
     }
 
@@ -2117,11 +2295,11 @@ async function handleOpenUpload() {
       maturity: p.maturity || maturityFromCode(p.code || ''),
       side    : (p.side || 'Long'),
       price   : num(p.price),
-      lots    : num(p.lots),
+      lots    : Math.max(1, Math.round(num(p.lots) || 1)),
       ote     : num(p.ote),
     })).filter(p => p.code);
 
-    
+    renderOpenOutput();
 
     if (openPositions.length) {
       st.className   = 'status';
@@ -2150,11 +2328,11 @@ async function handleClosedUpload() {
   try {
     const b64    = await fileToBase64(file);
     const mt     = getMediaType(file);
-    const result = await callGemini(b64, mt, PROMPT_CLOSED);
+    const result = await callAI(b64, mt, PROMPT_CLOSED);
 
-    if (result.type === 'status') {
+    if (result.type === 'positions') {
       st.className   = 'status warn';
-      st.textContent = '⚠️ Ảnh này là tab "Trạng thái" — ô này cần ảnh tab "Mua & Bán" (hạch toán). Hãy đổi lại ảnh.';
+      st.textContent = '⚠️ Ảnh này là màn hình vị thế đang mở (Trạng thái / Positions). Ô này cần ảnh lịch sử giao dịch (Mua & Bán / P&S). Hãy đổi lại ảnh.';
       return;
     }
 
@@ -2169,7 +2347,7 @@ async function handleClosedUpload() {
       lots        : Math.max(1, Math.round(num(t.lots) || 1)),
     })).filter(t => t.contract && t.openPrice !== null && t.closePrice !== null);
 
-    
+    renderClosedOutput();
 
     if (closedTrades.length) {
       st.className   = 'status';
@@ -2375,6 +2553,83 @@ function legacyCopy(tbl) {
 /* ── Init ────────────────────────────────────────────────── */
 
 
+
+/* ── Excel-like Selection ───────────────────────────────── */
+let isSelecting = false;
+let startCell = null;
+let currentTable = null;
+
+document.addEventListener('mousedown', e => {
+  const cell = e.target.closest('td, th');
+  if (!cell || !cell.closest('table')) {
+    document.querySelectorAll('.selected').forEach(c => c.classList.remove('selected'));
+    return;
+  }
+  
+  if (e.button !== 0) return; // Only left click
+  
+  isSelecting = true;
+  startCell = cell;
+  currentTable = cell.closest('table');
+  
+  document.querySelectorAll('.selected').forEach(c => c.classList.remove('selected'));
+  cell.classList.add('selected');
+});
+
+document.addEventListener('mouseover', e => {
+  if (!isSelecting || !startCell) return;
+  const cell = e.target.closest('td, th');
+  if (!cell || cell.closest('table') !== currentTable) return;
+
+  const rows = Array.from(currentTable.rows);
+  const startRow = startCell.parentElement.rowIndex;
+  const startCol = startCell.cellIndex;
+  const endRow = cell.parentElement.rowIndex;
+  const endCol = cell.cellIndex;
+
+  const minR = Math.min(startRow, endRow);
+  const maxR = Math.max(startRow, endRow);
+  const minC = Math.min(startCol, endCol);
+  const maxC = Math.max(startCol, endCol);
+
+  document.querySelectorAll('.selected').forEach(c => c.classList.remove('selected'));
+
+  for (let r = minR; r <= maxR; r++) {
+    if (!rows[r]) continue;
+    for (let c = minC; c <= maxC; c++) {
+      if (rows[r].cells[c]) rows[r].cells[c].classList.add('selected');
+    }
+  }
+});
+
+document.addEventListener('mouseup', () => { isSelecting = false; });
+
+document.addEventListener('copy', e => {
+  const selected = document.querySelectorAll('.selected');
+  if (selected.length === 0) return;
+
+  e.preventDefault();
+  const rows = Array.from(currentTable.rows);
+  let text = '';
+
+  rows.forEach(r => {
+    let rowHasSelected = false;
+    let rowText = [];
+    Array.from(r.cells).forEach(c => {
+      if (c.classList.contains('selected')) {
+        rowHasSelected = true;
+        rowText.push(c.innerText.replace(/\n/g, ' ').trim());
+      }
+    });
+    if (rowHasSelected) text += rowText.join('\t') + '\n';
+  });
+
+  if (e.clipboardData) {
+    e.clipboardData.setData('text/plain', text);
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+  }
+});
 
     loadSheet('News');
   </script>

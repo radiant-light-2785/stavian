@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LME Report Checker</title>
+  <style>
+    :root{--green:#1f7a58;--gbright:#00c800;--red:#cc0000;--lr:#f8cdd2;--lg:#d7f0d4;--line:#111;--txt:#111827;--muted:#6b7280}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:var(--txt);font-size:14px}
+    .wrap{max-width:1600px;margin:0 auto;padding:24px}
+    h1{margin:0 0 6px;font-size:26px}
+    .sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+    .box{border:1px solid #e5e7eb;border-radius:12px;padding:16px;background:#fff;margin-bottom:18px}
+    label{display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:#374151}
+    input[type=text],input[type=number],input[type=password]{width:100%;border:1px solid #d1d5db;border-radius:8px;padding:9px 12px;font-size:14px;outline:none}
+    input[type=text]:focus,input[type=number]:focus,input[type=password]:focus{border-color:var(--green)}
+    input[type=file]{width:100%;font-size:13px;cursor:pointer}
+    /* API key row */
+    .key-row{display:flex;gap:8px;align-items:center}
+    .key-row input{flex:1;min-width:0}
+    .key-row button{white-space:nowrap;padding:9px 14px;border-radius:8px;border:none;font-size:13px;font-weight:700;cursor:pointer}
+    #btnToggle{background:#f3f4f6;color:#374151}
+    #btnToggle:hover{background:#e5e7eb}
+    #btnSave{background:var(--green);color:#fff}
+    #btnSave:hover{background:#175f43}
+    #btnSave.saved{background:#0a6e2b}
+    .api-sub{font-size:11px;color:var(--muted);margin-top:6px}
+    .api-sub a{color:var(--green);text-decoration:none}
+    .api-sub a:hover{text-decoration:underline}
+    .model-badge{display:inline-block;margin-top:6px;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700}
+    /* fee row */
+    .fee-row{display:flex;gap:8px;align-items:center;margin-top:4px}
+    .fee-row input{max-width:110px}
+    .fee-row span{font-size:12px;color:var(--muted);white-space:nowrap}
+    .status{font-size:12px;font-weight:700;min-height:18px;margin-top:8px;color:#0f5132}
+    .status.warn{color:#b45309}.status.err{color:#911}
+    .sect-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+    .sect-head h2{margin:0;font-size:19px}
+    .btn{background:var(--green);color:#fff;border:none;padding:8px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px}
+    .btn:hover{background:#175f43}
+    .table-wrap{overflow:auto;border:1px solid var(--line)}
+    table{border-collapse:collapse;width:100%;font-size:13px;background:#fff}
+    th,td{border:1px solid var(--line);padding:6px 8px;text-align:center;vertical-align:middle;white-space:nowrap}
+    .title-row th{background:var(--green);color:#fff;font-size:16px;font-weight:700}
+    .hdr th{background:var(--green);color:#fff;font-weight:700}
+    .bh{background:var(--gbright)!important;color:#000!important;font-weight:700}
+    .sh{background:var(--red)!important;color:#fff!important;font-weight:700}
+    .num{text-align:right}.left{text-align:left}.bold{font-weight:700}
+    .lr{background:var(--lr)}.lg{background:var(--lg)}
+    .profit{color:#0a6e2b;font-weight:700}.loss{color:#c00020;font-weight:700}
+    .gsep td{border-top:3px solid var(--line)}
+    .ttop td,.ttop th{border-top:3px solid var(--line)}
+    .tbot td,.tbot th{border-bottom:3px solid var(--line)}
+    .spin{display:inline-block;width:11px;height:11px;border:2px solid #ccc;border-top-color:var(--green);border-radius:50%;animation:sp .7s linear infinite;margin-right:5px;vertical-align:middle}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    .hint{font-size:12px;color:var(--muted);margin-top:8px}
+    @media(max-width:900px){.grid3{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+    @media(max-width:560px){.grid3{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📊 LME Report Checker</h1>
+  <p class="sub">Dùng <b>Gemini AI miễn phí</b> để đọc ảnh giao dịch LME và tạo bảng báo cáo chuẩn.</p>
+
+  <!-- Row 1 -->
+  <div class="grid3">
+
+    <!-- API Key -->
+    <div class="box" style="margin-bottom:0">
+      <label>🔑 Gemini API Key</label>
+      <div class="key-row">
+        <input id="geminiKey" type="password" placeholder="Dán API Key vào đây (AIza...)"/>
+        <button id="btnToggle" onclick="toggleKey()">Hiện</button>
+        <button id="btnSave"   onclick="saveKey()">Lưu</button>
+      </div>
+      <div class="api-sub">
+        Lấy key miễn phí:
+        <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a>
+        &nbsp;·&nbsp;Key lưu trong trình duyệt, không gửi đi đâu khác.
+      </div>
+      <div><span class="model-badge">⚡ gemini-2.0-flash</span></div>
+    </div>
+
+    <!-- Account + fee -->
+    <div class="box" style="margin-bottom:0">
+      <label>Tên tài khoản</label>
+      <input id="accountName" type="text" placeholder="VD: PG BANK SIM" oninput="renderOpen()"/>
+      <div style="margin-top:12px">
+        <label>Phí giao dịch (USD/MT)</label>
+        <div class="fee-row">
+          <input id="feeMt" type="number" value="0.572" step="0.001" min="0" onchange="renderClosed()"/>
+          <span>· 1 lot = 25 tấn</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Format info -->
+    <div class="box" style="margin-bottom:0">
+      <label>Định dạng ảnh được hỗ trợ</label>
+      <div style="font-size:12px;line-height:1.9;color:var(--muted)">
+        <b style="color:#374151">Vị thế (Trạng thái / Positions):</b><br>
+        ▸ Desktop compact: M4/B8 hoặc L4/S8 labels<br>
+        ▸ Desktop expanded: có sub-rows Ngày/TRUNG BÌNH/OTE<br>
+        ▸ Mobile: L14/S6 + AVG + OTE<br>
+        <b style="color:#374151">Hạch toán (Mua & Bán / P&S):</b><br>
+        ▸ Desktop: "Xsố lot mua/bán" alternating rows<br>
+        ▸ Mobile: cột Date | L1/S1 | Price | P/L
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="grid2">
+    <div class="box" style="margin-bottom:0">
+      <label>📸 Ảnh vị thế đang có — tab Trạng thái / Positions</label>
+      <input id="openImg" type="file" accept="image/*" onchange="handleOpen()"/>
+      <div id="openSt" class="status"></div>
+    </div>
+    <div class="box" style="margin-bottom:0">
+      <label>📸 Ảnh hạch toán — tab Mua & Bán / P&S</label>
+      <input id="closedImg" type="file" accept="image/*" onchange="handleClosed()"/>
+      <div id="closedSt" class="status"></div>
+    </div>
+  </div>
+
+  <!-- Tables -->
+  <div class="box">
+    <div class="sect-head">
+      <h2>Bảng vị thế đang có</h2>
+      <button class="btn" onclick="copyTbl('tOpen')">Copy bảng vị thế</button>
+    </div>
+    <div id="wOpen" class="table-wrap"></div>
+    <div class="hint">Reload trang thì dữ liệu mất. Thay tên tài khoản → bảng cập nhật ngay.</div>
+  </div>
+
+  <div class="box">
+    <div class="sect-head">
+      <h2>Hạch toán lợi nhuận giao dịch</h2>
+      <button class="btn" onclick="copyTbl('tClosed')">Copy bảng hạch toán</button>
+    </div>
+    <div id="wClosed" class="table-wrap"></div>
+    <div class="hint">Thay đổi phí giao dịch → bảng tính lại ngay.</div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ──────────────────────────────────────────────────────────
+   State
+   ────────────────────────────────────────────────────────── */
+let openPos  = [];   // [{code,maturity,side,price,lots,ote}]
+let closedTr = [];   // [{contract,openDate,closeDate,maturityDate,side,openPrice,closePrice,lots}]
+
+const GEMINI_MODEL = 'gemini-2.0-flash';
+
+/* ──────────────────────────────────────────────────────────
+   API Key helpers
+   ────────────────────────────────────────────────────────── */
+function loadKey() {
+  const k = localStorage.getItem('lme_gkey');
+  if (k) document.getElementById('geminiKey').value = k;
+}
+
+function saveKey() {
+  const k   = document.getElementById('geminiKey').value.trim();
+  const btn = document.getElementById('btnSave');
+  if (!k) {
+    btn.textContent = '⚠ Trống!';
+    setTimeout(() => { btn.textContent = 'Lưu'; btn.className = ''; }, 1500);
+    return;
+  }
+  localStorage.setItem('lme_gkey', k);
+  btn.textContent  = '✓ Đã lưu';
+  btn.className    = 'saved';
+  setTimeout(() => { btn.textContent = 'Lưu'; btn.className = ''; }, 2000);
+}
+
+function toggleKey() {
+  const el  = document.getElementById('geminiKey');
+  const btn = document.getElementById('btnToggle');
+  if (el.type === 'password') { el.type='text';     btn.textContent='Ẩn'; }
+  else                        { el.type='password'; btn.textContent='Hiện'; }
+}
+
+/* ──────────────────────────────────────────────────────────
+   Lookups
+   ────────────────────────────────────────────────────────── */
+const ML = {F:1,G:2,H:3,J:4,K:5,M:6,N:7,Q:8,U:9,V:10,X:11,Z:12};
+const MN = ['','Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6',
+             'Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+
+function product(c) {
+  c = (c||'').toUpperCase();
+  if (/^AHD|^LALZ/.test(c)) return 'Nhôm';
+  if (/^CAD|^LDKZ/.test(c)) return 'Đồng';
+  if (/^ZDS|^LZHZ/.test(c)) return 'Kẽm';
+  return '';
+}
+function matMonYear(c) {
+  const m=(c||'').toUpperCase().match(/(\d{1,2})([FGHJKMNQUVXZ])(\d{2})$/);
+  return m ? `${MN[ML[m[2]]]}/${2000+Number(m[3])}` : '';
+}
+function matDate(c) {
+  const m=(c||'').toUpperCase().match(/(\d{1,2})([FGHJKMNQUVXZ])(\d{2})$/);
+  return m ? `${Number(m[1])}/${String(ML[m[2]]).padStart(2,'0')}/${String(2000+Number(m[3])).slice(-2)}` : '';
+}
+function getFee() { return parseFloat(document.getElementById('feeMt').value)||0.572; }
+
+/* ──────────────────────────────────────────────────────────
+   Number parser (handles both "3.623,75" and "3,623.75")
+   ────────────────────────────────────────────────────────── */
+function num(n) {
+  if (n===null||n===undefined||n==='') return null;
+  if (typeof n==='number') return isFinite(n)?n:null;
+  let s=String(n).trim().replace(/\s/g,'');
+  if(!s||/^n\/?a$/i.test(s)) return null;
+  s=s.replace(/[−–—]/g,'-').replace(/[$€£]/g,'');
+  const ci=s.lastIndexOf(','), di=s.lastIndexOf('.');
+  if(ci!==-1&&di!==-1){ s=ci>di?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,''); }
+  else if(ci!==-1){ s=s.slice(ci+1).replace(/\D/g,'').length<=2?s.replace(',','.'):s.replace(/,/g,''); }
+  const v=Number(s); return isFinite(v)?v:null;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Formatters
+   ────────────────────────────────────────────────────────── */
+function fP(n){const v=num(n);if(v===null)return '';const d=Math.abs(v)>=10000?1:2;return v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
+function fM(n){const v=num(n);if(v===null)return '';return(v<0?'-':'')+'$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fF(n){const v=num(n);if(v===null)return '';return v.toLocaleString('en-US',{minimumFractionDigits:1,maximumFractionDigits:1});}
+function cls(n){const v=num(n);return v===null?'':v<0?'loss':v>0?'profit':'';}
+function bg(n) {const v=num(n);return v===null?'':v<0?'lr':v>0?'lg':'';}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);}
+
+/* ──────────────────────────────────────────────────────────
+   Gemini API
+   ────────────────────────────────────────────────────────── */
+async function toB64(file){
+  return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});
+}
+function mime(file){
+  if(file.type==='image/png') return 'image/png';
+  if(file.type==='image/gif') return 'image/gif';
+  if(file.type==='image/webp')return 'image/webp';
+  return 'image/jpeg';
+}
+
+async function gemini(b64, mt, prompt) {
+  const key = document.getElementById('geminiKey').value.trim();
+  if (!key) throw new Error(
+    'Chưa có API Key. Dán key vào ô "Gemini API Key" bên trên rồi nhấn Lưu.'
+  );
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`;
+
+  let resp;
+  try {
+    resp = await fetch(url, {
+      method : 'POST',
+      headers: {'Content-Type':'application/json'},
+      body   : JSON.stringify({
+        contents: [{
+          parts: [
+            {inline_data:{mime_type:mt, data:b64}},
+            {text: prompt}
+          ]
+        }],
+        generationConfig: {
+          temperature    : 0.05,
+          maxOutputTokens: 2048
+        }
+      })
+    });
+  } catch (netErr) {
+    // "Failed to fetch" lands here
+    throw new Error(
+      `Không gửi được request tới Gemini API.\n` +
+      `Nguyên nhân có thể: mất mạng, hoặc trình duyệt chặn cross-origin khi mở file từ máy tính.\n` +
+      `→ Thử mở file bằng VS Code Live Server / http-server thay vì double-click file.\n` +
+      `Chi tiết: ${netErr.message}`
+    );
+  }
+
+  let data;
+  try { data = await resp.json(); }
+  catch { throw new Error(`Gemini trả về dữ liệu không phải JSON (HTTP ${resp.status}).`); }
+
+  if (!resp.ok || data.error) {
+    const code = data.error?.code || resp.status;
+    const msg  = data.error?.message || JSON.stringify(data.error);
+    if (code===400) throw new Error(`API Key sai định dạng hoặc request lỗi (400): ${msg}`);
+    if (code===401||code===403) throw new Error(`API Key không hợp lệ hoặc chưa kích hoạt (${code}): ${msg}`);
+    if (code===429) throw new Error(`Đã vượt giới hạn request Gemini free (429). Thử lại sau ít phút.`);
+    throw new Error(`Gemini lỗi ${code}: ${msg}`);
+  }
+
+  const raw   = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  if (!raw) {
+    const reason = data.candidates?.[0]?.finishReason;
+    throw new Error(`Gemini trả về rỗng${reason?' (finishReason: '+reason+')':''}.`);
+  }
+
+  // Strip markdown fences if present
+  const clean = raw.replace(/^```(?:json)?\s*/m,'').replace(/```\s*$/m,'').trim();
+  try   { return JSON.parse(clean); }
+  catch { throw new Error(`Không parse được JSON từ AI.\nAI trả về: "${raw.slice(0,300)}"`); }
+}
+
+/* ──────────────────────────────────────────────────────────
+   Prompts
+   ────────────────────────────────────────────────────────── */
+const PROMPT_OPEN = `You are reading a screenshot from an LME metals trading platform.
+
+IDENTIFY the screen type:
+
+OPEN POSITIONS → return type="positions":
+• Desktop Vietnamese "Trạng thái" compact: M4/B8 labels + contract code, two right columns (price, OTE in red/green)
+• Desktop Vietnamese "Trạng thái" expanded: M/B header + sub-rows with Ngày / Khối lượng / TRUNG BÌNH / OTE columns
+• Desktop English "Positions" / "Purchase & Sales": L4/S8 labels + contract + price + OTE
+• Mobile "Positions"/"POSITION": rows show "L14" or "S6" + contract, then "AVG [price]" + "OTE [value]" + "Currency: USD"
+
+CLOSED TRADES → return type="trades":
+• Desktop "Mua & Bán": alternating "Xsố lot mua" / "Xsố lot bán" rows with prices and P/L
+• Mobile "P & S": columns Date | Side (L1,S1) | Price | P/L
+
+Return ONLY valid JSON (absolutely no markdown, no text before or after the JSON):
+{
+  "type": "positions" or "trades",
+  "positions": [
+    {
+      "code":     "contract code e.g. AHDD04U26, LALZ, ZDSD11U26",
+      "maturity": "Tháng 9/2026 or September 2026 or empty string",
+      "side":     "Long" or "Short",
+      "price":    number,
+      "lots":     integer,
+      "ote":      number or null
+    }
+  ]
+}
+
+Rules:
+• M+N or L+N = Long N lots (M4→4L, L14→14L)
+• B+N or S+N = Short N lots (B4→4S, S6→6S)
+• "AVG" = average open price; "OTE" = unrealised USD P&L (red=negative, green=positive)
+• Comma-decimal: "3623,75" → output 3623.75 as a JSON number
+• Expanded view: if one contract has sub-rows at DIFFERENT prices, return one JSON entry per sub-row
+• If type="trades", return positions as []`;
+
+const PROMPT_CLOSED = `You are reading a screenshot from an LME metals trading platform.
+
+IDENTIFY the screen type:
+
+CLOSED TRADES → return type="trades":
+• Desktop "Mua & Bán": contract name in section header (e.g. "▼ 40 LALZ"), rows alternate:
+  – Open row : "Xsố lot mua",  price,  "n/a"      (X = lot count)
+  – Close row: "Xsố lot bán",  price,  USD P/L value
+• Mobile "P & S": contract visible in page header, columns Date | Side | Price | P/L:
+  – Open row : date, "L1"/"L2" (Long N lots), price, (no P/L)
+  – Close row: date, "S1"/"S2" (Sell N lots), price, USD P/L value
+
+OPEN POSITIONS → return type="positions":
+• Any screen with M/L/B/S position labels and AVG/OTE keywords or compact price+OTE columns
+
+Return ONLY valid JSON (absolutely no markdown, no text before or after the JSON):
+{
+  "type": "trades" or "positions",
+  "trades": [
+    {
+      "contract":     "LALZ, LDKZ, CADD11U26 etc.",
+      "openDate":     "DD/MM/YY",
+      "closeDate":    "DD/MM/YY",
+      "maturityDate": "DD/MM/YY or empty",
+      "side":         "Long" or "Short",
+      "openPrice":    number,
+      "closePrice":   number,
+      "lots":         integer
+    }
+  ]
+}
+
+Pairing rules:
+• Desktop Mua&Bán: n/a row = OPEN, USD-P/L row = CLOSE. Contract from section header.
+• Mobile P&S: L-row (no P/L) = OPEN, S-row (has P/L) = CLOSE. Contract from page header. Number in L1/S1 = lot count.
+• maturityDate from contract code: CADD11U26 → "11/09/26"; LALZ/LDKZ/LZHZ → leave empty.
+• If type="positions", return trades as []`;
+
+/* ──────────────────────────────────────────────────────────
+   Handlers
+   ────────────────────────────────────────────────────────── */
+async function handleOpen() {
+  const file = document.getElementById('openImg').files[0];
+  const st   = document.getElementById('openSt');
+  openPos = []; renderOpen();
+  if (!file){st.textContent='';return;}
+
+  st.className='status';
+  st.innerHTML='<span class="spin"></span>Gemini đang đọc ảnh vị thế…';
+
+  try {
+    const res = await gemini(await toB64(file), mime(file), PROMPT_OPEN);
+
+    if (res.type==='trades'){
+      st.className='status warn';
+      st.textContent='⚠️ Đây là ảnh hạch toán (Mua & Bán / P&S). Ô này cần ảnh vị thế (Trạng thái / Positions).';
+      return;
+    }
+
+    openPos = (res.positions||[]).map(p=>({
+      code    : (p.code||'').trim().toUpperCase(),
+      maturity: p.maturity||matMonYear(p.code||''),
+      side    : p.side||'Long',
+      price   : num(p.price),
+      lots    : Math.max(1,Math.round(num(p.lots)||1)),
+      ote     : num(p.ote),
+    })).filter(p=>p.code);
+
+    renderOpen();
+    st.className   = openPos.length?'status':'status warn';
+    st.textContent = openPos.length?`✓ Đọc được ${openPos.length} vị thế.`
+                                   :'Không nhận ra vị thế nào. Thử crop ảnh sát bảng hơn.';
+  } catch(e){
+    st.className='status err';
+    st.textContent=e.message;
+    console.error(e);
+  }
+}
+
+async function handleClosed() {
+  const file = document.getElementById('closedImg').files[0];
+  const st   = document.getElementById('closedSt');
+  closedTr = []; renderClosed();
+  if (!file){st.textContent='';return;}
+
+  st.className='status';
+  st.innerHTML='<span class="spin"></span>Gemini đang đọc ảnh hạch toán…';
+
+  try {
+    const res = await gemini(await toB64(file), mime(file), PROMPT_CLOSED);
+
+    if (res.type==='positions'){
+      st.className='status warn';
+      st.textContent='⚠️ Đây là ảnh vị thế (Trạng thái / Positions). Ô này cần ảnh hạch toán (Mua & Bán / P&S).';
+      return;
+    }
+
+    closedTr = (res.trades||[]).map(t=>({
+      contract    : (t.contract||'').trim().toUpperCase(),
+      openDate    : t.openDate||'',
+      closeDate   : t.closeDate||'',
+      maturityDate: t.maturityDate||matDate(t.contract||''),
+      side        : t.side||'Long',
+      openPrice   : num(t.openPrice),
+      closePrice  : num(t.closePrice),
+      lots        : Math.max(1,Math.round(num(t.lots)||1)),
+    })).filter(t=>t.contract&&t.openPrice!==null&&t.closePrice!==null);
+
+    renderClosed();
+    st.className   = closedTr.length?'status':'status warn';
+    st.textContent = closedTr.length?`✓ Đọc được ${closedTr.length} lệnh tất toán.`
+                                    :'Không tìm thấy lệnh nào. Thử crop ảnh sát bảng hơn.';
+  } catch(e){
+    st.className='status err';
+    st.textContent=e.message;
+    console.error(e);
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   Render: Vị thế
+   ────────────────────────────────────────────────────────── */
+function renderOpen() {
+  const acc  = (document.getElementById('accountName').value||'').trim()||'TÀI KHOẢN';
+  const PRDS = ['Nhôm','Đồng','Kẽm'];
+  let body='', grand=0;
+
+  for (const prd of PRDS){
+    const rows = openPos.filter(p=>product(p.code)===prd);
+    if (!rows.length){
+      body+=`<tr class="gsep"><td class="left bold">${esc(prd)}</td><td>-</td><td>-</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+             <tr><td></td><td></td><td class="bold">Giá trung bình</td><td></td><td class="num bold">0</td><td></td><td class="num bold">0</td><td></td><td></td></tr>`;
+      continue;
+    }
+    let pOte=0;
+    rows.forEach((r,i)=>{
+      const isL=r.side.toLowerCase()!=='short';
+      if(r.ote!==null){pOte+=r.ote;grand+=r.ote;}
+      body+=`<tr class="${i===0?'gsep':''}">
+        <td class="left bold">${i===0?esc(prd):''}</td>
+        <td>${esc(r.maturity)}</td><td>${esc(r.code)}</td>
+        <td class="num">${isL&&r.price!==null?fP(r.price):''}</td>
+        <td class="num">${isL&&r.lots!==null?r.lots:''}</td>
+        <td class="num">${!isL&&r.price!==null?fP(r.price):''}</td>
+        <td class="num">${!isL&&r.lots!==null?r.lots:''}</td>
+        <td class="num ${bg(r.ote)} ${cls(r.ote)}">${r.ote!==null?fM(r.ote):''}</td>
+        <td></td></tr>`;
+    });
+    const lR=rows.filter(r=>r.side.toLowerCase()!=='short'),sR=rows.filter(r=>r.side.toLowerCase()==='short');
+    const lL=lR.reduce((a,r)=>a+(r.lots||0),0),sL=sR.reduce((a,r)=>a+(r.lots||0),0);
+    const aB=lL?lR.reduce((a,r)=>a+(r.price||0)*(r.lots||0),0)/lL:null;
+    const aS=sL?sR.reduce((a,r)=>a+(r.price||0)*(r.lots||0),0)/sL:null;
+    body+=`<tr class="tbot"><td></td><td></td><td class="bold">Giá trung bình</td>
+      <td class="num bold">${aB!==null?fP(aB):''}</td><td class="num bold">${lL||''}</td>
+      <td class="num bold">${aS!==null?fP(aS):''}</td><td class="num bold">${sL}</td>
+      <td></td><td class="num ${bg(pOte)} ${cls(pOte)} bold">${fM(pOte)}</td></tr>`;
+  }
+
+  document.getElementById('wOpen').innerHTML=`
+  <table id="tOpen">
+    <thead>
+      <tr class="title-row"><th colspan="9">Vị thế đang có: ${esc(acc)}</th></tr>
+      <tr><th>Sản phẩm</th><th>Tháng đáo hạn</th><th>Mã</th>
+          <th colspan="2" class="bh">Mua</th><th colspan="2" class="sh">Bán</th>
+          <th>OTE tạm tính (USD)</th><th>Ghi chú</th></tr>
+    </thead>
+    <tbody>${body}
+      <tr class="ttop"><td colspan="7" class="bold">Tổng lãi/lỗ đang mở (OTE):</td>
+        <td class="num ${bg(grand)} ${cls(grand)} bold">${fM(grand)}</td><td></td></tr>
+    </tbody></table>`;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Render: Hạch toán
+   ────────────────────────────────────────────────────────── */
+function calcRow(t){
+  const fee=getFee(),lots=Math.max(1,t.lots||1),tons=lots*25,feeT=fee*25*2*lots;
+  const sh=t.side.toLowerCase().includes('short');
+  let bef=null;
+  if(t.openPrice!==null&&t.closePrice!==null)
+    bef=sh?(t.openPrice-t.closePrice)*tons:(t.closePrice-t.openPrice)*tons;
+  return{lots,tons,feeT,bef,aft:bef!==null?bef-feeT:null};
+}
+
+function renderClosed(){
+  const fee=getFee();
+  let html=`<table id="tClosed">
+  <thead>
+    <tr class="title-row"><th colspan="16">HẠCH TOÁN LỢI NHUẬN GIAO DỊCH</th></tr>
+    <tr class="hdr">
+      <th>STT</th><th>Người thực hiện</th><th>Ngày mở lệnh</th><th>Ngày tất toán</th><th>Ngày đáo hạn</th>
+      <th>Mã hợp đồng</th><th>Mặt hàng</th><th>Vị thế</th><th>Giá mở</th><th>Giá đóng</th>
+      <th>Khối lượng quy đổi (lot)</th><th>Khối lượng quy đổi (tấn)</th>
+      <th>Phí giao dịch (usd/mt)</th><th>Tổng phí/lệnh</th>
+      <th>Lợi nhuận chưa phí giao dịch</th><th>Lợi nhuận sau phí giao dịch</th>
+    </tr>
+  </thead><tbody>`;
+  let tB=0,tA=0;
+  closedTr.forEach((t,i)=>{
+    const c=calcRow(t);
+    if(c.bef!==null)tB+=c.bef; if(c.aft!==null)tA+=c.aft;
+    html+=`<tr>
+      <td>${i+1}</td><td></td>
+      <td>${esc(t.openDate)}</td><td>${esc(t.closeDate)}</td><td>${esc(t.maturityDate)}</td>
+      <td>${esc(t.contract)}</td><td>${esc(product(t.contract))}</td><td>${esc(t.side)}</td>
+      <td class="num">${t.openPrice!==null?fP(t.openPrice):''}</td>
+      <td class="num">${t.closePrice!==null?fP(t.closePrice):''}</td>
+      <td class="num">${c.lots}</td><td class="num">${c.tons}</td>
+      <td class="num">${fee}</td><td class="num">${fF(c.feeT)}</td>
+      <td class="num ${bg(c.bef)} ${cls(c.bef)}">${c.bef!==null?fM(c.bef):''}</td>
+      <td class="num ${bg(c.aft)} ${cls(c.aft)}">${c.aft!==null?fM(c.aft):''}</td>
+    </tr>`;
+  });
+  html+=`<tr class="ttop"><td colspan="14" class="bold">Tổng</td>
+    <td class="num ${bg(tB)} ${cls(tB)} bold">${closedTr.length?fM(tB):''}</td>
+    <td class="num ${bg(tA)} ${cls(tA)} bold">${closedTr.length?fM(tA):''}</td>
+  </tr></tbody></table>`;
+  document.getElementById('wClosed').innerHTML=html;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Copy
+   ────────────────────────────────────────────────────────── */
+function copyTbl(id){
+  const t=document.getElementById(id);
+  if(!t){alert('Chưa có bảng.');return;}
+  const html=t.outerHTML;
+  const text=[...t.rows].map(r=>[...r.cells].map(c=>c.innerText.replace(/\n/g,' ').trim()).join('\t')).join('\n');
+  if(navigator.clipboard&&window.ClipboardItem){
+    navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]).then(()=>alert('✓ Đã copy!')).catch(()=>legacyCopy(t));
+  } else legacyCopy(t);
+}
+function legacyCopy(t){
+  const r=document.createRange();r.selectNode(t);
+  const s=window.getSelection();s.removeAllRanges();s.addRange(r);
+  document.execCommand('copy');s.removeAllRanges();alert('✓ Đã copy!');
+}
+
+/* ──────────────────────────────────────────────────────────
+   Init
+   ────────────────────────────────────────────────────────── */
+loadKey();
+renderOpen();
+renderClosed();
+</script>
+</body>
+</html>
