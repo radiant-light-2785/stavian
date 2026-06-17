@@ -10,7 +10,8 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
+    rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -23,104 +24,106 @@
       margin: 0;
       padding: 0;
       min-height: 100%;
-      font-family: Inter, Arial, sans-serif;
-      color: #f8fafc;
-    }
-
-    body {
-      overflow-x: hidden;
-      background: #000000;
+      font-family: 'Lora', serif;
+      color: #222;
+      background: #ffffff;
     }
 
     .background-video {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: -1;
-      pointer-events: none;
+      display: none;
     }
 
     .page {
-      position: relative;
-      min-height: 100vh;
-      padding: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 15px;
     }
 
-    .navbar {
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .top-header-left {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 14px 18px;
-      margin-bottom: 20px;
+      gap: 15px;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      color: #f8fafc;
-      background: transparent;
-      padding: 6px 16px 6px 6px;
-      border-radius: 999px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 28px;
+      font-weight: 700;
+      color: #1d766f;
+      text-decoration: none;
     }
 
     .brand-mark {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      object-fit: cover;
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
     }
 
-    .tabs {
+    .header-date {
+      color: #757575;
+      font-size: 14px;
+      padding-left: 15px;
+      border-left: 1px solid #e5e5e5;
+    }
+
+    .top-header-right {
+      display: flex;
+      gap: 15px;
+      font-size: 14px;
+      color: #757575;
+      align-items: center;
+    }
+
+    .top-header-right a {
+      color: #757575;
+      text-decoration: none;
+    }
+
+    .top-header-right a:hover {
+      color: #1d766f;
+    }
+
+    .main-nav {
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      background: transparent;
-      padding: 6px;
-      border-radius: 14px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      gap: 20px;
+      padding: 12px 0;
+      border-bottom: 1px solid #222;
+      margin-bottom: 20px;
     }
 
-    .tab-btn {
+    .main-nav-btn {
       border: 0;
-      padding: 10px 16px;
-      border-radius: 9px;
       background: transparent;
-      color: #cbd5e1;
-      cursor: pointer;
+      color: #222;
+      font-size: 16px;
       font-weight: 700;
-      transition: 0.2s ease;
+      font-family: 'Lora', serif;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.2s;
     }
 
-    .tab-btn:hover {
-      background: transparent;
-    }
-
-    .tab-btn.active {
-      background: transparent;
-      color: #fff;
+    .main-nav-btn:hover,
+    .main-nav-btn.active {
+      color: #1d766f;
     }
 
     .dashboard {
+      padding: 0;
       background: transparent;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+      border: none;
+      box-shadow: none;
       min-height: calc(100vh - 120px);
     }
 
@@ -128,141 +131,98 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #e5e5e5;
+      padding-bottom: 15px;
       flex-wrap: wrap;
-      margin-bottom: 16px;
+      gap: 15px;
     }
 
     .title-block h1 {
       margin: 0;
-      color: #f8fafc;
-      font-size: 28px;
-      letter-spacing: -0.04em;
+      font-size: 24px;
+      color: #222;
     }
 
     .title-block p {
-      margin: 6px 0 0;
-      color: #cbd5e1;
+      margin: 5px 0 0;
+      color: #757575;
       font-size: 14px;
     }
 
     .filters {
       display: flex;
       gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
     }
 
     .input,
-    .select {
-      height: 40px;
-      border-radius: 9px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 0 12px;
+    .select,
+    .refresh-btn {
+      height: 36px;
+      border: 1px solid #ccc;
+      padding: 0 10px;
+      font-family: 'Lora', serif;
       font-size: 14px;
-      outline: none;
-      background: transparent;
-      color: #f8fafc;
-      backdrop-filter: blur(10px);
-    }
-
-    .select option {
-      color: #f8fafc;
-    }
-
-    .input {
-      min-width: 260px;
+      background: #fff;
+      color: #222;
+      border-radius: 4px;
     }
 
     .refresh-btn {
-      height: 40px;
-      border: 0;
-      border-radius: 9px;
-      padding: 0 14px;
-      background: #3b82f6;
-      color: #fff;
-      font-weight: 700;
+      background: #f1f1f1;
       cursor: pointer;
+      font-weight: 700;
+      border: 1px solid #ccc;
     }
 
     .refresh-btn:hover {
-      background: #2563eb;
+      background: #e5e5e5;
     }
 
     .summary-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 300px);
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .metric-card {
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      padding: 14px;
-      background: transparent;
-      backdrop-filter: blur(10px);
-    }
-
-    .metric-label {
-      font-size: 12px;
-      color: #cbd5e1;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .metric-value {
-      margin-top: 6px;
-      font-size: 16px;
-      font-weight: 800;
-      color: #f8fafc;
+      display: none;
     }
 
     .bbc-news-container {
       background: transparent;
-      color: #ffffff;
-      padding: 24px;
-      border-radius: 12px;
-      margin-top: 10px;
+      padding: 0;
+      border-radius: 0;
+      margin-top: 0;
+      color: #222;
     }
 
     .bbc-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 24px;
-    }
-
-    .bbc-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      gap: 30px;
     }
 
     .bbc-panel-title {
-      font-size: 24px;
-      font-weight: 800;
-      color: #ffffff;
-      border-bottom: 2px solid #ef4444;
-      padding-bottom: 10px;
-      margin: 0 0 10px 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: #1d766f;
+      border-bottom: 2px solid #1d766f;
+      padding-bottom: 8px;
+      margin: 0 0 15px 0;
+      text-transform: uppercase;
     }
 
     .bbc-panel-title.aluminum {
-      border-bottom-color: #3b82f6;
+      border-bottom-color: #1d766f;
     }
 
     .bbc-panel-title.copper {
-      border-bottom-color: #f97316;
+      border-bottom-color: #1d766f;
     }
 
     .bbc-panel-title.zinc {
-      border-bottom-color: #eab308;
+      border-bottom-color: #1d766f;
     }
 
     .bbc-card {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 16px;
+      border-bottom: 1px solid #e5e5e5;
+      padding-bottom: 15px;
+      margin-bottom: 15px;
     }
 
     .bbc-card:last-child {
@@ -272,9 +232,9 @@
     .bbc-title {
       font-size: 18px;
       font-weight: 700;
-      line-height: 1.3;
-      margin: 0 0 8px 0;
-      color: #ffffff;
+      line-height: 1.4;
+      margin: 0 0 10px 0;
+      color: #222;
       transition: color 0.2s;
     }
 
@@ -283,154 +243,51 @@
     }
 
     .bbc-title-link:hover .bbc-title {
-      color: #b80000;
+      color: #1d766f;
     }
 
     .bbc-summary {
       font-size: 14px;
-      line-height: 1.5;
-      color: #cbd5e1;
-      margin: 0 0 12px 0;
+      line-height: 1.6;
+      color: #444;
+      margin: 0 0 10px 0;
       white-space: pre-line;
     }
 
     .bbc-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
       font-size: 12px;
-      color: #94a3b8;
+      color: #757575;
+      display: flex;
+      gap: 10px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .bbc-source {
-      font-weight: 600;
-      color: #e2e8f0;
+      font-weight: 700;
+      color: #1d766f;
     }
 
     .bbc-read-more {
-      color: #ffffff;
-      font-weight: 700;
+      color: #007bff;
       text-decoration: none;
-      padding: 4px 8px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 4px;
-      transition: background 0.2s;
+      padding: 0;
+      border: none;
+      background: transparent;
     }
 
     .bbc-read-more:hover {
-      background: transparent;
-    }
-
-    .live-feeds-container {
-      margin-top: 20px;
-    }
-    .feed-filter-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-      padding: 14px;
-      background: transparent;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-    }
-    .live-feeds-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .feed-card {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 16px;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-    }
-    .feed-card:hover {
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-      border-color: #3b82f6;
-    }
-    .feed-card.high-risk {
-      border-color: rgba(248, 113, 113, 0.5);
-      background: rgba(239, 68, 68, 0.1);
-    }
-    .feed-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: flex-start;
-      margin-bottom: 8px;
-    }
-    .feed-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: #93c5fd;
-      text-decoration: none;
-      line-height: 1.4;
-    }
-    .feed-title:hover {
       text-decoration: underline;
-    }
-    .feed-score {
-      font-size: 11px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-    .score-high { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border-color: rgba(248, 113, 113, 0.5); }
-    .score-med { background: rgba(245, 158, 11, 0.2); color: #fcd34d; border-color: rgba(251, 191, 36, 0.5); }
-    .score-low { background: transparent; color: #cbd5e1; border-color: rgba(255, 255, 255, 0.2); }
-    .feed-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-      align-items: center;
-      font-size: 12px;
-    }
-    .feed-badge {
-      border: 1px solid rgba(255, 255, 255, 0.1);
       background: transparent;
-      border-radius: 999px;
-      padding: 4px 10px;
-      color: #cbd5e1;
-      font-weight: 600;
-    }
-    .feed-time {
-      color: #94a3b8;
-      font-weight: 500;
-    }
-    .feed-summary {
-      font-size: 14px;
-      color: #cbd5e1;
-      margin: 0;
-      line-height: 1.5;
     }
 
-    .empty {
-      border: 1px dashed rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      padding: 50px 18px;
-      text-align: center;
-      color: #94a3b8;
-      font-weight: 700;
-      background: transparent;
-      backdrop-filter: blur(10px);
-      line-height: 1.6;
-    }
-
+    /* Tables */
     .generic-table-wrap {
       overflow: auto;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      background: transparent;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      border: 1px solid #e5e5e5;
+      background: #fff;
+      border-radius: 0;
+      box-shadow: none;
     }
 
     table {
@@ -441,13 +298,12 @@
 
     td,
     th {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      border-right: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 14px;
+      border-bottom: 1px solid #e5e5e5;
+      border-right: 1px solid #e5e5e5;
+      padding: 10px;
+      font-size: 14px;
+      color: #222;
       vertical-align: middle;
-      font-size: 13.5px;
-      white-space: pre-line;
-      color: #f8fafc;
     }
 
     td:last-child,
@@ -455,373 +311,623 @@
       border-right: none;
     }
 
-    tr:hover td {
-      background: transparent;
-    }
-
     tr:first-child td,
     thead th {
-      background: transparent;
-      color: #60a5fa;
-      font-weight: 800;
+      background: #f7f7f7;
+      color: #222;
+      font-weight: 700;
+      border-bottom: 2px solid #222;
       text-align: center;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.15);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+    }
+
+    tr:hover td {
+      background: #f9f9f9;
     }
 
     .cell-badge {
       display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
       font-size: 12px;
-      white-space: nowrap;
+      font-weight: 700;
     }
 
     .cb-green {
-      background: rgba(16, 185, 129, 0.2);
-      color: #6ee7b7;
+      background: #e8f5e9;
+      color: #2e7d32;
     }
 
     .cb-red {
-      background: rgba(239, 68, 68, 0.2);
-      color: #fca5a5;
-    }
-
-    .cb-yellow {
-      background: rgba(234, 179, 8, 0.2);
-      color: #fde047;
+      background: #ffebee;
+      color: #c62828;
     }
 
     .cb-blue {
-      background: rgba(59, 130, 246, 0.2);
-      color: #93c5fd;
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+
+    .cb-yellow {
+      background: #fff8e1;
+      color: #f57f17;
     }
 
     .cb-gray {
-      background: transparent;
-      color: #cbd5e1;
+      background: #f5f5f5;
+      color: #616161;
     }
 
     .text-green {
-      color: #10b981;
+      color: #2e7d32;
       font-weight: 700;
     }
 
     .text-red {
-      color: #ef4444;
+      color: #c62828;
       font-weight: 700;
     }
 
     .text-orange {
-      color: #f59e0b;
+      color: #f57f17;
       font-weight: 700;
     }
 
     .col-al {
-      background: rgba(59, 130, 246, 0.1) !important;
+      background: #f0f7ff !important;
     }
 
     .col-cu {
-      background: rgba(249, 115, 22, 0.1) !important;
+      background: #fff4ed !important;
     }
 
     .col-zn {
-      background: rgba(234, 179, 8, 0.1) !important;
+      background: #fffbeb !important;
     }
 
     tr:hover td.col-al {
-      background: rgba(59, 130, 246, 0.2) !important;
+      background: #e0efff !important;
     }
 
     tr:hover td.col-cu {
-      background: rgba(249, 115, 22, 0.2) !important;
+      background: #ffe8d6 !important;
     }
 
     tr:hover td.col-zn {
-      background: rgba(234, 179, 8, 0.2) !important;
+      background: #fff3c4 !important;
     }
 
     tr:first-child td.col-al {
-      background: rgba(59, 130, 246, 0.2) !important;
-      border-bottom: 2px solid rgba(59, 130, 246, 0.3) !important;
+      border-bottom: 2px solid #93c5fd !important;
     }
 
     tr:first-child td.col-cu {
-      background: rgba(249, 115, 22, 0.2) !important;
-      border-bottom: 2px solid rgba(249, 115, 22, 0.3) !important;
+      border-bottom: 2px solid #fdba74 !important;
     }
 
     tr:first-child td.col-zn {
-      background: rgba(234, 179, 8, 0.2) !important;
-      border-bottom: 2px solid rgba(234, 179, 8, 0.3) !important;
+      border-bottom: 2px solid #fcd34d !important;
     }
 
-    .error-box {
-      border: 1px dashed #ef4444;
-      border-radius: 10px;
-      padding: 32px 18px;
-      text-align: center;
-      color: #fca5a5;
-      background: rgba(239, 68, 68, 0.1);
-      font-weight: 700;
-      line-height: 1.6;
-    }
-
-    @media (max-width: 980px) {
-
-      .summary-grid,
-      .bbc-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .navbar {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .input {
-        min-width: 100%;
-      }
-    }
-
+    /* NewsUpdate Desk */
     .desk-grid {
       display: grid;
       grid-template-columns: 2fr 1fr;
-      gap: 24px;
+      gap: 30px;
     }
+
     @media (max-width: 1024px) {
-      .desk-grid { grid-template-columns: 1fr; }
+      .desk-grid {
+        grid-template-columns: 1fr;
+      }
     }
+
     .desk-card {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
+      background: #fff;
+      border: 1px solid #e5e5e5;
       padding: 20px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-      margin-bottom: 24px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      border-radius: 0;
+      margin-bottom: 20px;
     }
+
     .desk-card-title {
       font-size: 18px;
-      font-weight: 800;
-      margin: 0 0 4px 0;
-      color: #f8fafc;
+      font-weight: 700;
+      margin: 0 0 5px 0;
+      color: #1d766f;
       display: flex;
       align-items: center;
       gap: 8px;
     }
+
     .desk-card-desc {
-      font-size: 13px;
-      color: #94a3b8;
-      margin: 0 0 16px 0;
-      line-height: 1.5;
+      font-size: 14px;
+      color: #555;
+      margin: 0 0 15px 0;
     }
+
     .desk-tabs {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 15px;
     }
+
     .desk-tab {
       padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: transparent;
-      font-size: 13px;
-      font-weight: 600;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background: #f1f1f1;
+      font-size: 14px;
+      color: #222;
       cursor: pointer;
-      color: #cbd5e1;
     }
+
     .desk-tab.active {
-      background: #3b82f6;
+      background: #1d766f;
       color: #fff;
-      border-color: #2563eb;
+      border-color: #1d766f;
     }
+
     .desk-pill {
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: transparent;
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 11px;
-      color: #cbd5e1;
-      font-weight: 600;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      color: #444;
     }
+
     .source-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 15px;
     }
+
     @media (max-width: 768px) {
-      .source-grid { grid-template-columns: 1fr; }
+      .source-grid {
+        grid-template-columns: 1fr;
+      }
     }
+
     .source-item {
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: transparent;
-      border-radius: 12px;
-      padding: 16px;
-      transition: all 0.2s;
+      border: 1px solid #e5e5e5;
+      background: #fff;
+      border-radius: 0;
+      padding: 15px;
     }
-    .source-item:hover { border-color: #60a5fa; }
+
     .source-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 8px;
     }
+
     .source-name {
       font-weight: 700;
-      color: #f8fafc;
-      font-size: 14px;
-      line-height: 1.4;
+      color: #222;
+      font-size: 16px;
       margin: 0;
     }
+
     .source-priority {
-      font-size: 11px;
+      font-size: 12px;
       padding: 2px 8px;
-      border-radius: 999px;
-      border: 1px solid;
-      white-space: nowrap;
+      border-radius: 4px;
       font-weight: 600;
     }
-    .pri-high { background: rgba(239, 68, 68, 0.1); color: #fca5a5; border-color: rgba(248, 113, 113, 0.5); }
-    .pri-med { background: rgba(245, 158, 11, 0.1); color: #fcd34d; border-color: rgba(251, 191, 36, 0.5); }
-    .pri-low { background: #0f172a; color: #cbd5e1; border-color: rgba(255, 255, 255, 0.2); }
-    
-    .source-use { font-size: 13px; color: #cbd5e1; margin: 12px 0; line-height: 1.5; }
-    .source-mode { font-size: 11px; color: #94a3b8; margin-bottom: 12px; }
-    .source-actions { display: flex; gap: 8px; }
+
+    .pri-high {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .pri-med {
+      background: #fff8e1;
+      color: #f57f17;
+    }
+
+    .pri-low {
+      background: #f5f5f5;
+      color: #616161;
+    }
+
+    .source-use {
+      font-size: 14px;
+      color: #444;
+      margin: 10px 0;
+    }
+
+    .source-mode {
+      font-size: 12px;
+      color: #757575;
+      margin-bottom: 10px;
+    }
+
+    .source-actions {
+      display: flex;
+      gap: 8px;
+    }
+
     .source-btn {
       flex: 1;
       text-align: center;
       padding: 8px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 700;
       cursor: pointer;
       text-decoration: none;
+      border: 1px solid #ccc;
     }
-    .btn-open { border: 1px solid rgba(255, 255, 255, 0.1); background: #0f172a; color: #f8fafc; }
-    .btn-open:hover { background: transparent; }
-    .btn-note { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: none; }
-    .btn-note:hover { background: rgba(59, 130, 246, 0.2); }
+
+    .btn-open {
+      background: #f1f1f1;
+      color: #222;
+    }
+
+    .btn-note {
+      background: #e3f2fd;
+      color: #1565c0;
+      border-color: #bbdefb;
+    }
 
     .workflow-item {
       display: flex;
-      gap: 12px;
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 12px;
+      gap: 15px;
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      padding: 15px;
+      margin-bottom: 15px;
     }
+
     .wf-time {
       flex-shrink: 0;
       width: 80px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
-      color: #93c5fd;
-      background: rgba(59, 130, 246, 0.2);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      border-radius: 8px;
+      color: #222;
+      background: #f1f1f1;
+      border: 1px solid #ccc;
+      border-radius: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       padding: 4px 8px;
     }
-    .wf-content { min-width: 0; }
-    .wf-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-    .wf-body { font-size: 13px; color: #cbd5e1; margin-bottom: 8px; line-height: 1.5; }
-    .wf-source { font-size: 11px; color: #94a3b8; }
 
-    .alert-rule {
-      border: 1px solid;
-      border-radius: 10px;
-      padding: 12px;
+    .wf-title {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 5px;
+      color: #222;
+    }
+
+    .wf-body {
+      font-size: 14px;
+      color: #444;
       margin-bottom: 8px;
     }
-    .rule-red { background: rgba(239, 68, 68, 0.1); border-color: rgba(248, 113, 113, 0.5); color: #fca5a5; }
-    .rule-amber { background: rgba(245, 158, 11, 0.1); border-color: rgba(251, 191, 36, 0.5); color: #fcd34d; }
-    .rule-slate { background: #0f172a; border-color: rgba(255, 255, 255, 0.2); color: #cbd5e1; }
-    .rule-label { font-weight: 600; font-size: 13px; }
-    .rule-impact { font-size: 11px; margin-top: 4px; }
+
+    .wf-source {
+      font-size: 12px;
+      color: #757575;
+    }
+
+    .alert-rule {
+      border: 1px solid #e5e5e5;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 0;
+    }
+
+    .rule-red {
+      background: #ffebee;
+      border-color: #ffcdd2;
+      color: #c62828;
+    }
+
+    .rule-amber {
+      background: #fff8e1;
+      border-color: #ffecb3;
+      color: #f57f17;
+    }
+
+    .rule-slate {
+      background: #f5f5f5;
+      border-color: #e0e0e0;
+      color: #424242;
+    }
+
+    .rule-label {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .rule-impact {
+      font-size: 12px;
+      margin-top: 4px;
+    }
 
     .checklist-item {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: flex-start;
-      font-size: 13px;
-      color: #cbd5e1;
-      margin-bottom: 12px;
+      font-size: 14px;
+      color: #222;
+      margin-bottom: 10px;
       cursor: pointer;
     }
-    .checklist-item input { margin-top: 3px; }
-    .checklist-item.done span { text-decoration: line-through; color: #94a3b8; }
+
+    .checklist-item.done span {
+      text-decoration: line-through;
+      color: #9e9e9e;
+    }
 
     .reduced-item {
-      background: #0f172a;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
+      background: #fff;
+      border: 1px solid #e5e5e5;
       padding: 12px;
     }
-    .red-name { font-weight: 700; font-size: 13px; }
-    .red-action { font-size: 11px; font-weight: 600; color: #93c5fd; margin-top: 4px; }
-    .red-reason { font-size: 11px; color: #cbd5e1; margin-top: 4px; }
+
+    .red-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: #222;
+    }
+
+    .red-action {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1565c0;
+      margin-top: 4px;
+    }
+
+    .red-reason {
+      font-size: 12px;
+      color: #555;
+      margin-top: 4px;
+    }
 
     .desk-textarea {
       width: 100%;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: #0f172a;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background: #fff;
       padding: 12px;
-      font-size: 13px;
+      font-size: 14px;
       font-family: inherit;
       outline: none;
       resize: vertical;
+      color: #222;
     }
+
     .desk-textarea:focus {
-      border-color: #60a5fa;
-      box-shadow: 0 0 0 2px rgba(96,165,250,0.2);
+      border-color: #1d766f;
     }
+
     .desk-btn-primary {
       width: 100%;
-      background: #3b82f6;
+      background: #1d766f;
       color: #fff;
       border: none;
-      border-radius: 10px;
+      border-radius: 4px;
       padding: 10px;
-      font-weight: 600;
-      font-size: 13px;
+      font-weight: 700;
+      font-size: 14px;
       cursor: pointer;
-      margin-top: 12px;
+      margin-top: 10px;
     }
-    .desk-btn-primary:hover { background: #2563eb; }
+
+    .desk-btn-primary:hover {
+      background: #11524d;
+    }
+
+    .feed-container {
+      max-height: 600px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    .feed-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      padding: 15px;
+      margin-bottom: 15px;
+      transition: border 0.2s;
+    }
+
+    .feed-card:hover {
+      border-color: #1d766f;
+    }
+
+    .feed-card.high-risk {
+      border-color: #ef5350;
+      background: #ffebee;
+    }
+
+    .feed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .feed-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #222;
+      text-decoration: none;
+    }
+
+    .feed-title:hover {
+      color: #1d766f;
+    }
+
+    .feed-score {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      border: 1px solid;
+    }
+
+    .score-high {
+      background: #ffebee;
+      color: #c62828;
+      border-color: #ef5350;
+    }
+
+    .score-med {
+      background: #fff8e1;
+      color: #f57f17;
+      border-color: #ffca28;
+    }
+
+    .score-low {
+      background: #f5f5f5;
+      color: #616161;
+      border-color: #e0e0e0;
+    }
+
+    .feed-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .feed-badge {
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #444;
+    }
+
+    .feed-time {
+      color: #757575;
+    }
+
+    .feed-summary {
+      font-size: 14px;
+      color: #444;
+      margin: 0;
+    }
+
+    .empty {
+      border: 1px dashed #ccc;
+      padding: 40px 20px;
+      text-align: center;
+      color: #757575;
+      font-size: 16px;
+      background: #f9f9f9;
+    }
+
+    .error-box {
+      border: 1px dashed #ef5350;
+      padding: 20px;
+      text-align: center;
+      color: #c62828;
+      background: #ffebee;
+      font-weight: 700;
+    }
 
     .blink-dot {
       width: 8px;
       height: 8px;
-      background: #ef4444;
+      background: #ef5350;
       border-radius: 50%;
+      display: inline-block;
       animation: blink 2s infinite;
     }
-    .blink-card {
-      border-color: rgba(248, 113, 113, 0.5) !important;
-      animation: blink-card 2s infinite;
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0
+      }
     }
-    @keyframes blink { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0)} 50%{box-shadow:0 0 0 4px rgba(239,68,68,.5)} }
-    @keyframes blink-card { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0)} 50%{box-shadow:0 0 0 4px rgba(239,68,68,.5)} }
-    
-    .feed-container { max-height: 500px; overflow-y: auto; padding-right: 4px; }
-    .feed-container::-webkit-scrollbar { width: 6px; }
-    .feed-container::-webkit-scrollbar-track { background: transparent; }
-    .feed-container::-webkit-scrollbar-thumb { background: transparent; border-radius: 4px; }
-    
-    .flex-row-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+
+    .flex-row-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 980px) {
+      .bbc-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .top-header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .main-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+    /* Report Area Styles */
+    #reportArea {
+      --green:#1f7a58;--green-bright:#00c800;--red:#cc0000;--light-red:#f8cdd2;--light-green:#d7f0d4;--line:#111;--text:#111827;--muted:#6b7280;
+      color: var(--text); font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    #reportArea .wrap { max-width: 1600px; margin: 0 auto; padding: 0; }
+    #reportArea h1 { margin: 0 0 6px; font-size: 26px; }
+    #reportArea .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+    #reportArea .top { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; align-items: start; }
+    #reportArea .box { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; background: #fff; margin-bottom: 18px; }
+    #reportArea label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #374151; }
+    #reportArea input[type="text"], #reportArea input[type="number"] { width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 9px 12px; font-size: 14px; }
+    #reportArea input[type="file"] { width: 100%; font-size: 13px; cursor: pointer; }
+    #reportArea .fee-row { display: flex; gap: 8px; align-items: center; }
+    #reportArea .fee-row input { max-width: 110px; }
+    #reportArea .fee-row span { font-size: 12px; color: var(--muted); }
+    #reportArea .status { font-size: 12px; font-weight: 700; min-height: 18px; margin-top: 8px; color: #0f5132; }
+    #reportArea .status.warn { color: #b45309; }
+    #reportArea .status.err { color: #911; }
+    #reportArea .section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
+    #reportArea .section-head h2 { margin: 0; font-size: 19px; color: var(--text); }
+    #reportArea .btn { background: var(--green); color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
+    #reportArea .btn:hover { background: #175f43; }
+    #reportArea .table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 0; box-shadow: none; }
+    #reportArea table { border-collapse: collapse; width: 100%; font-size: 13px; background: #fff; min-width: auto; }
+    #reportArea th, #reportArea td { border: 1px solid var(--line); padding: 6px 8px; text-align: center; vertical-align: middle; white-space: nowrap; color: var(--text); }
+    #reportArea thead th, #reportArea tr:first-child td { border-bottom: 1px solid var(--line); background: transparent; text-transform: none; text-align: center; }
+    #reportArea .title-row th { background: var(--green); color: #fff; font-size: 16px; font-weight: 700; }
+    #reportArea .header-green th { background: var(--green); color: #fff; font-weight: 700; }
+    #reportArea .buy-head { background: var(--green-bright) !important; color: #000 !important; font-weight: 700; }
+    #reportArea .sell-head { background: var(--red) !important; color: #fff !important; font-weight: 700; }
+    #reportArea .num { text-align: right; }
+    #reportArea .left { text-align: left; }
+    #reportArea .bold { font-weight: 700; }
+    #reportArea .light-red { background: var(--light-red) !important; }
+    #reportArea .light-green { background: var(--light-green) !important; }
+    #reportArea .profit { color: #0a6e2b; font-weight: 700; }
+    #reportArea .loss { color: #c00020; font-weight: 700; }
+    #reportArea .group-sep td { border-top: 3px solid var(--line); }
+    #reportArea .thick-top td, #reportArea .thick-top th { border-top: 3px solid var(--line); }
+    #reportArea .thick-bottom td, #reportArea .thick-bottom th { border-bottom: 3px solid var(--line); }
+    #reportArea .spin { display: inline-block; width: 11px; height: 11px; border: 2px solid #ccc; border-top-color: var(--green); border-radius: 50%; animation: sp .7s linear infinite; margin-right: 5px; vertical-align: middle; }
+    @keyframes sp { to { transform: rotate(360deg); } }
+    #reportArea .hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
+    @media (max-width: 900px) { #reportArea .top { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { #reportArea .top { grid-template-columns: 1fr; } }
   </style>
 </head>
 
@@ -829,27 +935,35 @@
   <!-- <video removed> -->
 
   <main class="page">
-    <nav class="navbar">
-      <div class="brand">
-        <img class="brand-mark"
-          src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg"
-          alt="Logo" />
-        <div>Stavian Metal</div>
+    <header class="top-header">
+      <div class="top-header-left">
+        <a href="#" class="brand">
+          <img class="brand-mark"
+            src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg"
+            alt="Logo" />
+          <span>Stavian Metal</span>
+        </a>
+        <span class="header-date">Thứ 4, 17/6/2026</span>
       </div>
+      <div class="top-header-right">
+        <a href="#">Mới nhất</a>
+        <a href="#">Tin theo khu vực</a>
+        <a href="#">International</a>
+      </div>
+    </header>
 
-      <div class="tabs">
-        <button class="tab-btn active" data-sheet="News">Tin tức</button>
-        <button class="tab-btn" data-sheet="View">View</button>
-        <button class="tab-btn" data-sheet="Warehouse">Warehouse</button>
-        <button class="tab-btn" data-sheet="NewsUpdate">Cập nhật tin tức</button>
-      </div>
+    <nav class="main-nav">
+      <button class="main-nav-btn tab-btn active" data-sheet="News">Tin tức</button>
+      <button class="main-nav-btn tab-btn" data-sheet="Report">Báo cáo</button>
+      <button class="main-nav-btn tab-btn" data-sheet="Warehouse">Warehouse</button>
+      <button class="main-nav-btn tab-btn" data-sheet="NewsUpdate">Cập nhật tin tức</button>
     </nav>
 
     <section class="dashboard">
       <div class="toolbar">
         <div class="title-block">
-          <h1 id="pageTitle">Tin tức kim loại</h1>
-          <p id="pageSubtitle">Dữ liệu lấy từ Supabase Database.</p>
+          <h1 id="pageTitle">Tin tức Daily Summary by GPT Pro 🫶</h1>
+          <p id="pageSubtitle">Có link cho mng đọc chi tiết hơn</p>
         </div>
 
         <div class="filters">
@@ -869,6 +983,52 @@
       </div>
 
       <div id="contentArea" class="news-list"></div>
+      <div id="reportArea" style="display: none;">
+
+<div class="wrap">
+  
+  
+  <div class="top">
+    <div class="box" style="margin-bottom:0">
+      <label>Phí giao dịch</label>
+      <div class="fee-row">
+        <input id="feeMt" type="number" value="0.572" step="0.001" min="0" onchange="renderClosedOutput()"/>
+        <span>USD/MT&nbsp;·&nbsp;1 lot&nbsp;25T</span>
+      </div>
+    </div>
+    <div class="box" style="margin-bottom:0">
+      <label>📸 Ảnh vị thế đang có — tab "Trạng thái"</label>
+      <input id="openImage" type="file" accept="image/*" onchange="handleOpenUpload()"/>
+      <div id="openStatus" class="status"></div>
+    </div>
+    <div class="box" style="margin-bottom:0">
+      <label>📸 Ảnh hạch toán — tab "Mua & Bán"</label>
+      <input id="closedImage" type="file" accept="image/*" onchange="handleClosedUpload()"/>
+      <div id="closedStatus" class="status"></div>
+    </div>
+  </div>
+
+  <div class="box">
+    <div class="section-head">
+      <h2>Bảng vị thế đang có</h2>
+      <button class="btn" onclick="copyTable('openOutput')">Copy bảng vị thế</button>
+    </div>
+    <div id="openOutputWrap" class="table-wrap"></div>
+    <div class="hint">Upload ảnh tab "Trạng thái". Bảng sẽ tự cập nhật. Reload trang thì dữ liệu mất.</div>
+  </div>
+
+  <div class="box">
+    <div class="section-head">
+      <h2>Hạch toán lợi nhuận giao dịch</h2>
+      <button class="btn" onclick="copyTable('closedOutput')">Copy bảng hạch toán</button>
+    </div>
+    <div id="closedOutputWrap" class="table-wrap"></div>
+    <div class="hint">Upload ảnh tab "Mua & Bán". Thay đổi phí giao dịch sẽ tính lại tự động.</div>
+  </div>
+</div>
+
+
+      </div>
     </section>
   </main>
 
@@ -880,82 +1040,72 @@
 
     const TABLES = {
       News: 'metal_news',
-      View: 'market_views',
       Warehouse: 'warehouse_records'
     };
-
-    const VIEW_HEADERS = [
-      'Ngày họp', 'Giờ họp', 'Thành viên',
-      'Nhôm Giá/Vùng', 'Nhôm Hướng',
-      'Đồng Giá/Vùng', 'Đồng Hướng',
-      'Kẽm Giá/Vùng', 'Kẽm Hướng',
-      'Nội dung view tóm tắt', 'Khung thời gian', 'Action',
-      'View Nhôm Đúng/Sai', 'View Đồng Đúng/Sai', 'View Kẽm Đúng/Sai', 'Ghi chú nhanh'
-    ];
 
     let currentSheet = 'News';
     let currentPayload = null;
 
-    const SOURCE_CATEGORIES = ['Tất cả','Luôn bật','Check hằng ngày','Check theo sự kiện','Check tuần/tháng','API public'];
+    const SOURCE_CATEGORIES = ['Tất cả', 'Luôn bật', 'Check hằng ngày', 'Check theo sự kiện', 'Check tuần/tháng', 'API public'];
     let deskSourceCategory = 'Tất cả';
     let deskSourceQuery = '';
     let deskWorkflowType = 'day';
 
     const SOURCES = [
-      {name:'Reuters/LSEG Pro - News Alert', priority:'Rất cao', group:'Luôn bật', use:'Nguồn chính để bắt tin mới nhất: Reuters Metals, tariff, supply disruption, strike, shutdown, smelter, China demand, macro.', frequency:'Luôn bật trong phiên', url:'https://www.lseg.com/en/reuters-news', mode:'Có sẵn trong tài khoản. Không tự redisplay full article nếu license không cho phép.'},
-      {name:'Reuters/LSEG Pro - LME data / warehouse / stocks / warrants', priority:'Rất cao', group:'Luôn bật', use:'Check giá LME, stocks, cancelled warrants, warehouse, spread, cash-3M khi có tin hoặc giá chạy.', frequency:'Trong phiên + khi giá biến động mạnh', url:'https://www.lseg.com/en/data-analytics/financial-data/commodities-data/lme-data', mode:'Nguồn chính nếu tài khoản có entitlement.'},
-      {name:'SMM / Shanghai Metals Market', priority:'Rất cao', group:'Check hằng ngày', use:'Physical China: spot premium, SHFE/LME inventory snapshot, import arbitrage, smelter/downstream demand.', frequency:'Sáng + trước phiên Âu/Mỹ', url:'https://www.metal.com/', mode:'Subscription/API risk. Nếu có entitlement trong LSEG thì xem trong LSEG.'},
-      {name:'Fastmarkets Base Metals', priority:'Cao', group:'Check hằng ngày', use:'Premium physical, trade flow, price assessment, supply disruption, market update cho Cu/Al/Zn.', frequency:'1-2 lần/ngày hoặc khi có alert', url:'https://www.fastmarkets.com/metals-and-mining/base-metals/', mode:'Subscription/API risk. Không scrape full content.'},
-      {name:'Macro Calendar: Forex Factory + CME FedWatch', priority:'Cao', group:'Check hằng ngày', use:'CPI, PPI, NFP, jobless claims, Fed speech; FedWatch để xem xác suất Fed sau dữ liệu.', frequency:'Mỗi sáng + 30 phút trước dữ liệu đỏ', url:'https://www.forexfactory.com/calendar', mode:'Manual. Mở FedWatch khi có CPI/PPI/NFP/FOMC.'},
-      {name:'Policy official: USTR + White House + Federal Register', priority:'Rất cao', group:'Check theo sự kiện', use:'Xác nhận tariff, Section 301/232, proclamation, ngày hiệu lực và phạm vi hàng hóa.', frequency:'Ngay khi LSEG báo Trump/tariff/sanction', url:'https://www.federalregister.gov/developers/documentation/api/v1', mode:'Federal Register có API public; USTR/White House chủ yếu mở xác nhận.'},
-      {name:'SHFE Official Weekly Data', priority:'Cao', group:'Check tuần/tháng', use:'Xác nhận tồn kho Trung Quốc chính thức cho Cu/Al/Zn, đặc biệt cuối tuần.', frequency:'Thứ Sáu hằng tuần', url:'https://www.shfe.com.cn/eng/reports/StatisticalData/WeeklyData/', mode:'Manual official.'},
-      {name:'Monthly official balance: ICSG + IAI + ILZSG', priority:'Trung bình-cao', group:'Check tuần/tháng', use:'Báo cáo nền cung cầu Đồng/Nhôm/Kẽm: refined balance, sản lượng, usage, stocks.', frequency:'Hàng tháng', url:'https://icsg.org/', mode:'Manual/monthly. Không dùng cho intraday.'},
-      {name:'Company IR / Mining official sources', priority:'Cao khi có sự kiện', group:'Check theo sự kiện', use:'Xác nhận strike, shutdown, force majeure, output cut của Codelco, Freeport, BHP, Rio, Glencore, Alcoa, Teck, Nexa, Korea Zinc.', frequency:'Chỉ mở khi Reuters/LSEG báo sự kiện supply', url:'#', mode:'Manual event verification.'},
-      {name:'GDELT + Federal Register API public', priority:'Phụ trợ', group:'API public', use:'Nguồn public để web local thử kéo headline/tariff/legal docs mà không đụng license LSEG.', frequency:'Kéo theo nút cập nhật live feed', url:'https://www.gdeltproject.org/', mode:'Free public API; chất lượng thấp hơn Reuters/LSEG.'}
+      { name: 'Reuters/LSEG Pro - News Alert', priority: 'Rất cao', group: 'Luôn bật', use: 'Nguồn chính để bắt tin mới nhất: Reuters Metals, tariff, supply disruption, strike, shutdown, smelter, China demand, macro.', frequency: 'Luôn bật trong phiên', url: 'https://www.lseg.com/en/reuters-news', mode: 'Có sẵn trong tài khoản. Không tự redisplay full article nếu license không cho phép.' },
+      { name: 'Reuters/LSEG Pro - LME data / warehouse / stocks / warrants', priority: 'Rất cao', group: 'Luôn bật', use: 'Check giá LME, stocks, cancelled warrants, warehouse, spread, cash-3M khi có tin hoặc giá chạy.', frequency: 'Trong phiên + khi giá biến động mạnh', url: 'https://www.lseg.com/en/data-analytics/financial-data/commodities-data/lme-data', mode: 'Nguồn chính nếu tài khoản có entitlement.' },
+      { name: 'SMM / Shanghai Metals Market', priority: 'Rất cao', group: 'Check hằng ngày', use: 'Physical China: spot premium, SHFE/LME inventory snapshot, import arbitrage, smelter/downstream demand.', frequency: 'Sáng + trước phiên Âu/Mỹ', url: 'https://www.metal.com/', mode: 'Subscription/API risk. Nếu có entitlement trong LSEG thì xem trong LSEG.' },
+      { name: 'Fastmarkets Base Metals', priority: 'Cao', group: 'Check hằng ngày', use: 'Premium physical, trade flow, price assessment, supply disruption, market update cho Cu/Al/Zn.', frequency: '1-2 lần/ngày hoặc khi có alert', url: 'https://www.fastmarkets.com/metals-and-mining/base-metals/', mode: 'Subscription/API risk. Không scrape full content.' },
+      { name: 'Macro Calendar: Forex Factory + CME FedWatch', priority: 'Cao', group: 'Check hằng ngày', use: 'CPI, PPI, NFP, jobless claims, Fed speech; FedWatch để xem xác suất Fed sau dữ liệu.', frequency: 'Mỗi sáng + 30 phút trước dữ liệu đỏ', url: 'https://www.forexfactory.com/calendar', mode: 'Manual. Mở FedWatch khi có CPI/PPI/NFP/FOMC.' },
+      { name: 'Policy official: USTR + White House + Federal Register', priority: 'Rất cao', group: 'Check theo sự kiện', use: 'Xác nhận tariff, Section 301/232, proclamation, ngày hiệu lực và phạm vi hàng hóa.', frequency: 'Ngay khi LSEG báo Trump/tariff/sanction', url: 'https://www.federalregister.gov/developers/documentation/api/v1', mode: 'Federal Register có API public; USTR/White House chủ yếu mở xác nhận.' },
+      { name: 'SHFE Official Weekly Data', priority: 'Cao', group: 'Check tuần/tháng', use: 'Xác nhận tồn kho Trung Quốc chính thức cho Cu/Al/Zn, đặc biệt cuối tuần.', frequency: 'Thứ Sáu hằng tuần', url: 'https://www.shfe.com.cn/eng/reports/StatisticalData/WeeklyData/', mode: 'Manual official.' },
+      { name: 'Monthly official balance: ICSG + IAI + ILZSG', priority: 'Trung bình-cao', group: 'Check tuần/tháng', use: 'Báo cáo nền cung cầu Đồng/Nhôm/Kẽm: refined balance, sản lượng, usage, stocks.', frequency: 'Hàng tháng', url: 'https://icsg.org/', mode: 'Manual/monthly. Không dùng cho intraday.' },
+      { name: 'Company IR / Mining official sources', priority: 'Cao khi có sự kiện', group: 'Check theo sự kiện', use: 'Xác nhận strike, shutdown, force majeure, output cut của Codelco, Freeport, BHP, Rio, Glencore, Alcoa, Teck, Nexa, Korea Zinc.', frequency: 'Chỉ mở khi Reuters/LSEG báo sự kiện supply', url: '#', mode: 'Manual event verification.' },
+      { name: 'GDELT + Federal Register API public', priority: 'Phụ trợ', group: 'API public', use: 'Nguồn public để web local thử kéo headline/tariff/legal docs mà không đụng license LSEG.', frequency: 'Kéo theo nút cập nhật live feed', url: 'https://www.gdeltproject.org/', mode: 'Free public API; chất lượng thấp hơn Reuters/LSEG.' }
     ];
 
     const REDUCED = [
-      {name:'Westmetall', action:'Bỏ khỏi checklist hằng ngày', reason:'LSEG đã có LME data; Westmetall chỉ dùng backup khi LSEG lỗi/chậm hoặc cần đối chiếu nhanh.'},
-      {name:'LME Official website', action:'Giảm tần suất', reason:'Không cần mở liên tục nếu LSEG có warehouse/stocks. Chỉ dùng cuối ngày hoặc khi cần official backup.'},
-      {name:'LME Sanctions & Tariffs riêng', action:'Gom vào Policy official', reason:'Chỉ mở khi có tin sanction/tariff từ LSEG; không cần card riêng.'},
-      {name:'BIS / U.S. Commerce', action:'Gom vào Policy official', reason:'Chỉ cần khi tin Section 232 xuất hiện; không cần check mỗi ngày.'},
-      {name:'NBS China Official', action:'Gom vào Macro calendar', reason:'Chỉ theo lịch công bố lớn; không cần mở nếu không có PMI/production/property data.'},
-      {name:'Cochilco Chile', action:'Gom vào Company IR / Mining official', reason:'Chỉ mở khi có tin Chile/Codelco/output/strike; không cần theo dõi riêng hằng ngày.'},
-      {name:'ICSG, IAI, ILZSG', action:'Gom thành Monthly official balance', reason:'Dùng cho báo cáo tháng, không phải nguồn alert intraday.'}
+      { name: 'Westmetall', action: 'Bỏ khỏi checklist hằng ngày', reason: 'LSEG đã có LME data; Westmetall chỉ dùng backup khi LSEG lỗi/chậm hoặc cần đối chiếu nhanh.' },
+      { name: 'LME Official website', action: 'Giảm tần suất', reason: 'Không cần mở liên tục nếu LSEG có warehouse/stocks. Chỉ dùng cuối ngày hoặc khi cần official backup.' },
+      { name: 'LME Sanctions & Tariffs riêng', action: 'Gom vào Policy official', reason: 'Chỉ mở khi có tin sanction/tariff từ LSEG; không cần card riêng.' },
+      { name: 'BIS / U.S. Commerce', action: 'Gom vào Policy official', reason: 'Chỉ cần khi tin Section 232 xuất hiện; không cần check mỗi ngày.' },
+      { name: 'NBS China Official', action: 'Gom vào Macro calendar', reason: 'Chỉ theo lịch công bố lớn; không cần mở nếu không có PMI/production/property data.' },
+      { name: 'Cochilco Chile', action: 'Gom vào Company IR / Mining official', reason: 'Chỉ mở khi có tin Chile/Codelco/output/strike; không cần theo dõi riêng hằng ngày.' },
+      { name: 'ICSG, IAI, ILZSG', action: 'Gom thành Monthly official balance', reason: 'Dùng cho báo cáo tháng, không phải nguồn alert intraday.' }
     ];
 
     const ALERT_RULES = [
-      {label:'Tariff / Sanction / Trump / USTR / White House', impact:'Báo ngay', color:'red'},
-      {label:'Strike / Shutdown / Force majeure / Export ban', impact:'Báo ngay', color:'red'},
-      {label:'LME stocks / cancelled warrants / backwardation biến động mạnh', impact:'Báo ngay', color:'red'},
-      {label:'China stimulus / PMI / property / import arbitrage bất thường', impact:'Báo nhanh', color:'amber'},
-      {label:'CPI / PPI / NFP / Fed làm DXY/yields chạy mạnh', impact:'Báo nhanh', color:'amber'},
-      {label:'Rumor từ X/social chưa xác nhận', impact:'Chỉ báo nếu có phản ứng giá; gắn Unconfirmed', color:'slate'},
-      {label:'Forecast / Opinion / Technicals / Market Talk', impact:'Không báo nếu không có event mới', color:'slate'}
+      { label: 'Tariff / Sanction / Trump / USTR / White House', impact: 'Báo ngay', color: 'red' },
+      { label: 'Strike / Shutdown / Force majeure / Export ban', impact: 'Báo ngay', color: 'red' },
+      { label: 'LME stocks / cancelled warrants / backwardation biến động mạnh', impact: 'Báo ngay', color: 'red' },
+      { label: 'China stimulus / PMI / property / import arbitrage bất thường', impact: 'Báo nhanh', color: 'amber' },
+      { label: 'CPI / PPI / NFP / Fed làm DXY/yields chạy mạnh', impact: 'Báo nhanh', color: 'amber' },
+      { label: 'Rumor từ X/social chưa xác nhận', impact: 'Chỉ báo nếu có phản ứng giá; gắn Unconfirmed', color: 'slate' },
+      { label: 'Forecast / Opinion / Technicals / Market Talk', impact: 'Không báo nếu không có event mới', color: 'slate' }
     ];
 
     const WORKFLOWS = {
       day: [
-        {time:'Đầu ngày', title:'Quét LSEG overnight', body:'Mở Reuters/LSEG Pro News Alert: lọc tin mới về Cu/Al/Zn, tariff, supply disruption, strike, shutdown, smelter, China demand, macro.', source:'LSEG Reuters News'},
-        {time:'Đầu ngày', title:'Check lịch dữ liệu đỏ', body:'CPI, PPI, NFP, jobless claims, Fed speech, China PMI/industrial production. Đánh dấu giờ ra tin.', source:'Forex Factory + LSEG Calendar'},
-        {time:'Trong phiên', title:'Theo dõi alert realtime', body:'Báo team khi headline là Reuters/Metals/Official và có event thật. Bỏ qua forecast/opinion/market talk nếu không có tin mới.', source:'LSEG Alert'},
-        {time:'Khi giá chạy mạnh', title:'Xác nhận bằng LME data', body:'Check stocks, cancelled warrants, spread, cash-3M, warehouse và SHFE nếu liên quan China.', source:'LSEG LME Data'},
-        {time:'Trước phiên Mỹ', title:'Check USD/Fed risk', body:'DXY, US yields, CME FedWatch, dữ liệu Mỹ sắp ra.', source:'LSEG + CME FedWatch'},
-        {time:'Cuối ngày', title:'Ghi 3-5 tin quan trọng', body:'Lưu headline, tác động, phản ứng giá, link nguồn, tin cần follow-up.', source:'Dashboard note'}
+        { time: 'Đầu ngày', title: 'Quét LSEG overnight', body: 'Mở Reuters/LSEG Pro News Alert: lọc tin mới về Cu/Al/Zn, tariff, supply disruption, strike, shutdown, smelter, China demand, macro.', source: 'LSEG Reuters News' },
+        { time: 'Đầu ngày', title: 'Check lịch dữ liệu đỏ', body: 'CPI, PPI, NFP, jobless claims, Fed speech, China PMI/industrial production. Đánh dấu giờ ra tin.', source: 'Forex Factory + LSEG Calendar' },
+        { time: 'Trong phiên', title: 'Theo dõi alert realtime', body: 'Báo team khi headline là Reuters/Metals/Official và có event thật. Bỏ qua forecast/opinion/market talk nếu không có tin mới.', source: 'LSEG Alert' },
+        { time: 'Khi giá chạy mạnh', title: 'Xác nhận bằng LME data', body: 'Check stocks, cancelled warrants, spread, cash-3M, warehouse và SHFE nếu liên quan China.', source: 'LSEG LME Data' },
+        { time: 'Trước phiên Mỹ', title: 'Check USD/Fed risk', body: 'DXY, US yields, CME FedWatch, dữ liệu Mỹ sắp ra.', source: 'LSEG + CME FedWatch' },
+        { time: 'Cuối ngày', title: 'Ghi 3-5 tin quan trọng', body: 'Lưu headline, tác động, phản ứng giá, link nguồn, tin cần follow-up.', source: 'Dashboard note' }
       ],
       week: [
-        {time:'Thứ Sáu', title:'Check SHFE inventory tuần', body:'Cu/Al/Zn stocks; so với tuần trước và với biến động LME/SHFE.', source:'SHFE/SMM/LSEG'},
-        {time:'Cuối tuần', title:'Tổng hợp weekly market', body:'Giá LME, stocks, cancelled warrants, SHFE stocks, physical premium, DXY, macro.', source:'LSEG + SMM/Fastmarkets'},
-        {time:'Cuối tuần', title:'Rà policy còn treo', body:'USTR, White House, Federal Register nếu tuần có tin tariff/sanction.', source:'Official policy sources'},
-        {time:'Cuối tuần', title:'Tối ưu LSEG alert', body:'Alert nào bắn rác thì chỉnh source/topic/keyword; thêm zinc alert riêng nếu thiếu kẽm.', source:'LSEG Manage Alerts'},
-        {time:'Đầu tuần', title:'Lập event calendar', body:'CPI/PPI/NFP/FOMC/China PMI/Industrial Production/PMI các vùng.', source:'Forex Factory + LSEG Calendar'}
+        { time: 'Thứ Sáu', title: 'Check SHFE inventory tuần', body: 'Cu/Al/Zn stocks; so với tuần trước và với biến động LME/SHFE.', source: 'SHFE/SMM/LSEG' },
+        { time: 'Cuối tuần', title: 'Tổng hợp weekly market', body: 'Giá LME, stocks, cancelled warrants, SHFE stocks, physical premium, DXY, macro.', source: 'LSEG + SMM/Fastmarkets' },
+        { time: 'Cuối tuần', title: 'Rà policy còn treo', body: 'USTR, White House, Federal Register nếu tuần có tin tariff/sanction.', source: 'Official policy sources' },
+        { time: 'Cuối tuần', title: 'Tối ưu LSEG alert', body: 'Alert nào bắn rác thì chỉnh source/topic/keyword; thêm zinc alert riêng nếu thiếu kẽm.', source: 'LSEG Manage Alerts' },
+        { time: 'Đầu tuần', title: 'Lập event calendar', body: 'CPI/PPI/NFP/FOMC/China PMI/Industrial Production/PMI các vùng.', source: 'Forex Factory + LSEG Calendar' }
       ],
       month: [
-        {time:'Hàng tháng', title:'Review cung cầu Đồng', body:'Mine/refined copper balance, production/usage, forecast.', source:'ICSG'},
-        {time:'Hàng tháng', title:'Review sản lượng Nhôm', body:'Primary aluminium, alumina production, regional production.', source:'IAI'},
-        {time:'Hàng tháng', title:'Review cung cầu Kẽm', body:'Mine output, refined zinc, usage, stocks.', source:'ILZSG'},
-        {time:'Hàng tháng', title:'Review major miners/smelters', body:'Output guidance, maintenance, strike, force majeure, smelter shutdown.', source:'Company IR + LSEG'},
-        {time:'Hàng tháng', title:'Đánh giá hiệu quả alert', body:'Tin nào làm giá chạy thật, tin nào nhiễu; quyết định cắt/bổ sung nguồn.', source:'LSEG + internal log'}
+        { time: 'Hàng tháng', title: 'Review cung cầu Đồng', body: 'Mine/refined copper balance, production/usage, forecast.', source: 'ICSG' },
+        { time: 'Hàng tháng', title: 'Review sản lượng Nhôm', body: 'Primary aluminium, alumina production, regional production.', source: 'IAI' },
+        { time: 'Hàng tháng', title: 'Review cung cầu Kẽm', body: 'Mine output, refined zinc, usage, stocks.', source: 'ILZSG' },
+        { time: 'Hàng tháng', title: 'Review major miners/smelters', body: 'Output guidance, maintenance, strike, force majeure, smelter shutdown.', source: 'Company IR + LSEG' },
+        { time: 'Hàng tháng', title: 'Đánh giá hiệu quả alert', body: 'Tin nào làm giá chạy thật, tin nào nhiễu; quyết định cắt/bổ sung nguồn.', source: 'LSEG + internal log' }
       ]
     };
 
@@ -996,12 +1146,12 @@
       try {
         if (sheetName === 'News') {
           currentPayload = await loadNewsPayload();
-        } else if (sheetName === 'View') {
-          currentPayload = await loadViewPayload();
         } else if (sheetName === 'Warehouse') {
           currentPayload = await loadWarehousePayload();
         } else if (sheetName === 'NewsUpdate') {
           currentPayload = await loadNewsUpdatePayload();
+        } else if (sheetName === 'Report') {
+          currentPayload = { success: true, sheet: 'Report', updatedAt: new Date().toLocaleString('vi-VN') };
         }
 
         renderCurrentPayload();
@@ -1011,29 +1161,41 @@
     }
 
     function setLoading(sheetName) {
+      const reportArea = document.getElementById('reportArea');
+      const filtersBlock = document.querySelector('.filters');
+      
+      if (sheetName === 'Report') {
+        if (reportArea) reportArea.style.display = 'block';
+        contentArea.style.display = 'none';
+        pageTitle.textContent = 'Báo cáo LME';
+        pageSubtitle.textContent = 'Công cụ kiểm tra vị thế và hạch toán LME.';
+        if (filtersBlock) filtersBlock.style.display = 'none';
+        metricUpdated.textContent = '-';
+        if (typeof renderOpenOutput === 'function') renderOpenOutput();
+        if (typeof renderClosedOutput === 'function') renderClosedOutput();
+        return;
+      } else {
+        if (reportArea) reportArea.style.display = 'none';
+        contentArea.style.display = 'block';
+      }
+
       contentArea.innerHTML = '<div class="empty">Đang tải dữ liệu...</div>';
       metricUpdated.textContent = '-';
+      if (filtersBlock) filtersBlock.style.display = 'flex';
 
       if (sheetName === 'News') {
-        pageTitle.textContent = 'Tin tức kim loại';
-        pageSubtitle.textContent = '';
+        pageTitle.textContent = 'Tin tức Daily Summary by GPT Pro :)';
+        pageSubtitle.textContent = 'Có link cho mng đọc chi tiết hơn';
         searchInput.placeholder = 'Tìm kiếm tin tức, nguồn, kim loại...';
         dateFilter.style.display = '';
-      } else if (sheetName === 'View') {
-        pageTitle.textContent = 'View';
-        pageSubtitle.textContent = 'Dữ liệu view thị trường lấy từ bảng market_views.';
-        searchInput.placeholder = 'Tìm kiếm trong bảng View...';
-        dateFilter.style.display = 'none';
       } else if (sheetName === 'Warehouse') {
         pageTitle.textContent = 'Warehouse';
         pageSubtitle.textContent = 'Dữ liệu tồn kho lấy từ bảng warehouse_records nếu đã tạo.';
         searchInput.placeholder = 'Tìm kiếm trong bảng Warehouse...';
-        dateFilter.style.display = 'none';
-      } else if (sheetName === 'NewsUpdate') {
-        pageTitle.textContent = 'Cập nhật tin tức live';
-        pageSubtitle.textContent = 'Live feed từ Federal Register, GDELT và nguồn public khác.';
-        searchInput.placeholder = 'Tìm kiếm feed...';
-        dateFilter.style.display = 'none';
+      } else if (sheetName === 'Report') {
+        pageTitle.textContent = 'Báo cáo LME';
+        pageSubtitle.textContent = 'Công cụ kiểm tra vị thế và hạch toán LME.';
+        if (filtersBlock) filtersBlock.style.display = 'none';
       }
     }
 
@@ -1073,43 +1235,6 @@
         count: rows.length,
         rows,
         dates: [...new Set(rows.map(row => row.date).filter(Boolean))]
-      };
-    }
-
-    async function loadViewPayload() {
-      const { data, error } = await supabaseClient
-        .from(TABLES.View)
-        .select('*')
-        .order('meeting_date', { ascending: false, nullsFirst: false })
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      const values = [VIEW_HEADERS].concat((data || []).map(item => [
-        formatDateVN(item.meeting_date),
-        item.meeting_time || '',
-        item.member || '',
-        item.al_price_zone || '',
-        item.al_direction || '',
-        item.cu_price_zone || '',
-        item.cu_direction || '',
-        item.zn_price_zone || '',
-        item.zn_direction || '',
-        item.summary_view || '',
-        item.time_frame || '',
-        item.action_plan || '',
-        item.al_result || '',
-        item.cu_result || '',
-        item.zn_result || '',
-        item.quick_note || ''
-      ]));
-
-      return {
-        success: true,
-        sheet: 'View',
-        updatedAt: new Date().toLocaleString('vi-VN'),
-        count: Math.max(values.length - 1, 0),
-        values
       };
     }
 
@@ -1161,6 +1286,8 @@
         renderNews(currentPayload);
       } else if (currentPayload.sheet === 'NewsUpdate') {
         renderNewsUpdate(currentPayload);
+      } else if (currentPayload.sheet === 'Report') {
+        contentArea.innerHTML = '<iframe src="rpt.html" style="width: 100%; height: calc(100vh - 200px); min-height: 800px; border: none; border-radius: 8px;"></iframe>';
       } else {
         renderGenericTable(currentPayload);
       }
@@ -1195,24 +1322,33 @@
         return;
       }
 
-      contentArea.innerHTML = `
-        <div class="bbc-news-container">
-          <div class="bbc-grid">
-            <section class="bbc-panel">
-              <h2 class="bbc-panel-title copper">Đồng</h2>
-              ${rows.map(row => renderBbcCard(row.date, row.copper)).join('')}
-            </section>
-            <section class="bbc-panel">
-              <h2 class="bbc-panel-title aluminum">Nhôm</h2>
-              ${rows.map(row => renderBbcCard(row.date, row.aluminum)).join('')}
-            </section>
-            <section class="bbc-panel">
-              <h2 class="bbc-panel-title zinc">Kẽm</h2>
-              ${rows.map(row => renderBbcCard(row.date, row.zinc)).join('')}
-            </section>
+      const dates = [...new Set(rows.map(r => r.date))];
+      let html = '';
+      dates.forEach(d => {
+        const dateRows = rows.filter(r => r.date === d);
+        html += `
+          <div class="news-day-block" style="margin-bottom: 40px;">
+            <h3 class="news-day-title" style="font-size: 20px; font-weight: 700; color: #1d766f; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e5e5e5;">${d}</h3>
+            <div class="bbc-news-container">
+              <div class="bbc-grid">
+                <section class="bbc-panel">
+                  <h2 class="bbc-panel-title copper">Đồng</h2>
+                  ${dateRows.map(row => renderBbcCard(row.date, row.copper)).join('')}
+                </section>
+                <section class="bbc-panel">
+                  <h2 class="bbc-panel-title aluminum">Nhôm</h2>
+                  ${dateRows.map(row => renderBbcCard(row.date, row.aluminum)).join('')}
+                </section>
+                <section class="bbc-panel">
+                  <h2 class="bbc-panel-title zinc">Kẽm</h2>
+                  ${dateRows.map(row => renderBbcCard(row.date, row.zinc)).join('')}
+                </section>
+              </div>
+            </div>
           </div>
-        </div>
-      `;
+        `;
+      });
+      contentArea.innerHTML = html;
     }
 
     function renderBbcCard(date, data) {
@@ -1223,44 +1359,50 @@
       const title = lines.length > 0 ? lines[0] : 'Không có tiêu đề';
       const summaryText = lines.slice(1).join('\n');
 
-      const source = data.source ? data.source : '';
-      let sourceName = source;
-      let sourceLink = '';
+      const time = data.time ? data.time : '';
+      const sources = data.source ? data.source.split('\n').map(s => s.trim()).filter(s => s) : [];
+      let firstLink = '';
+      let sourceLinksHtml = '';
 
-      if (source.includes('http')) {
-        const urlMatch = source.match(/https?:\/\/[^\s]+/);
-        if (urlMatch) {
-          sourceLink = urlMatch[0];
-          sourceName = source.replace(sourceLink, '').trim();
-          if (!sourceName) {
-            try {
-              sourceName = new URL(sourceLink).hostname.replace('www.', '');
-            } catch (e) {
-              sourceName = 'Link';
+      if (sources.length > 0) {
+        sourceLinksHtml = '<div class="bbc-sources" style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">';
+        sources.forEach((src, idx) => {
+          let sName = src;
+          let sLink = '';
+          const urlMatch = src.match(/https?:\/\/[^\s]+/);
+          if (urlMatch) {
+            sLink = urlMatch[0];
+            sName = src.replace(sLink, '').trim();
+            if (!sName) {
+              try { sName = new URL(sLink).hostname.replace('www.', ''); } catch (e) { sName = 'Link'; }
             }
+            if (idx === 0) firstLink = sLink;
           }
-        }
+          if (sLink) {
+            sourceLinksHtml += `<a href="${sLink}" target="_blank" class="bbc-source" style="text-decoration: underline; color: #1d766f; display: flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>${escapeHtml(sName)}</a>`;
+          } else {
+            sourceLinksHtml += `<span class="bbc-source">${escapeHtml(sName)}</span>`;
+          }
+        });
+        sourceLinksHtml += '</div>';
       }
 
-      const time = data.time ? data.time : '';
-
       let titleHtml = `<h3 class="bbc-title">${escapeHtml(title)}</h3>`;
-      if (sourceLink) {
-        titleHtml = `<a href="${sourceLink}" target="_blank" class="bbc-title-link">${titleHtml}</a>`;
+      if (firstLink) {
+        titleHtml = `<a href="${firstLink}" target="_blank" class="bbc-title-link">${titleHtml}</a>`;
       }
 
       const summaryHtml = summaryText ? `<p class="bbc-summary">${escapeHtml(summaryText)}</p>` : '';
-      const sourceNameHtml = sourceName ? `<span class="bbc-source">${escapeHtml(sourceName)}</span>` : '';
-      const readMoreHtml = sourceLink ? `<a href="${sourceLink}" target="_blank" class="bbc-read-more">Chi tiết hơn</a>` : '';
 
       return `
         <article class="bbc-card">
           ${titleHtml}
           ${summaryHtml}
-          <div class="bbc-meta">
-            <span>${escapeHtml(date)} ${escapeHtml(time)}</span>
-            ${sourceNameHtml}
-            ${readMoreHtml}
+          <div class="bbc-meta" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              ${time ? `<span class="bbc-time">${escapeHtml(time)}</span>` : ''}
+            </div>
+            ${sourceLinksHtml}
           </div>
         </article>
       `;
@@ -1283,7 +1425,7 @@
       const numCols = filteredValues[0] ? filteredValues[0].length : 0;
       const rowSpans = [];
       const skip = [];
-      
+
       for (let r = 0; r < filteredValues.length; r++) {
         rowSpans[r] = [];
         skip[r] = [];
@@ -1293,8 +1435,8 @@
         }
       }
 
-      const isView = payload.sheet === 'View';
-      const noMergeCols = isView ? [4, 6, 8, 12, 13, 14] : [];
+      const isView = false;
+      const noMergeCols = [];
 
       for (let c = 0; c < numCols; c++) {
         if (noMergeCols.includes(c)) continue;
@@ -1302,13 +1444,13 @@
           if (skip[r][c]) continue;
           let span = 1;
           const val = String(filteredValues[r][c] || '').trim();
-          
-          if (val !== '') { 
+
+          if (val !== '') {
             for (let nextR = r + 1; nextR < filteredValues.length; nextR++) {
               const nextVal = String(filteredValues[nextR][c] || '').trim();
               const baseCol0 = String(filteredValues[r][0] || '').trim();
               const nextCol0 = String(filteredValues[nextR][0] || '').trim();
-              
+
               if (nextVal === val && baseCol0 === nextCol0) {
                 span++;
                 skip[nextR][c] = true;
@@ -1324,18 +1466,18 @@
       const tbodyHtml = filteredValues.map((row, rowIndex) => {
         const trHtml = row.map((cell, colIndex) => {
           if (rowIndex > 0 && skip[rowIndex][colIndex]) return '';
-          
+
           let cls = '';
           if (isView) {
-             if ([3, 4, 12].includes(colIndex)) cls = 'col-al';
-             else if ([5, 6, 13].includes(colIndex)) cls = 'col-cu';
-             else if ([7, 8, 14].includes(colIndex)) cls = 'col-zn';
+            if ([3, 4, 12].includes(colIndex)) cls = 'col-al';
+            else if ([5, 6, 13].includes(colIndex)) cls = 'col-cu';
+            else if ([7, 8, 14].includes(colIndex)) cls = 'col-zn';
           }
-          
-          const spanAttr = (rowIndex > 0 && rowSpans[rowIndex][colIndex] > 1) 
-                         ? ` rowspan="${rowSpans[rowIndex][colIndex]}"` : '';
+
+          const spanAttr = (rowIndex > 0 && rowSpans[rowIndex][colIndex] > 1)
+            ? ` rowspan="${rowSpans[rowIndex][colIndex]}"` : '';
           const classAttr = cls ? ` class="${cls}"` : '';
-          
+
           return `<td${spanAttr}${classAttr}>${formatTableCell(cell, rowIndex === 0)}</td>`;
         }).join('');
         return `<tr>${trHtml}</tr>`;
@@ -1403,51 +1545,51 @@
 
     let liveFeedsCategory = 'Tất cả';
 
-    function scoreFeed(item){
-      const t=(item.title+' '+(item.summary||'')).toLowerCase(); let score=0, cat='Watch';
-      if(/tariff|sanction|section 232|section 301|white house|ustr|trump/.test(t)){score+=5; cat='Policy';}
-      if(/strike|shutdown|force majeure|export ban|curtailment|smelter|mine|refinery|output|production/.test(t)){score+=4; cat='Supply';}
-      if(/inventory|inventories|stocks|warehouse|warrant|backwardation|contango|cash-3m/.test(t)){score+=3; cat='Inventory';}
-      if(/china|shfe|smm|premium|arbitrage|property|stimulus|pmi/.test(t)){score+=2; cat='China';}
-      if(/fed|powell|cpi|ppi|payrolls|dxy|dollar|yields|inflation/.test(t)){score+=2; cat='Macro';}
-      if(/forecast|opinion|technical|market talk|preview/.test(t)){score-=3;}
-      return {score, category:cat};
+    function scoreFeed(item) {
+      const t = (item.title + ' ' + (item.summary || '')).toLowerCase(); let score = 0, cat = 'Watch';
+      if (/tariff|sanction|section 232|section 301|white house|ustr|trump/.test(t)) { score += 5; cat = 'Policy'; }
+      if (/strike|shutdown|force majeure|export ban|curtailment|smelter|mine|refinery|output|production/.test(t)) { score += 4; cat = 'Supply'; }
+      if (/inventory|inventories|stocks|warehouse|warrant|backwardation|contango|cash-3m/.test(t)) { score += 3; cat = 'Inventory'; }
+      if (/china|shfe|smm|premium|arbitrage|property|stimulus|pmi/.test(t)) { score += 2; cat = 'China'; }
+      if (/fed|powell|cpi|ppi|payrolls|dxy|dollar|yields|inflation/.test(t)) { score += 2; cat = 'Macro'; }
+      if (/forecast|opinion|technical|market talk|preview/.test(t)) { score -= 3; }
+      return { score, category: cat };
     }
 
-    async function fetchFederalRegister(){
-      const url='https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=(copper%20OR%20aluminum%20OR%20aluminium%20OR%20zinc%20OR%20tariff%20OR%20section%20232%20OR%20section%20301)&order=newest&per_page=5';
-      const res=await fetch(url); if(!res.ok) throw new Error('Federal Register API lỗi');
-      const data=await res.json();
-      return (data.results||[]).map(d=>{ const scored=scoreFeed({title:d.title, summary:d.abstract||''}); return {title:d.title, source:'Federal Register', time:d.publication_date, url:d.html_url, category:scored.category, score:scored.score, summary:d.abstract || d.type || 'Official legal document'}; });
+    async function fetchFederalRegister() {
+      const url = 'https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=(copper%20OR%20aluminum%20OR%20aluminium%20OR%20zinc%20OR%20tariff%20OR%20section%20232%20OR%20section%20301)&order=newest&per_page=5';
+      const res = await fetch(url); if (!res.ok) throw new Error('Federal Register API lỗi');
+      const data = await res.json();
+      return (data.results || []).map(d => { const scored = scoreFeed({ title: d.title, summary: d.abstract || '' }); return { title: d.title, source: 'Federal Register', time: d.publication_date, url: d.html_url, category: scored.category, score: scored.score, summary: d.abstract || d.type || 'Official legal document' }; });
     }
 
-    async function fetchGdelt(){
-      const query=encodeURIComponent('(copper OR aluminium OR aluminum OR zinc) (LME OR smelter OR mine OR tariff OR China OR inventory OR strike)');
-      const url=`https://api.gdeltproject.org/api/v2/doc/doc?query=${query}&mode=artlist&maxrecords=10&format=json&sort=hybridrel`;
-      const res=await fetch(url); if(!res.ok) throw new Error('GDELT API lỗi');
-      const data=await res.json();
-      return (data.articles||[]).map(a=>{ const scored=scoreFeed({title:a.title, summary:a.seendate}); return {title:a.title, source:'GDELT', time:a.seendate || 'N/A', url:a.url, category:scored.category, score:scored.score, summary:'Public web scan.'}; });
+    async function fetchGdelt() {
+      const query = encodeURIComponent('(copper OR aluminium OR aluminum OR zinc) (LME OR smelter OR mine OR tariff OR China OR inventory OR strike)');
+      const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${query}&mode=artlist&maxrecords=10&format=json&sort=hybridrel`;
+      const res = await fetch(url); if (!res.ok) throw new Error('GDELT API lỗi');
+      const data = await res.json();
+      return (data.articles || []).map(a => { const scored = scoreFeed({ title: a.title, summary: a.seendate }); return { title: a.title, source: 'GDELT', time: a.seendate || 'N/A', url: a.url, category: scored.category, score: scored.score, summary: 'Public web scan.' }; });
     }
 
-    function mockCoreFeed(){
+    function mockCoreFeed() {
       return [
-        {title:'LSEG alert placeholder: Reuters Metals headline sẽ được nhập/copy thủ công theo license', source:'LSEG Pro manual', time:new Date().toLocaleTimeString('vi-VN'), url:'https://www.lseg.com/en/reuters-news', category:'Watch', score:5, summary:'Không tự gọi LSEG API trong file local để tránh license/redistribution.'},
-        {title:'Mô phỏng: LME copper stocks move sharply; check cancelled warrants and cash-3M spread', source:'Workflow reminder', time:'Live check', url:'https://www.lme.com/market-data/reports-and-data', category:'Inventory', score:6, summary:'Nếu có giá chạy mạnh, mở LSEG LME data trước, LME official chỉ làm backup.'},
-        {title:'Mô phỏng: China physical premium changes; check SMM/Fastmarkets before Europe/US session', source:'Workflow reminder', time:'Live check', url:'https://www.metal.com/', category:'China', score:5, summary:'Physical China là nguồn ngoài còn cần giữ hằng ngày.'}
+        { title: 'LSEG alert placeholder: Reuters Metals headline sẽ được nhập/copy thủ công theo license', source: 'LSEG Pro manual', time: new Date().toLocaleTimeString('vi-VN'), url: 'https://www.lseg.com/en/reuters-news', category: 'Watch', score: 5, summary: 'Không tự gọi LSEG API trong file local để tránh license/redistribution.' },
+        { title: 'Mô phỏng: LME copper stocks move sharply; check cancelled warrants and cash-3M spread', source: 'Workflow reminder', time: 'Live check', url: 'https://www.lme.com/market-data/reports-and-data', category: 'Inventory', score: 6, summary: 'Nếu có giá chạy mạnh, mở LSEG LME data trước, LME official chỉ làm backup.' },
+        { title: 'Mô phỏng: China physical premium changes; check SMM/Fastmarkets before Europe/US session', source: 'Workflow reminder', time: 'Live check', url: 'https://www.metal.com/', category: 'China', score: 5, summary: 'Physical China là nguồn ngoài còn cần giữ hằng ngày.' }
       ];
     }
 
     async function loadNewsUpdatePayload() {
-      let results=[];
-      try{ 
-        const [fr, gd] = await Promise.allSettled([fetchFederalRegister(), fetchGdelt()]); 
-        if(fr.status==='fulfilled') results.push(...fr.value); 
-        if(gd.status==='fulfilled') results.push(...gd.value); 
-      } catch(e){}
-      
+      let results = [];
+      try {
+        const [fr, gd] = await Promise.allSettled([fetchFederalRegister(), fetchGdelt()]);
+        if (fr.status === 'fulfilled') results.push(...fr.value);
+        if (gd.status === 'fulfilled') results.push(...gd.value);
+      } catch (e) { }
+
       results.push(...mockCoreFeed());
-      const liveFeeds = results.sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,25);
-      
+      const liveFeeds = results.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 25);
+
       return {
         success: true,
         sheet: 'NewsUpdate',
@@ -1459,7 +1601,7 @@
 
     function renderNewsUpdate(payload) {
       const isFirstRender = !document.getElementById('newsDeskContainer');
-      
+
       if (isFirstRender) {
         contentArea.innerHTML = `
           <div id="newsDeskContainer" class="desk-grid">
@@ -1587,7 +1729,7 @@ Mức độ tin cậy: Official / Confirmed / Unconfirmed</textarea>
       const query = normalize(searchInput.value);
       const catBox = document.getElementById('deskFeedCategory');
       const cat = catBox ? catBox.value : liveFeedsCategory;
-      
+
       const feeds = window.deskCurrentFeeds || [];
       const filtered = feeds.filter(f => {
         if (cat !== 'Tất cả' && f.category !== cat) return false;
@@ -1626,7 +1768,7 @@ Mức độ tin cậy: Official / Confirmed / Unconfirmed</textarea>
     function renderDeskSourceTabs() {
       const box = document.getElementById('deskSourceTabs');
       if (!box) return;
-      box.innerHTML = SOURCE_CATEGORIES.map(c => 
+      box.innerHTML = SOURCE_CATEGORIES.map(c =>
         `<button class="desk-tab ${c === deskSourceCategory ? 'active' : ''}" onclick="deskSourceCategory='${c}'; renderDeskSourceTabs(); renderDeskSources();">${c}</button>`
       ).join('');
     }
@@ -1635,8 +1777,8 @@ Mức độ tin cậy: Official / Confirmed / Unconfirmed</textarea>
       const box = document.getElementById('deskSourceGrid');
       if (!box) return;
       const q = normalize(deskSourceQuery);
-      const data = SOURCES.filter(s => (deskSourceCategory === 'Tất cả' || s.group === deskSourceCategory) && normalize([s.name,s.use,s.frequency,s.group,s.mode].join(' ')).includes(q));
-      
+      const data = SOURCES.filter(s => (deskSourceCategory === 'Tất cả' || s.group === deskSourceCategory) && normalize([s.name, s.use, s.frequency, s.group, s.mode].join(' ')).includes(q));
+
       box.innerHTML = data.map(s => {
         const pClass = s.priority.includes('Rất cao') ? 'pri-high' : s.priority.includes('Cao') ? 'pri-med' : 'pri-low';
         return `<div class="source-item">
@@ -1661,7 +1803,7 @@ Mức độ tin cậy: Official / Confirmed / Unconfirmed</textarea>
     function renderDeskWorkflows() {
       const box = document.getElementById('deskWorkflowList');
       if (!box) return;
-      box.innerHTML = WORKFLOWS[deskWorkflowType].map((r, idx) => 
+      box.innerHTML = WORKFLOWS[deskWorkflowType].map((r, idx) =>
         `<div class="workflow-item">
           <div class="wf-time">${escapeHtml(r.time)}</div>
           <div class="wf-content">
@@ -1686,7 +1828,7 @@ Mức độ tin cậy: Official / Confirmed / Unconfirmed</textarea>
     }
 
     function deskChecklistState() {
-      const key = 'stavian_desk_checklist_' + new Date().toISOString().slice(0,10);
+      const key = 'stavian_desk_checklist_' + new Date().toISOString().slice(0, 10);
       return { key, data: JSON.parse(localStorage.getItem(key) || '{}') };
     }
 
@@ -1694,7 +1836,7 @@ Mức độ tin cậy: Official / Confirmed / Unconfirmed</textarea>
       const box = document.getElementById('deskChecklist');
       if (!box) return;
       const { data } = deskChecklistState();
-      box.innerHTML = CHECKLIST.map((t, i) => 
+      box.innerHTML = CHECKLIST.map((t, i) =>
         `<label class="checklist-item ${data[i] ? 'done' : ''}">
           <input type="checkbox" ${data[i] ? 'checked' : ''} onchange="deskToggleChecklist(${i}, this.checked)">
           <span>${escapeHtml(t)}</span>
@@ -1718,7 +1860,7 @@ Mức độ tin cậy: Official / Confirmed / Unconfirmed</textarea>
     function renderDeskReduced() {
       const box = document.getElementById('deskReducedGrid');
       if (!box) return;
-      box.innerHTML = REDUCED.map(s => 
+      box.innerHTML = REDUCED.map(s =>
         `<div class="reduced-item">
           <div class="red-name">${escapeHtml(s.name)}</div>
           <div class="red-action">${escapeHtml(s.action)}</div>
@@ -1741,16 +1883,16 @@ Mức độ tin cậy: Official / Confirmed / Unconfirmed</textarea>
       alert('Đã copy mẫu báo team!');
     }
 
-              function formatDateVN(dateStr) {
+    function formatDateVN(dateStr) {
       if (!dateStr) return '';
-              const parts = String(dateStr).split('-');
-              if (parts.length !== 3) return String(dateStr);
-              return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      const parts = String(dateStr).split('-');
+      if (parts.length !== 3) return String(dateStr);
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
     }
 
-              function parseDateForSort(dateStr) {
+    function parseDateForSort(dateStr) {
       const parts = String(dateStr || '').split('/');
-              return parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : String(dateStr || '');
+      return parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : String(dateStr || '');
     }
 
     function normalize(value) {
@@ -1769,6 +1911,470 @@ Mức độ tin cậy: Official / Confirmed / Unconfirmed</textarea>
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
     }
+
+    
+'use strict';
+
+/* ── State ───────────────────────────────────────────────── */
+let openPositions = [];   // [{code, maturity, side, price, lots, ote}]
+let closedTrades  = [];   // [{contract, openDate, closeDate, maturityDate, side, openPrice, closePrice, lots}]
+
+/* ── Dictionaries ───────────────────────────────────────── */
+const ML  = {F:1,G:2,H:3,J:4,K:5,M:6,N:7,Q:8,U:9,V:10,X:11,Z:12};
+const MN  = ['','Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+
+/* ── Helpers ─────────────────────────────────────────────── */
+function productFromCode(code) {
+  const c = (code || '').toUpperCase();
+  if (/^AHD|^LALZ/.test(c)) return 'Nhôm';
+  if (/^CAD|^LDKZ/.test(c)) return 'Đồng';
+  if (/^ZDS|^LZHZ/.test(c)) return 'Kẽm';
+  return '';
+}
+
+function maturityFromCode(code) {
+  const m = (code || '').toUpperCase().match(/(\d{1,2})([FGHJKMNQUVXZ])(\d{2})$/);
+  if (!m) return '';
+  return `${MN[ML[m[2]]]}/${2000 + Number(m[3])}`;
+}
+
+function maturityDateFromCode(code) {
+  const m = (code || '').toUpperCase().match(/(\d{1,2})([FGHJKMNQUVXZ])(\d{2})$/);
+  if (!m) return '';
+  return `${Number(m[1])}/${String(ML[m[2]]).padStart(2,'0')}/${String(2000+Number(m[3])).slice(-2)}`;
+}
+
+function getFee() { return parseFloat(document.getElementById('feeMt').value) || 0.572; }
+
+function num(n) {
+  if (n === null || n === undefined || n === '') return null;
+  const v = Number(n);
+  return isFinite(v) ? v : null;
+}
+
+function fmtPrice(n) {
+  const v = num(n);
+  if (v === null) return '';
+  const d = Math.abs(v) >= 10000 ? 1 : 2;
+  return v.toLocaleString('en-US', {minimumFractionDigits:d, maximumFractionDigits:d});
+}
+
+function fmtMoney(n) {
+  const v = num(n);
+  if (v === null) return '';
+  const sign = v < 0 ? '-' : '';
+  return sign + '$' + Math.abs(v).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function fmtFee(n) {
+  const v = num(n);
+  if (v === null) return '';
+  return v.toLocaleString('en-US', {minimumFractionDigits:1, maximumFractionDigits:1});
+}
+
+function cls(n) { const v=num(n); return v===null?'':v<0?'loss':v>0?'profit':''; }
+function bg(n)  { const v=num(n); return v===null?'':v<0?'light-red':v>0?'light-green':''; }
+
+function esc(s) {
+  return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+/* ── Gemini API ──────────────────────────────────────────── */
+async function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+function getMediaType(file) {
+  if (file.type === 'image/png')  return 'image/png';
+  if (file.type === 'image/gif')  return 'image/gif';
+  if (file.type === 'image/webp') return 'image/webp';
+  return 'image/jpeg';
+}
+
+async function callGemini(b64, mt, prompt) {
+  const apiKey = 'AIzaSyBUSpFTAzUXAMRidGWU5vymKNrlk26lx5U';
+
+  const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
+    method : 'POST',
+    headers: {'Content-Type':'application/json'},
+    body   : JSON.stringify({
+      contents: [{
+        parts: [
+          {text: prompt},
+          {inline_data: {mime_type: mt, data: b64}}
+        ]
+      }],
+      generationConfig: {
+        response_mime_type: "application/json"
+      }
+    })
+  });
+
+  const data = await resp.json();
+  if (!resp.ok || data.error) throw new Error(data.error?.message || `HTTP ${resp.status}`);
+
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  try {
+    return JSON.parse(raw);
+  } catch {
+    throw new Error(`AI trả về dữ liệu không phải JSON hợp lệ: ${raw.slice(0,200)}`);
+  }
+}
+
+/* ── Prompts ─────────────────────────────────────────────── */
+const PROMPT_OPEN = `You are reading a screenshot from an LME metals trading platform.
+
+STEP 1 — Identify which tab is visible:
+• "status" tab (Trạng thái): A list of open positions. Each row has a label like M1/M2/M3 (Long/Buy) or B1/B2/B3 (Short/Sell), followed by a contract code (e.g. AHDD11U26, ZDSD11U26, LALZ, LZHZ, LDKZ). Columns on the right show a price and an OTE (unrealised P&L in USD, can be negative).
+• "transactions" tab (Mua & Bán): Shows trade history. Rows contain dates, text like "X lot mua" or "X lot bán", prices, "n/a" markers, and P&L values in USD.
+
+STEP 2 — Return ONLY valid JSON with no markdown fences, no extra text:
+{
+  "type": "status" or "transactions",
+  "positions": [
+    {
+      "code":     "exact contract code (e.g. AHDD11U26, LALZ, ZDSD15U26)",
+      "maturity": "e.g. Tháng 9/2026, or empty string",
+      "side":     "Long" or "Short",
+      "price":    number or null,
+      "lots":     integer or null,
+      "ote":      number (USD, can be negative) or null
+    }
+  ]
+}
+
+Extraction rules (only for "status" type):
+- Row label M1/M2/M3… → side = "Long"
+- Row label B1/B2/B3… → side = "Short"
+- Code prefixes: AHD…/LALZ = Nhôm (Al), CAD…/LDKZ = Đồng (Cu), ZDS…/LZHZ = Kẽm (Zn)
+- "price": the opening price of the position (Al/Zn ≈ 3200–3900, Cu ≈ 12000–16000)
+- "ote": the rightmost numeric column (USD), negative = loss
+- If type is "transactions", return positions as empty array []`;
+
+const PROMPT_CLOSED = `You are reading a screenshot from an LME metals trading platform showing the "Mua & Bán" (Buy & Sell) tab with completed round-trip trades.
+
+STEP 1 — Identify which tab is visible:
+• "transactions" tab (Mua & Bán): Rows show dates, "X lot mua" (buy) or "X lot bán" (sell), a price, then either "n/a" (= the opening row, no P&L yet) or an actual USD value (= the closing row).
+• "status" tab (Trạng thái): A position list with labels M1/M2/B1/B2.
+
+STEP 2 — Return ONLY valid JSON with no markdown fences:
+{
+  "type": "transactions" or "status",
+  "trades": [
+    {
+      "contract":     "e.g. CADD11U26, LALZ, LDKZ, LZHZ",
+      "openDate":     "DD/MM/YY",
+      "closeDate":    "DD/MM/YY",
+      "maturityDate": "DD/MM/YY or empty string",
+      "side":         "Long" or "Short",
+      "openPrice":    number,
+      "closePrice":   number,
+      "lots":         integer
+    }
+  ]
+}
+
+Pairing rules (only for "transactions" type):
+- Each instrument section has alternating rows: one with "n/a" (open) and one with a USD P&L value (close).
+- LONG trade: "lot mua" row = open, "lot bán" row = close.
+- SHORT trade: "lot bán" row = open, "lot mua" row = close.
+- "lots": the integer directly before the word "lot" (usually 1).
+- openDate = date on the mua/bán opening row; closeDate = date on the closing row.
+- maturityDate: derive from contract code when possible
+  (e.g. CADD11U26 → day 11, letter U = Sep = month 09, year 26 → "11/09/26").
+  For LALZ/LDKZ/LZHZ, use the prompt date visible in the image or leave empty.
+- If type is "status", return trades as empty array [].`;
+
+/* ── Handlers ─────────────────────────────────────────────── */
+async function handleOpenUpload() {
+  const file = document.getElementById('openImage').files[0];
+  const st   = document.getElementById('openStatus');
+  openPositions = [];
+  
+  if (!file) { st.textContent=''; return; }
+
+  st.className   = 'status';
+  st.innerHTML   = '<span class="spin"></span>AI đang đọc ảnh vị thế…';
+
+  try {
+    const b64    = await fileToBase64(file);
+    const mt     = getMediaType(file);
+    const result = await callGemini(b64, mt, PROMPT_OPEN);
+
+    if (result.type === 'transactions') {
+      st.className = 'status warn';
+      st.textContent = '⚠️ Ảnh này là tab "Mua & Bán" — ô này cần ảnh tab "Trạng thái" (vị thế đang có). Hãy đổi lại ảnh.';
+      return;
+    }
+
+    openPositions = (result.positions || []).map(p => ({
+      code    : (p.code || '').trim().toUpperCase(),
+      maturity: p.maturity || maturityFromCode(p.code || ''),
+      side    : (p.side || 'Long'),
+      price   : num(p.price),
+      lots    : num(p.lots),
+      ote     : num(p.ote),
+    })).filter(p => p.code);
+
+    
+
+    if (openPositions.length) {
+      st.className   = 'status';
+      st.textContent = `✓ Đọc được ${openPositions.length} vị thế.`;
+    } else {
+      st.className   = 'status warn';
+      st.textContent = 'Không nhận ra vị thế nào. Thử crop ảnh sát bảng hơn.';
+    }
+  } catch (err) {
+    st.className   = 'status err';
+    st.textContent = `Lỗi: ${err.message}`;
+    console.error(err);
+  }
+}
+
+async function handleClosedUpload() {
+  const file = document.getElementById('closedImage').files[0];
+  const st   = document.getElementById('closedStatus');
+  closedTrades = [];
+  
+  if (!file) { st.textContent=''; return; }
+
+  st.className = 'status';
+  st.innerHTML = '<span class="spin"></span>AI đang đọc ảnh hạch toán…';
+
+  try {
+    const b64    = await fileToBase64(file);
+    const mt     = getMediaType(file);
+    const result = await callGemini(b64, mt, PROMPT_CLOSED);
+
+    if (result.type === 'status') {
+      st.className   = 'status warn';
+      st.textContent = '⚠️ Ảnh này là tab "Trạng thái" — ô này cần ảnh tab "Mua & Bán" (hạch toán). Hãy đổi lại ảnh.';
+      return;
+    }
+
+    closedTrades = (result.trades || []).map(t => ({
+      contract    : (t.contract || '').trim().toUpperCase(),
+      openDate    : t.openDate    || '',
+      closeDate   : t.closeDate   || '',
+      maturityDate: t.maturityDate || maturityDateFromCode(t.contract || ''),
+      side        : t.side || 'Long',
+      openPrice   : num(t.openPrice),
+      closePrice  : num(t.closePrice),
+      lots        : Math.max(1, Math.round(num(t.lots) || 1)),
+    })).filter(t => t.contract && t.openPrice !== null && t.closePrice !== null);
+
+    
+
+    if (closedTrades.length) {
+      st.className   = 'status';
+      st.textContent = `✓ Đọc được ${closedTrades.length} lệnh tất toán.`;
+    } else {
+      st.className   = 'status warn';
+      st.textContent = 'Không tìm thấy lệnh tất toán. Thử crop ảnh sát bảng hơn.';
+    }
+  } catch (err) {
+    st.className   = 'status err';
+    st.textContent = `Lỗi: ${err.message}`;
+    console.error(err);
+  }
+}
+
+/* ── Render: Open Positions (Bảng vị thế) ───────────────── */
+function renderOpenOutput() {
+  const account  = 'admin';
+  const PRODS    = ['Nhôm','Đồng','Kẽm'];
+  let body = '', grandOte = 0;
+
+  for (const prd of PRODS) {
+    const rows = openPositions.filter(p => productFromCode(p.code) === prd);
+
+    if (!rows.length) {
+      body += `
+        <tr class="group-sep">
+          <td class="left bold">${esc(prd)}</td>
+          <td>-</td><td>-</td><td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td></td><td></td><td class="bold">Giá trung bình</td>
+          <td></td><td class="num bold">0</td>
+          <td></td><td class="num bold">0</td>
+          <td></td><td></td>
+        </tr>`;
+      continue;
+    }
+
+    let productOte = 0;
+
+    rows.forEach((r, i) => {
+      const isLong  = r.side.toLowerCase() !== 'short';
+      const oteVal  = r.ote;
+      if (oteVal !== null) { productOte += oteVal; grandOte += oteVal; }
+
+      body += `<tr class="${i === 0 ? 'group-sep' : ''}">
+        <td class="left bold">${i === 0 ? esc(prd) : ''}</td>
+        <td>${esc(r.maturity)}</td>
+        <td>${esc(r.code)}</td>
+        <td class="num">${isLong && r.price !== null ? fmtPrice(r.price) : ''}</td>
+        <td class="num">${isLong && r.lots !== null ? r.lots : ''}</td>
+        <td class="num">${!isLong && r.price !== null ? fmtPrice(r.price) : ''}</td>
+        <td class="num">${!isLong && r.lots !== null ? r.lots : ''}</td>
+        <td class="num ${bg(oteVal)} ${cls(oteVal)}">${oteVal !== null ? fmtMoney(oteVal) : ''}</td>
+        <td></td>
+      </tr>`;
+    });
+
+    // Average row
+    const longRows  = rows.filter(r => r.side.toLowerCase() !== 'short');
+    const shortRows = rows.filter(r => r.side.toLowerCase() === 'short');
+    const lLots  = longRows .reduce((s, r) => s + (r.lots || 0), 0);
+    const sLots  = shortRows.reduce((s, r) => s + (r.lots || 0), 0);
+    const avgBuy = lLots ? longRows .reduce((s, r) => s + (r.price||0)*(r.lots||0), 0) / lLots : null;
+    const avgSel = sLots ? shortRows.reduce((s, r) => s + (r.price||0)*(r.lots||0), 0) / sLots : null;
+
+    body += `<tr class="thick-bottom">
+      <td></td><td></td>
+      <td class="bold">Giá trung bình</td>
+      <td class="num bold">${avgBuy !== null ? fmtPrice(avgBuy) : ''}</td>
+      <td class="num bold">${lLots || ''}</td>
+      <td class="num bold">${avgSel !== null ? fmtPrice(avgSel) : ''}</td>
+      <td class="num bold">${sLots}</td>
+      <td></td>
+      <td class="num ${bg(productOte)} ${cls(productOte)} bold">${fmtMoney(productOte)}</td>
+    </tr>`;
+  }
+
+  document.getElementById('openOutputWrap').innerHTML = `
+  <table id="openOutput">
+    <thead>
+      <tr class="title-row"><th colspan="9">Vị thế đang có: ${esc(account)}</th></tr>
+      <tr>
+        <th>Sản phẩm</th><th>Tháng đáo hạn</th><th>Mã</th>
+        <th colspan="2" class="buy-head">Mua</th>
+        <th colspan="2" class="sell-head">Bán</th>
+        <th>OTE tạm tính (USD)</th><th>Ghi chú</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${body}
+      <tr class="thick-top">
+        <td colspan="7" class="bold">Tổng lãi/lỗ đang mở (OTE):</td>
+        <td class="num ${bg(grandOte)} ${cls(grandOte)} bold">${fmtMoney(grandOte)}</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>`;
+}
+
+/* ── Render: Closed Trades (Hạch toán) ─────────────────── */
+function computeRow(t) {
+  const fee  = getFee();
+  const lots = Math.max(1, t.lots || 1);
+  const tons = lots * 25;
+  const feeT = fee * 25 * 2 * lots;
+  const isShort = t.side.toLowerCase().includes('short');
+  let before = null;
+  if (t.openPrice !== null && t.closePrice !== null) {
+    before = isShort
+      ? (t.openPrice - t.closePrice) * tons
+      : (t.closePrice - t.openPrice) * tons;
+  }
+  const after = before !== null ? before - feeT : null;
+  return {lots, tons, feeT, before, after};
+}
+
+function renderClosedOutput() {
+  const fee = getFee();
+  let html = `
+  <table id="closedOutput">
+    <thead>
+      <tr class="title-row"><th colspan="16">HẠCH TOÁN LỢI NHUẬN GIAO DỊCH</th></tr>
+      <tr class="header-green">
+        <th>STT</th><th>Người thực hiện</th>
+        <th>Ngày mở lệnh</th><th>Ngày tất toán</th><th>Ngày đáo hạn</th>
+        <th>Mã hợp đồng</th><th>Mặt hàng</th><th>Vị thế</th>
+        <th>Giá mở</th><th>Giá đóng</th>
+        <th>Khối lượng quy đổi (lot)</th><th>Khối lượng quy đổi (tấn)</th>
+        <th>Phí giao dịch (usd/mt)</th><th>Tổng phí/lệnh</th>
+        <th>Lợi nhuận chưa phí giao dịch</th><th>Lợi nhuận sau phí giao dịch</th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+  let totBefore = 0, totAfter = 0;
+
+  closedTrades.forEach((t, i) => {
+    const c = computeRow(t);
+    if (c.before !== null) totBefore += c.before;
+    if (c.after  !== null) totAfter  += c.after;
+    const prd = productFromCode(t.contract);
+
+    html += `<tr>
+      <td>${i+1}</td>
+      <td></td>
+      <td>${esc(t.openDate)}</td>
+      <td>${esc(t.closeDate)}</td>
+      <td>${esc(t.maturityDate)}</td>
+      <td>${esc(t.contract)}</td>
+      <td>${esc(prd)}</td>
+      <td>${esc(t.side)}</td>
+      <td class="num">${t.openPrice  !== null ? fmtPrice(t.openPrice)  : ''}</td>
+      <td class="num">${t.closePrice !== null ? fmtPrice(t.closePrice) : ''}</td>
+      <td class="num">${c.lots}</td>
+      <td class="num">${c.tons}</td>
+      <td class="num">${fee}</td>
+      <td class="num">${fmtFee(c.feeT)}</td>
+      <td class="num ${bg(c.before)} ${cls(c.before)}">${c.before !== null ? fmtMoney(c.before) : ''}</td>
+      <td class="num ${bg(c.after)}  ${cls(c.after)} ">${c.after  !== null ? fmtMoney(c.after)  : ''}</td>
+    </tr>`;
+  });
+
+  html += `
+    <tr class="thick-top">
+      <td colspan="14" class="bold">Tổng</td>
+      <td class="num ${bg(totBefore)} ${cls(totBefore)} bold">${closedTrades.length ? fmtMoney(totBefore) : ''}</td>
+      <td class="num ${bg(totAfter)}  ${cls(totAfter)}  bold">${closedTrades.length ? fmtMoney(totAfter)  : ''}</td>
+    </tr>
+    </tbody></table>`;
+
+  document.getElementById('closedOutputWrap').innerHTML = html;
+}
+
+/* ── Copy table ──────────────────────────────────────────── */
+function copyTable(id) {
+  const tbl = document.getElementById(id);
+  if (!tbl) { alert('Chưa có bảng để copy.'); return; }
+  const html = tbl.outerHTML;
+  const text = [...tbl.rows].map(r => [...r.cells].map(c => c.innerText.replace(/\n/g,' ').trim()).join('\t')).join('\n');
+  if (navigator.clipboard && window.ClipboardItem) {
+    navigator.clipboard.write([new ClipboardItem({
+      'text/html' : new Blob([html], {type:'text/html'}),
+      'text/plain': new Blob([text], {type:'text/plain'}),
+    })]).then(() => alert('✓ Đã copy bảng!')).catch(() => legacyCopy(tbl));
+  } else {
+    legacyCopy(tbl);
+  }
+}
+
+function legacyCopy(tbl) {
+  const range = document.createRange();
+  range.selectNode(tbl);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  document.execCommand('copy');
+  sel.removeAllRanges();
+  alert('✓ Đã copy bảng!');
+}
+
+/* ── Init ────────────────────────────────────────────────── */
+
+
 
     loadSheet('News');
   </script>

@@ -9,10 +9,11 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+
     * { box-sizing: border-box; }
 
     html,
@@ -20,81 +21,66 @@
       margin: 0;
       padding: 0;
       min-height: 100%;
-      font-family: Inter, Arial, sans-serif;
-      color: #f8fafc;
-      background: #000000;
+      font-family: 'Lora', serif;
+      color: #222;
+      background: #ffffff;
     }
 
     body { overflow-x: hidden; }
 
-    .background-video {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: -1;
-      pointer-events: none;
+    .background-video { display: none; }
+
+    .page { min-height: 100vh; padding: 24px; max-width: 1400px; margin: 0 auto; }
+
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #e5e5e5;
     }
-
-    .page { min-height: 100vh; padding: 24px; }
-
-    .navbar {
+    .top-header-left {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 14px 18px;
-      margin-bottom: 20px;
+      gap: 15px;
     }
-
     .brand {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      color: #f8fafc;
-      background: transparent;
-      padding: 6px 16px 6px 6px;
-      border-radius: 999px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      font-size: 28px;
+      font-weight: 700;
+      color: #1d766f;
+      text-decoration: none;
     }
-
     .brand-mark {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      object-fit: cover;
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
     }
 
-    .tabs {
+    .main-nav {
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      background: transparent;
-      padding: 6px;
-      border-radius: 999px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      align-items: center;
+      gap: 20px;
+      padding: 12px 0;
+      border-bottom: 1px solid #222;
+      margin-bottom: 20px;
     }
 
     .tab-btn {
       border: 0;
-      padding: 10px 16px;
-      border-radius: 999px;
       background: transparent;
-      color: #cbd5e1;
+      color: #222;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'Lora', serif;
       cursor: pointer;
-      font-weight: 800;
-      transition: 0.2s ease;
+      padding: 0;
+      transition: color 0.2s;
     }
 
-    .tab-btn.active { background: #000; color: #fff; }
+    .tab-btn.active, .tab-btn:hover { color: #1d766f; }
 
     .layout {
       display: grid;
@@ -103,20 +89,17 @@
     }
 
     .panel {
-      background: transparent;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 24px;
+      background: #fff;
+      border: 1px solid #e5e5e5;
       padding: 20px;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
     }
 
-    h1, h2, h3 { margin: 0; letter-spacing: -0.04em; }
+    h1, h2, h3 { margin: 0; color: #1d766f; }
 
     .sub {
       margin: 6px 0 18px;
-      color: #cbd5e1;
+      color: #757575;
       font-size: 14px;
       line-height: 1.5;
     }
@@ -125,146 +108,158 @@
     .field { display: grid; gap: 6px; }
 
     label {
-      font-size: 12px;
-      font-weight: 800;
-      color: #cbd5e1;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      font-size: 13px;
+      font-weight: 700;
+      color: #222;
     }
 
     input, textarea, select {
       width: 100%;
-      border-radius: 12px;
-      border: 1px solid rgba(0, 0, 0, 0.15);
-      background: transparent;
-      color: #f8fafc;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background: #fff;
+      color: #222;
       padding: 11px 12px;
       outline: none;
       font-size: 14px;
       font-family: inherit;
     }
-
-    select option { color: #f8fafc; }
+    input:focus, textarea:focus, select:focus {
+      border-color: #1d766f;
+    }
 
     textarea {
       min-height: 92px;
       resize: vertical;
-      line-height: 1.5;
     }
 
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .three-col {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 
     .actions {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 6px;
+      gap: 12px;
+      margin-top: 8px;
     }
 
     button {
-      border: 0;
-      border-radius: 12px;
-      padding: 11px 14px;
-      cursor: pointer;
-      font-weight: 800;
       font-family: inherit;
+      border-radius: 4px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+      outline: none;
     }
 
-    .btn-primary { background: #3b82f6; color: #fff; }
-    .btn-secondary { background: transparent; color: #cbd5e1; border: 1px solid rgba(0, 0, 0, 0.1); }
-    .btn-danger { background: #dc2626; color: #fff; }
-    .btn-small { padding: 7px 9px; border-radius: 9px; font-size: 12px; }
+    .btn-primary {
+      background: #1d766f;
+      color: #fff;
+      border: none;
+      flex: 1;
+    }
+    .btn-primary:hover { background: #11524d; }
 
-    .toolbar {
+    .btn-secondary {
+      background: #f1f1f1;
+      color: #222;
+      border: 1px solid #ccc;
+    }
+    .btn-secondary:hover { background: #e5e5e5; }
+
+    .btn-danger {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ef5350;
+    }
+    .btn-danger:hover { background: #ffcdd2; }
+
+    .btn-edit {
+      background: #e3f2fd;
+      color: #1565c0;
+      border: 1px solid #bbdefb;
+    }
+    .btn-edit:hover { background: #bbdefb; }
+
+    .list-header {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
       align-items: center;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
+      margin-bottom: 16px;
     }
 
-    .search { max-width: 360px; }
-
-    .status {
-      margin-top: 12px;
-      color: #cbd5e1;
-      font-size: 13px;
-      line-height: 1.5;
-      white-space: pre-line;
+    .refresh-btn {
+      background: #f1f1f1;
+      color: #222;
+      border: 1px solid #ccc;
+      padding: 8px 14px;
     }
 
-    .table-wrap {
-      overflow: auto;
-      border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      background: transparent;
+    .table-container {
+      overflow-x: auto;
+      border-radius: 4px;
+      border: 1px solid #e5e5e5;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 980px;
+      min-width: 800px;
     }
 
     th, td {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-      border-right: 1px solid rgba(0, 0, 0, 0.05);
-      padding: 10px;
-      vertical-align: top;
-      color: #f8fafc;
-      font-size: 13px;
-      line-height: 1.45;
-      white-space: pre-line;
+      padding: 12px;
+      text-align: left;
+      font-size: 14px;
+      border-bottom: 1px solid #e5e5e5;
+      color: #222;
     }
 
     th {
-      position: sticky;
-      top: 0;
-      background: transparent;
-      color: #38bdf8;
-      z-index: 1;
-      text-align: left;
-      border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+      background: #f7f7f7;
+      font-weight: 700;
+      color: #222;
+      border-bottom: 2px solid #222;
     }
 
-    tr:hover td { background: transparent; }
+    tr:hover td { background: #f9f9f9; }
+    td:last-child { white-space: nowrap; }
 
-    .pill {
-      display: inline-flex;
-      padding: 5px 8px;
-      border-radius: 999px;
-      background: transparent;
-      color: #cbd5e1;
-      font-weight: 800;
+    .table-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .table-actions button {
+      padding: 6px 10px;
       font-size: 12px;
-      margin: 2px;
     }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #e5e5e5;
+      color: #222;
+    }
+    .badge.al { background: #e0efff; color: #1565c0; }
+    .badge.cu { background: #ffe8d6; color: #e65100; }
+    .badge.zn { background: #fff3c4; color: #f57f17; }
 
     .hidden { display: none !important; }
 
     .notice {
       padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(217, 119, 6, 0.3);
-      background: rgba(254, 243, 199, 0.6);
-      color: #92400e;
+      border-radius: 4px;
+      border: 1px solid #ffecb3;
+      background: #fff8e1;
+      color: #f57f17;
       font-size: 13px;
       line-height: 1.5;
       margin-bottom: 14px;
     }
-
-
 
     .auth-screen {
       min-height: 100vh;
@@ -275,13 +270,10 @@
 
     .login-card {
       width: min(420px, 100%);
-      background: transparent;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 26px;
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 4px;
       padding: 26px;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.1);
     }
 
     .login-logo {
@@ -294,13 +286,13 @@
 
     .login-title {
       font-size: 28px;
-      font-weight: 800;
-      letter-spacing: -0.05em;
+      font-weight: 700;
+      color: #1d766f;
       margin-bottom: 6px;
     }
 
     .login-subtitle {
-      color: #cbd5e1;
+      color: #757575;
       font-size: 14px;
       line-height: 1.5;
       margin: 0 0 18px;
@@ -310,29 +302,31 @@
       display: none;
       margin-top: 12px;
       padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(254, 226, 226, 0.6);
-      border: 1px solid rgba(248, 113, 113, 0.35);
-      color: #991b1b;
+      border-radius: 4px;
+      background: #ffebee;
+      border: 1px solid #ffcdd2;
+      color: #c62828;
       font-size: 13px;
       font-weight: 700;
     }
 
-    .login-error.show {
-      display: block;
-    }
+    .login-error.show { display: block; }
 
     .logout-btn {
-      background: rgba(254, 226, 226, 0.6);
-      color: #991b1b;
-      border: 1px solid rgba(248, 113, 113, 0.35);
+      background: transparent;
+      color: #c62828;
+      border: 1px solid #ef5350;
+      font-family: 'Lora', serif;
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 4px;
     }
 
     @media (max-width: 1100px) {
       .layout { grid-template-columns: 1fr; }
       .two-col, .three-col { grid-template-columns: 1fr; }
     }
-  </style>
+</style>
 </head>
 
 <body>
@@ -363,24 +357,24 @@
   </section>
 
   <main id="adminApp" class="page hidden">
-    <nav class="navbar">
-      <div class="brand">
-        <img class="brand-mark" src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg" alt="Logo" />
-        <div>Stavian Admin</div>
+    <header class="top-header">
+      <div class="top-header-left">
+        <a href="#" class="brand">
+          <img class="brand-mark" src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg" alt="Logo" />
+          <span>Stavian Admin</span>
+        </a>
       </div>
-
-      <div class="tabs">
-        <button class="tab-btn active" data-admin-tab="news">Tin tức kim loại</button>
-        <button class="tab-btn" data-admin-tab="view">View hàng ngày</button>
+      <div class="top-header-right">
         <button id="logoutBtn" class="logout-btn" type="button">Đăng xuất</button>
       </div>
+    </header>
+
+    <nav class="main-nav">
+      <button class="main-nav-btn tab-btn active" data-admin-tab="news">Quản lý Tin tức</button>
     </nav>
 
     <section class="layout">
       <aside class="panel">
-        <div class="notice">
-          Trang admin yêu cầu đăng nhập nội bộ. Lưu ý: đây là lớp khóa ở giao diện; để bảo mật thật cần cấu hình Supabase Auth/RLS.
-        </div>
 
         <div id="newsFormPanel">
           <h1>Admin Tin tức</h1>
@@ -402,7 +396,7 @@
             <div class="two-col">
               <div class="field">
                 <label>Nguồn (kèm Link)</label>
-                <input id="alSource" placeholder="VD: Reuters https://link..." />
+                <textarea id="alSource" placeholder="VD: Reuters https://link...\nMỗi dòng 1 nguồn/link" rows="2" style="min-height: 40px;"></textarea>
               </div>
               <div class="field">
                 <label>Thời gian</label>
@@ -418,7 +412,7 @@
             <div class="two-col">
               <div class="field">
                 <label>Nguồn (kèm Link)</label>
-                <input id="cuSource" placeholder="VD: Reuters https://link..." />
+                <textarea id="cuSource" placeholder="VD: Reuters https://link...\nMỗi dòng 1 nguồn/link" rows="2" style="min-height: 40px;"></textarea>
               </div>
               <div class="field">
                 <label>Thời gian</label>
@@ -434,7 +428,7 @@
             <div class="two-col">
               <div class="field">
                 <label>Nguồn (kèm Link)</label>
-                <input id="znSource" placeholder="VD: Reuters https://link..." />
+                <textarea id="znSource" placeholder="VD: Reuters https://link...\nMỗi dòng 1 nguồn/link" rows="2" style="min-height: 40px;"></textarea>
               </div>
               <div class="field">
                 <label>Thời gian</label>
