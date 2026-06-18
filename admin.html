@@ -83,10 +83,30 @@
     .tab-btn.active, .tab-btn:hover { color: #1d766f; }
 
     .layout {
-      display: grid;
-      grid-template-columns: minmax(360px, 460px) minmax(0, 1fr);
-      gap: 18px;
+      display: block;
     }
+    
+    #leftPanel {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .format-toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .format-btn {
+      background: #f1f1f1;
+      border: 1px solid #ccc;
+      padding: 4px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-weight: 700;
+      font-family: inherit;
+    }
+    .format-btn:hover { background: #e5e5e5; }
 
     .panel {
       background: #fff;
@@ -370,11 +390,12 @@
     </header>
 
     <nav class="main-nav">
-      <button class="main-nav-btn tab-btn active" data-admin-tab="news">Quản lý Tin tức</button>
+      <button class="main-nav-btn tab-btn active" data-admin-tab="news-list">Danh sách tin tức</button>
+      <button class="main-nav-btn tab-btn" data-admin-tab="news-form">Admin</button>
     </nav>
 
     <section class="layout">
-      <aside class="panel">
+      <aside class="panel hidden" id="leftPanel">
 
         <div id="newsFormPanel">
           <h1>Admin Tin tức</h1>
@@ -391,6 +412,10 @@
             <h3>Nhôm</h3>
             <div class="field">
               <label>Tóm tắt Nhôm</label>
+              <div class="format-toolbar">
+                <button type="button" class="format-btn" onclick="formatText('alSummary', 'bold')"><b>B</b></button>
+                <button type="button" class="format-btn" onclick="formatText('alSummary', 'title')">Title</button>
+              </div>
               <textarea id="alSummary" placeholder="Dòng 1: Tiêu đề tiếng Việt\nCác dòng sau: Nội dung tóm tắt..."></textarea>
             </div>
             <div class="two-col">
@@ -407,6 +432,10 @@
             <h3>Đồng</h3>
             <div class="field">
               <label>Tóm tắt Đồng</label>
+              <div class="format-toolbar">
+                <button type="button" class="format-btn" onclick="formatText('cuSummary', 'bold')"><b>B</b></button>
+                <button type="button" class="format-btn" onclick="formatText('cuSummary', 'title')">Title</button>
+              </div>
               <textarea id="cuSummary" placeholder="Dòng 1: Tiêu đề tiếng Việt\nCác dòng sau: Nội dung tóm tắt..."></textarea>
             </div>
             <div class="two-col">
@@ -423,6 +452,10 @@
             <h3>Kẽm</h3>
             <div class="field">
               <label>Tóm tắt Kẽm</label>
+              <div class="format-toolbar">
+                <button type="button" class="format-btn" onclick="formatText('znSummary', 'bold')"><b>B</b></button>
+                <button type="button" class="format-btn" onclick="formatText('znSummary', 'title')">Title</button>
+              </div>
               <textarea id="znSummary" placeholder="Dòng 1: Tiêu đề tiếng Việt\nCác dòng sau: Nội dung tóm tắt..."></textarea>
             </div>
             <div class="two-col">
@@ -433,6 +466,26 @@
               <div class="field">
                 <label>Thời gian</label>
                 <input id="znTime" placeholder="08:09" />
+              </div>
+            </div>
+
+            <h3>Tin khác</h3>
+            <div class="field">
+              <label>Tóm tắt Tin khác</label>
+              <div class="format-toolbar">
+                <button type="button" class="format-btn" onclick="formatText('otherSummary', 'bold')"><b>B</b></button>
+                <button type="button" class="format-btn" onclick="formatText('otherSummary', 'title')">Title</button>
+              </div>
+              <textarea id="otherSummary" placeholder="Dòng 1: Tiêu đề tiếng Việt\nCác dòng sau: Nội dung tóm tắt..."></textarea>
+            </div>
+            <div class="two-col">
+              <div class="field">
+                <label>Nguồn (kèm Link)</label>
+                <textarea id="otherSource" placeholder="VD: Reuters https://link...\nMỗi dòng 1 nguồn/link" rows="2" style="min-height: 40px;"></textarea>
+              </div>
+              <div class="field">
+                <label>Thời gian</label>
+                <input id="otherTime" placeholder="08:09" />
               </div>
             </div>
 
@@ -506,7 +559,7 @@
         <div class="status" id="status">Sẵn sàng.</div>
       </aside>
 
-      <section class="panel">
+      <section class="panel" id="rightPanel">
         <div class="toolbar">
           <div>
             <h2 id="tableTitle">Danh sách tin tức</h2>
@@ -545,7 +598,7 @@
       view: 'market_views'
     };
 
-    let currentTab = 'news';
+    let currentTab = 'news-list';
     let newsRows = [];
     let viewRows = [];
 
@@ -585,10 +638,16 @@
         btn.classList.add('active');
 
         currentTab = btn.dataset.adminTab;
-        document.getElementById('newsFormPanel').classList.toggle('hidden', currentTab !== 'news');
-        document.getElementById('viewFormPanel').classList.toggle('hidden', currentTab !== 'view');
-        searchInput.value = '';
-        loadCurrentTab();
+        
+        if (currentTab === 'news-list') {
+          document.getElementById('leftPanel').classList.add('hidden');
+          document.getElementById('rightPanel').classList.remove('hidden');
+          searchInput.value = '';
+          loadCurrentTab();
+        } else if (currentTab === 'news-form') {
+          document.getElementById('leftPanel').classList.remove('hidden');
+          document.getElementById('rightPanel').classList.add('hidden');
+        }
       });
     });
 
@@ -669,6 +728,9 @@
         zn_summary: val('znSummary'),
         zn_source: val('znSource'),
         zn_time: val('znTime'),
+        other_summary: val('otherSummary'),
+        other_source: val('otherSource'),
+        other_time: val('otherTime'),
         updated_at: new Date().toISOString()
       };
     }
@@ -697,7 +759,7 @@
 
     async function loadCurrentTab() {
       if (!requireAuth()) return;
-      if (currentTab === 'news') {
+      if (currentTab === 'news-list' || currentTab === 'news-form') {
         tableTitle.textContent = 'Danh sách tin tức kim loại';
         tableSub.textContent = 'Bảng metal_news — có thể sửa/xóa từng dòng.';
         await loadNewsAdminTable();
@@ -751,7 +813,7 @@
     }
 
     function renderCurrentTable() {
-      if (currentTab === 'news') renderNewsTable();
+      if (currentTab === 'news-list' || currentTab === 'news-form') renderNewsTable();
       else renderViewTable();
     }
 
@@ -764,7 +826,8 @@
           row.news_date,
           row.al_summary, row.al_source, row.al_time,
           row.cu_summary, row.cu_source, row.cu_time,
-          row.zn_summary, row.zn_source, row.zn_time
+          row.zn_summary, row.zn_source, row.zn_time,
+          row.other_summary, row.other_source, row.other_time
         ].join(' ')).includes(q));
       }
 
@@ -776,6 +839,7 @@
               <th>Nhôm</th>
               <th>Đồng</th>
               <th>Kẽm</th>
+              <th>Tin khác</th>
               <th>Thao tác</th>
             </tr>
           </thead>
@@ -786,6 +850,7 @@
                 <td>${escapeHtml(row.al_summary || '')}<br><br><span class="pill">${escapeHtml(row.al_source || '-')}</span><span class="pill">${escapeHtml(row.al_time || '-')}</span></td>
                 <td>${escapeHtml(row.cu_summary || '')}<br><br><span class="pill">${escapeHtml(row.cu_source || '-')}</span><span class="pill">${escapeHtml(row.cu_time || '-')}</span></td>
                 <td>${escapeHtml(row.zn_summary || '')}<br><br><span class="pill">${escapeHtml(row.zn_source || '-')}</span><span class="pill">${escapeHtml(row.zn_time || '-')}</span></td>
+                <td>${escapeHtml(row.other_summary || '')}<br><br><span class="pill">${escapeHtml(row.other_source || '-')}</span><span class="pill">${escapeHtml(row.other_time || '-')}</span></td>
                 <td>
                   <button class="btn-secondary btn-small" onclick='editNews(${JSON.stringify(row).replace(/'/g, "&#039;")})'>Sửa</button>
                   <button class="btn-danger btn-small" onclick="deleteRow('news', '${row.id}')">Xóa</button>
@@ -847,6 +912,8 @@
     }
 
     function editNews(row) {
+      document.querySelector('[data-admin-tab="news-form"]').click();
+
       document.getElementById('newsId').value = row.id || '';
       document.getElementById('newsDate').value = row.news_date || '';
       document.getElementById('alSummary').value = row.al_summary || '';
@@ -858,6 +925,9 @@
       document.getElementById('znSummary').value = row.zn_summary || '';
       document.getElementById('znSource').value = row.zn_source || '';
       document.getElementById('znTime').value = row.zn_time || '';
+      document.getElementById('otherSummary').value = row.other_summary || '';
+      document.getElementById('otherSource').value = row.other_source || '';
+      document.getElementById('otherTime').value = row.other_time || '';
       document.getElementById('saveNewsBtn').textContent = 'Lưu chỉnh sửa';
       statusEl.textContent = 'Đang sửa tin ngày ' + formatDateVN(row.news_date);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -909,6 +979,25 @@
       document.getElementById('newsId').value = '';
       document.getElementById('saveNewsBtn').textContent = 'Thêm tin tức';
       statusEl.textContent = 'Đã reset form Tin tức.';
+    }
+
+    function formatText(id, type) {
+      const el = document.getElementById(id);
+      const start = el.selectionStart;
+      const end = el.selectionEnd;
+      const text = el.value;
+      const selectedText = text.substring(start, end);
+      
+      let replacement = '';
+      if (type === 'bold') {
+        replacement = `<b>${selectedText}</b>`;
+      } else if (type === 'title') {
+        replacement = `[TITLE]${selectedText}[/TITLE]`;
+      }
+      
+      el.value = text.substring(0, start) + replacement + text.substring(end);
+      el.focus();
+      el.setSelectionRange(start, start + replacement.length);
     }
 
     function resetViewForm() {

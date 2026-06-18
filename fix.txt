@@ -1,0 +1,256 @@
+    async function loadNewsPayload() {
+      const { data, error } = await supabaseClient
+        .from(TABLES.News)
+        .select('*')
+        .order('news_date', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const rows = (data || []).map(item => ({
+        id: item.id,
+        date: formatDateVN(item.news_date),
+        aluminum: {
+          summary: item.al_summary || '',
+          source: item.al_source || '',
+          time: item.al_time || ''
+        },
+        copper: {
+          summary: item.cu_summary || '',
+          source: item.cu_source || '',
+          time: item.cu_time || ''
+        },
+        zinc: {
+          summary: item.zn_summary || '',
+          source: item.zn_source || '',
+          time: item.zn_time || ''
+        }
+      }));
+
+      return {
+        success: true,
+        sheet: 'News',
+        updatedAt: new Date().toLocaleString('vi-VN'),
+        count: rows.length,
+        rows,
+        dates: [...new Set(rows.map(row => row.date).filter(Boolean))]
+      };
+    }
+
+    async function loadWarehousePayload() {
+      const { data, error } = await supabaseClient
+        .from(TABLES.Warehouse)
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        return {
+          success: true,
+          sheet: 'Warehouse',
+          updatedAt: new Date().toLocaleString('vi-VN'),
+          count: 0,
+          values: [[
+            'Warehouse chưa được cấu hình',
+            'Hãy tạo bảng warehouse_records trong Supabase hoặc đổi tên bảng trong biến TABLES.Warehouse.'
+          ]]
+        };
+      }
+
+      const rows = data || [];
+      const headers = rows.length ? Object.keys(rows[0]) : ['Thông báo'];
+      const values = rows.length
+        ? [headers].concat(rows.map(item => headers.map(h => item[h] ?? '')))
+        : [['Warehouse'], ['Chưa có dữ liệu.']];
+
+      return {
+        success: true,
+        sheet: 'Warehouse',
+        updatedAt: new Date().toLocaleString('vi-VN'),
+        count: rows.length,
+        values
+      };
+    }
+
+    function renderCurrentPayload() {
+      if (!currentPayload) return;
+
+      if (!currentPayload.success) {
+        showPayloadError(currentPayload);
+        return;
+      }
+
+      metricUpdated.textContent = currentPayload.updatedAt || '-';
+
+      if (currentPayload.sheet === 'News') {
+        renderNews(currentPayload);
+      } else if (currentPayload.sheet === 'NewsUpdate') {
+        renderNewsUpdate(currentPayload);
+      } else if (currentPayload.sheet === 'Report') {
+        contentArea.innerHTML = '<iframe src="rpt.html" style="width: 100%; height: calc(100vh - 200px); min-height: 800px; border: none; border-radius: 8px;"></iframe>';
+      } else {
+        renderGenericTable(currentPayload);
+      }
+    }
+
+    function renderNews(payload) {
+      const query = normalize(searchInput.value);
+      const selectedDate = dateFilter.value;
+
+      updateDateOptions(payload.dates || []);
+
+      let rows = payload.rows || [];
+
+      if (selectedDate) {
+        rows = rows.filter(row => row.date === selectedDate);
+      }
+
+      if (query) {
+        rows = rows.filter(row => {
+          const haystack = normalize([
+            row.date,
+            'nhôm', row.aluminum?.summary, row.aluminum?.source, row.aluminum?.time,
+            'đồng', row.copper?.summary, row.copper?.source, row.copper?.time,
+            'kẽm', row.zinc?.summary, row.zinc?.source, row.zinc?.time
+          ].join(' '));
+          return haystack.includes(query);
+        });
+      }
+
+      if (!rows.length) {
+        contentArea.innerHTML = '<div class="empty">Không có dữ liệu phù hợp.</div>';
+        return;
+      }
+
+      const dates = [...new Set(rows.map(r => r.date))];
+      let html = '';
+      dates.forEach(d => {
+        const dateRows = rows.filter(r => r.date === d);
+        html += `
+          <div class="news-day-block" style="margin-bottom: 40px;">
+            <h3 class="news-day-title" style="font-size: 20px; font-weight: 700; color: #1d766f; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e5e5e5;">${d}</h3>
+            <div class="bbc-news-container">
+              <div class="bbc-grid">
+                <section class="bbc-panel">
+                  <h2 class="bbc-panel-title copper">Đồng</h2>
+                  ${dateRows.map(row => renderBbcCard(row.date, row.copper)).join('')}
+                </section>
+                <section class="bbc-panel">
+                  <h2 class="bbc-panel-title aluminum">Nhôm</h2>
+                  ${dateRows.map(row => renderBbcCard(row.date, row.aluminum)).join('')}
+                </section>
+                <section class="bbc-panel">
+                  <h2 class="bbc-panel-title zinc">Kẽm</h2>
+                  ${dateRows.map(row => renderBbcCard(row.date, row.zinc)).join('')}
+                </section>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      contentArea.innerHTML = html;
+    }
+
+    function renderBbcCard(date, data) {
+      if (!data || !data.summary) return '';
+
+      const rawSummary = data.summary;
+      let title = 'Không có tiêu đề';
+      let summaryText = '';
+      
+      const titleMatch = rawSummary.match(/\[TITLE\]([\s\S]*?)\[\/TITLE\]/i);
+      if (titleMatch) {
+         title = titleMatch[1].trim();
+         summaryText = rawSummary.replace(titleMatch[0], '').trim();
+      } else {
+         const lines = rawSummary.split('\n').map(l => l.trim()).filter(l => l);
+         title = lines.length > 0 ? lines[0] : 'Không có tiêu đề';
+         summaryText = lines.slice(1).join('\n').trim();
+      }
+
+      let safeTitle = escapeHtml(title).replace(/&lt;b&gt;/gi, '<b>').replace(/&lt;\/b&gt;/gi, '</b>');
+      let safeSummary = escapeHtml(summaryText).replace(/&lt;b&gt;/gi, '<b>').replace(/&lt;\/b&gt;/gi, '</b>');
+
+      const time = data.time ? data.time : '';
+      const sources = data.source ? data.source.split('\n').map(s => s.trim()).filter(s => s) : [];
+      let firstLink = '';
+      let sourceLinksHtml = '';
+
+      if (sources.length > 0) {
+        sourceLinksHtml = '<div class="bbc-sources" style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">';
+        sources.forEach((src, idx) => {
+          let sName = src;
+          let sLink = '';
+          const urlMatch = src.match(/https?:\/\/[^\s]+/);
+          if (urlMatch) {
+            sLink = urlMatch[0];
+            sName = src.replace(sLink, '').trim();
+            if (!sName) {
+              try { sName = new URL(sLink).hostname.replace('www.', ''); } catch (e) { sName = 'Link'; }
+            }
+            if (idx === 0) firstLink = sLink;
+          }
+          if (sLink) {
+            sourceLinksHtml += `<a href="${sLink}" target="_blank" class="bbc-source" style="text-decoration: underline; color: #1d766f; display: flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>${escapeHtml(sName)}</a>`;
+          } else {
+            sourceLinksHtml += `<span class="bbc-source">${escapeHtml(sName)}</span>`;
+          }
+        });
+        sourceLinksHtml += '</div>';
+      }
+
+      let titleHtml = `<h3 class="bbc-title">${safeTitle}</h3>`;
+      if (firstLink) {
+        titleHtml = `<a href="${firstLink}" target="_blank" class="bbc-title-link">${titleHtml}</a>`;
+      }
+
+      const summaryParagraphs = safeSummary.split('\n').map(p => p.trim()).filter(p => p);
+      const firstParagraph = summaryParagraphs.length > 0 ? summaryParagraphs[0] : '';
+      const remainingParagraphs = summaryParagraphs.slice(1).join('<br><br>');
+
+      const id = 'card-' + Math.random().toString(36).substr(2, 9);
+      
+      let summaryHtml = '';
+      if (firstParagraph) {
+        summaryHtml += `<p class="bbc-summary">${firstParagraph}</p>`;
+      }
+      
+      let expandedContent = '';
+      if (remainingParagraphs || sourceLinksHtml) {
+        expandedContent = `
+          <div id="${id}-more" style="display: none; margin-top: 10px;">
+            ${remainingParagraphs ? `<p class="bbc-summary">${remainingParagraphs}</p>` : ''}
+            <div class="bbc-meta" style="flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 15px;">
+              ${sourceLinksHtml}
+            </div>
+          </div>
+          <button onclick="toggleExpand('${id}')" id="${id}-btn" class="bbc-read-more" style="margin-top: 10px; cursor: pointer; border:none; background:transparent; color:#007bff; padding:0;">Xem thêm...</button>
+        `;
+      }
+
+      return `
+        <article class="bbc-card">
+          ${titleHtml}
+          ${summaryHtml}
+          ${expandedContent}
+          <div class="bbc-meta" style="align-items: flex-start; gap: 8px; margin-top: 10px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              ${time ? `<span class="bbc-time">${escapeHtml(time)}</span>` : ''}
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function toggleExpand(id) {
+      const moreDiv = document.getElementById(id + '-more');
+      const btn = document.getElementById(id + '-btn');
+      if (moreDiv && btn) {
+        if (moreDiv.style.display === 'none') {
+          moreDiv.style.display = 'block';
+          btn.textContent = 'Thu gọn';
+        } else {
+          moreDiv.style.display = 'none';
+          btn.textContent = 'Xem thêm...';
+        }
+      }
+    }
