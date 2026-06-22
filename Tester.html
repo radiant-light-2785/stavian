@@ -88,7 +88,12 @@
     <!-- Account + fee -->
     <div class="box" style="margin-bottom:0">
       <label>Tên tài khoản</label>
-      <input id="accountName" type="text" placeholder="VD: PG BANK SIM" oninput="renderOpen()"/>
+      <input id="accountName" type="text" placeholder="VD: PG BANK SIM" oninput="autoSetFee(); renderOpen()" list="bankList"/>
+      <datalist id="bankList">
+        <option value="Vietinbank">
+        <option value="BIDV">
+        <option value="PG BANK">
+      </datalist>
       <div style="margin-top:12px">
         <label>Phí giao dịch (USD/MT)</label>
         <div class="fee-row">
@@ -210,6 +215,26 @@ function matDate(c) {
   return m ? `${Number(m[1])}/${String(ML[m[2]]).padStart(2,'0')}/${String(2000+Number(m[3])).slice(-2)}` : '';
 }
 function getFee() { return parseFloat(document.getElementById('feeMt').value)||0.572; }
+
+function autoSetFee() {
+  const account = (document.getElementById('accountName').value || '').toUpperCase();
+  const feeInput = document.getElementById('feeMt');
+  if (!feeInput) return;
+  
+  let newFee = null;
+  if (account.includes('VIETINBANK') || account.includes('VIETIN')) {
+    newFee = '0.616';
+  } else if (account.includes('BIDV')) {
+    newFee = '0.660';
+  } else if (account.includes('PG BANK') || account.includes('PGBANK')) {
+    newFee = '0.572';
+  }
+  
+  if (newFee && feeInput.value !== newFee) {
+    feeInput.value = newFee;
+    if (typeof renderClosed === 'function') renderClosed();
+  }
+}
 
 /* ──────────────────────────────────────────────────────────
    Number parser (handles both "3.623,75" and "3,623.75")

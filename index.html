@@ -1017,7 +1017,10 @@
       <div style="background: #f4faf9; border: 1px dashed #1d766f; padding: 10px; border-radius: 4px; margin-top: 12px; font-size: 13px; line-height: 1.5;">
         <strong style="color: #1d766f;">💡 Hướng dẫn cấu hình chuẩn:</strong><br>
         <b>Cấu Hình:</b> Gemini<br>
-        <b>Tên Model:</b> gemini-2.5-flash-lite
+        <b>Tên Model:</b> gemini-2.5-flash-lite<br>
+        <hr style="border: none; border-top: 1px solid #1d766f40; margin: 8px 0;">
+        <strong style="color: #1d766f;">🔑 Hướng dẫn lấy API Key miễn phí:</strong><br>
+        Nếu anh chị lấy API miễn phí, vào link <a href="https://aistudio.google.com/api-keys?hl=vi&project=gen-lang-client-0722944544" target="_blank" style="color: #1d766f; font-weight: bold; text-decoration: underline;">Google AI Studio</a> đăng nhập và click <b>Create API KEY</b>, copy đoạn mã (có dạng <code>AQ.A...</code> hoặc <code>AIza...</code>) dán vào ô trống bên trên để chạy.
       </div>
 
       <script>
@@ -2064,8 +2067,14 @@ function getFee() { return parseFloat(document.getElementById('feeMt').value) ||
 
 function num(n) {
   if (n === null || n === undefined || n === '') return null;
-  const v = Number(n);
-  return isFinite(v) ? v : null;
+  if (typeof n === 'number') return isFinite(n) ? n : null;
+  let s = String(n).trim().replace(/\s/g, '');
+  if (!s || /^n\/?a$/i.test(s)) return null;
+  s = s.replace(/[−–—]/g, '-').replace(/[$€£]/g, '');
+  const ci = s.lastIndexOf(','), di = s.lastIndexOf('.');
+  if (ci !== -1 && di !== -1) { s = ci > di ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, ''); }
+  else if (ci !== -1) { s = s.slice(ci + 1).replace(/\D/g, '').length <= 2 ? s.replace(',', '.') : s.replace(/,/g, ''); }
+  const v = Number(s); return isFinite(v) ? v : null;
 }
 
 function fmtPrice(n) {
@@ -2290,30 +2299,41 @@ Label rules (ALL formats):
 • Expanded view: if one contract has multiple sub-rows at DIFFERENT prices, return one entry per sub-row
 • If type="trades", return positions as []`;
 
-const PROMPT_CLOSED = `You are reading a screenshot from an LME metals trading platform.
+const PROMPT_CLOSED = `You are reading an LME metals trading platform screenshot showing COMPLETED ROUND-TRIP TRADES.
 
-IDENTIFY the screen type:
+STEP 1 — Identify the format:
 
-CLOSED TRADES screens — return type="trades":
-• Desktop Vietnamese "Mua & Bán": contract name in section header (e.g. "▼ 40 LALZ ..."), rows alternate:
-  – Opening row: "Xsố lot mua",  price, "n/a"  (X = lot count)
-  – Closing row: "Xsố lot bán",  price, USD P/L value
-• Mobile "P & S" tab: contract name shown in page/title bar, rows with columns Date | Side | Price | P/L:
-  – Opening row: date, "L1" or "L2" (Long N lots), price, no P/L value
-  – Closing row: date, "S1" or "S2" (Sell N lots), price, USD P/L value
+FORMAT A — CQG web/mobile "Positions" tab, EXPANDED (URL: m.cqg.com or mobile CQG app):
+  Title says "Positions". Sections with header "▼N  CONTRACT_CODE  Description" (e.g. "▼4  ZDSD17U26  LME Zinc...").
+  Each section's expanded rows have 5 columns: Date | Size | Price | PL | Cur
+    • BUY row : Size = "1L" / "2L" / "3L" etc,  PL = "n/a" or blank
+    • SELL row: Size = "1S" / "2S" / "3S" etc,  PL = USD number (e.g. "3,012.50" or "-250.00")
+  Description may contain underlying code: e.g. "SELECT [ZDSD18U26]" or "SELECT [CADD19U26]"
+  → Use THAT underlying code to compute maturityDate when the header code is LZHZ/LDKZ/LALZ.
 
-OPEN POSITIONS screens — return type="positions":
-• Any screen with M/L/B/S position labels showing AVG/OTE or compact price+OTE columns
+FORMAT B — Mobile CQG "P & S" app tab:
+  Title bar shows contract code (e.g. "ZDSD15U26") and "P & S" tab is active.
+  Columns: Date | Side | Price | P/L
+    • BUY row : Side = "L1"/"L2", P/L = blank
+    • SELL row: Side = "S1"/"S2", P/L = USD value
 
-Return ONLY valid JSON (no markdown):
+FORMAT C — Desktop Vietnamese "Mua & Bán" tab:
+  Vietnamese platform. Rows alternate:
+    • "Xsố lot mua",  price,  "n/a"
+    • "Xsố lot bán",  price,  USD P/L
+
+▸ type="positions" (REJECT — this is open position data, not trades):
+  Screen shows AVG / OTE keywords or M/B/L/S lot labels WITHOUT paired L/S rows with n/a and P/L values.
+
+STEP 2 — Return ONLY valid JSON (absolutely no markdown, no text outside JSON):
 {
   "type": "trades" or "positions",
   "trades": [
     {
-      "contract":     "LALZ, LDKZ, CADD11U26 etc.",
+      "contract":     "code from section header e.g. ZDSD17U26, LZHZ, LDKZ, LALZ, AHDD15U26",
       "openDate":     "DD/MM/YY",
       "closeDate":    "DD/MM/YY",
-      "maturityDate": "DD/MM/YY or empty",
+      "maturityDate": "DD/MM/YY or empty string",
       "side":         "Long" or "Short",
       "openPrice":    number,
       "closePrice":   number,
@@ -2322,12 +2342,23 @@ Return ONLY valid JSON (no markdown):
   ]
 }
 
-Pairing rules:
-• Desktop Mua&Bán: n/a row = OPEN, USD-P/L row = CLOSE. Contract from section header above each group.
-• Mobile P&S: L1/L2 row (no P/L) = OPEN, S1/S2 row (P/L shown) = CLOSE. Contract from page header.
-  Number in L1/L2/S1/S2 = lot count. All from same contract unless header changes.
-• maturityDate from code: e.g. CADD11U26 → "11/09/26"; LALZ/LDKZ/LZHZ → leave empty or read from image.
-• If type="positions", return trades as []`;
+⚠ CRITICAL — Long vs Short determination (applies to ALL formats):
+  P/L ALWAYS appears on the SELL (S) row; "n/a" or blank ALWAYS on the BUY (L) row.
+  Compare the DATE of the paired L row and S row:
+    • L-date ≤ S-date  →  LONG:  openDate=L-date, openPrice=L-price, closeDate=S-date, closePrice=S-price
+    • S-date < L-date  →  SHORT: openDate=S-date, openPrice=S-price, closeDate=L-date, closePrice=L-price
+    • Same date, L appears ABOVE S in display  →  LONG
+
+⚠ maturityDate extraction:
+  • Direct code (ZDSD17U26, AHDD15U26, CADD16U26): day=17/15/16, month=U=09 or Q=08, year=26
+    → ZDSD17U26 = "17/09/26"; CADD16U26 = "16/09/26"; AHDD15U26 = "15/09/26"
+  • Prompt codes with SELECT: LZHZ "SELECT [ZDSD18U26]" → use ZDSD18U26 → "18/09/26"
+    LDKZ "SELECT [CADD19U26]" → "19/09/26"; LALZ "SELECT [AHDD15U26]" → "15/09/26"
+  • If no SELECT code visible and contract is LALZ/LDKZ/LZHZ → leave maturityDate as ""
+
+Size/lot notation: "1L"=1 lot Long; "2S"=2 lots Short; "L1"=1 lot Long; "S2"=2 lots Short
+Comma-decimal: "3.012,50" or "3,012.50" → 3012.50 as JSON number
+If type="positions", return trades as []`;
 
 /* ── Handlers ─────────────────────────────────────────────── */
 async function handleOpenUpload() {
