@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stavian Metal</title>
+  <title>Stavian Industrial Metal</title>
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
 
@@ -949,9 +949,22 @@
           <img class="brand-mark"
             src="https://raw.githubusercontent.com/radiant-light-2785/stavian/458b8ee6a1ea8d167cfe172c8df42fbc0b7bd1bf/359349825_197987636573909_8836727906488842418_n.jpg"
             alt="Logo" />
-          <span>Stavian Metal</span>
+          <span>Stavian Industrial Metal</span>
         </a>
-        <span class="header-date">Thứ 4, 17/6/2026</span>
+        <span class="header-date" id="currentDateDisplay">Thứ 4, 17/6/2026</span>
+        <script>
+          function updateVNTime() {
+            const dateObj = new Date();
+            const vnTime = new Date(dateObj.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
+            const days = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+            const dayName = days[vnTime.getDay()];
+            const dateStr = vnTime.getDate() + '/' + (vnTime.getMonth() + 1) + '/' + vnTime.getFullYear();
+            const timeStr = vnTime.getHours().toString().padStart(2, '0') + ':' + vnTime.getMinutes().toString().padStart(2, '0');
+            document.getElementById('currentDateDisplay').textContent = `${dayName}, ${dateStr} - ${timeStr}`;
+          }
+          updateVNTime();
+          setInterval(updateVNTime, 60000);
+        </script>
       </div>
       <div class="top-header-right">
       </div>
@@ -2301,66 +2314,46 @@ Label rules (ALL formats):
 • Expanded view: if one contract has multiple sub-rows at DIFFERENT prices, return one entry per sub-row
 • If type="trades", return positions as []`;
 
-const PROMPT_CLOSED = `You are reading an LME metals trading platform screenshot showing COMPLETED ROUND-TRIP TRADES.
+const PROMPT_CLOSED = `You are reading a screenshot from an LME metals trading platform.
 
-STEP 1 — Identify the format:
+IDENTIFY the screen type:
 
-FORMAT A — CQG web/mobile "Positions" tab, EXPANDED (URL: m.cqg.com or mobile CQG app):
-  Title says "Positions". Sections with header "▼N  CONTRACT_CODE  Description" (e.g. "▼4  ZDSD17U26  LME Zinc...").
-  Each section's expanded rows have 5 columns: Date | Size | Price | PL | Cur
-    • BUY row : Size = "1L" / "2L" / "3L" etc,  PL = "n/a" or blank
-    • SELL row: Size = "1S" / "2S" / "3S" etc,  PL = USD number (e.g. "3,012.50" or "-250.00")
-  Description may contain underlying code: e.g. "SELECT [ZDSD18U26]" or "SELECT [CADD19U26]"
-  → Use THAT underlying code to compute maturityDate when the header code is LZHZ/LDKZ/LALZ.
+CLOSED TRADES → return type="trades":
+• The screen shows "Mua & Bán" or "Purchase & Sales".
+• Extract EVERY SINGLE ROW from the table as a separate JSON object, in the EXACT ORDER they appear from top to bottom.
+• DO NOT pair them yourself. Return the raw rows.
+• For each row, identify the contract it belongs to (found in a header above the rows, like "▼ 40 LALZ" or "AHDD15U26").
+• For each row, extract:
+  - date: the date text (e.g. "6/18/26" or "18/06/2026", leave empty if not present)
+  - action: the exact text indicating size and side, e.g. "1L", "1S", "1 lot mua", "1 lot bán", "1B", "1S"
+  - price: the numeric price
+  - pl: the numeric P/L value (if the text is "n/a", return null)
 
-FORMAT B — Mobile CQG "P & S" app tab:
-  Title bar shows contract code (e.g. "ZDSD15U26") and "P & S" tab is active.
-  Columns: Date | Side | Price | P/L
-    • BUY row : Side = "L1"/"L2", P/L = blank
-    • SELL row: Side = "S1"/"S2", P/L = USD value
+OPEN POSITIONS → return type="positions":
+• Any screen with M/L/B/S position labels and AVG/OTE keywords or compact price+OTE columns
 
-FORMAT C — Desktop Vietnamese "Mua & Bán" tab:
-  Vietnamese platform. Rows alternate:
-    • "Xsố lot mua",  price,  "n/a"
-    • "Xsố lot bán",  price,  USD P/L
-
-▸ type="positions" (REJECT — this is open position data, not trades):
-  Screen shows AVG / OTE keywords or M/B/L/S lot labels WITHOUT paired L/S rows with n/a and P/L values.
-
-STEP 2 — Return ONLY valid JSON (absolutely no markdown, no text outside JSON):
+Return ONLY valid JSON (absolutely no markdown, no text before or after the JSON):
 {
   "type": "trades" or "positions",
-  "trades": [
+  "raw_rows": [
     {
-      "contract":     "code from section header e.g. ZDSD17U26, LZHZ, LDKZ, LALZ, AHDD15U26",
-      "openDate":     "DD/MM/YY",
-      "closeDate":    "DD/MM/YY",
-      "maturityDate": "DD/MM/YY or empty string",
-      "side":         "Long" or "Short",
-      "openPrice":    number,
-      "closePrice":   number,
-      "lots":         integer
+      "contract": "LALZ",
+      "date": "6/18/26",
+      "action": "1L",
+      "price": 3400.00,
+      "pl": null
+    },
+    {
+      "contract": "LALZ",
+      "date": "6/19/26",
+      "action": "1S",
+      "price": 3403.50,
+      "pl": 87.50
     }
   ]
 }
 
-⚠ CRITICAL — Long vs Short determination (applies to ALL formats):
-  P/L ALWAYS appears on the SELL (S) row; "n/a" or blank ALWAYS on the BUY (L) row.
-  Compare the DATE of the paired L row and S row:
-    • L-date ≤ S-date  →  LONG:  openDate=L-date, openPrice=L-price, closeDate=S-date, closePrice=S-price
-    • S-date < L-date  →  SHORT: openDate=S-date, openPrice=S-price, closeDate=L-date, closePrice=L-price
-    • Same date, L appears ABOVE S in display  →  LONG
-
-⚠ maturityDate extraction:
-  • Direct code (ZDSD17U26, AHDD15U26, CADD16U26): day=17/15/16, month=U=09 or Q=08, year=26
-    → ZDSD17U26 = "17/09/26"; CADD16U26 = "16/09/26"; AHDD15U26 = "15/09/26"
-  • Prompt codes with SELECT: LZHZ "SELECT [ZDSD18U26]" → use ZDSD18U26 → "18/09/26"
-    LDKZ "SELECT [CADD19U26]" → "19/09/26"; LALZ "SELECT [AHDD15U26]" → "15/09/26"
-  • If no SELECT code visible and contract is LALZ/LDKZ/LZHZ → leave maturityDate as ""
-
-Size/lot notation: "1L"=1 lot Long; "2S"=2 lots Short; "L1"=1 lot Long; "S2"=2 lots Short
-Comma-decimal: "3.012,50" or "3,012.50" → 3012.50 as JSON number
-If type="positions", return trades as []`;
+If type="positions", return raw_rows as []`;
 
 /* ── Handlers ─────────────────────────────────────────────── */
 async function handleOpenUpload() {
@@ -2430,16 +2423,49 @@ async function handleClosedUpload() {
       return;
     }
 
-    closedTrades = (result.trades || []).map(t => ({
-      contract    : (t.contract || '').trim().toUpperCase(),
-      openDate    : t.openDate    || '',
-      closeDate   : t.closeDate   || '',
-      maturityDate: t.maturityDate || maturityDateFromCode(t.contract || ''),
-      side        : t.side || 'Long',
-      openPrice   : num(t.openPrice),
-      closePrice  : num(t.closePrice),
-      lots        : Math.max(1, Math.round(num(t.lots) || 1)),
-    })).filter(t => t.contract && t.openPrice !== null && t.closePrice !== null);
+    const rawRows = result.raw_rows || [];
+    closedTrades = [];
+    for (let i = 0; i < rawRows.length; i += 2) {
+      if (i + 1 >= rawRows.length) break;
+      const r1 = rawRows[i];
+      const r2 = rawRows[i+1];
+      
+      let openRow = r1;
+      let closeRow = r2;
+      
+      const t1 = new Date(r1.date).getTime();
+      const t2 = new Date(r2.date).getTime();
+      
+      if (t1 && t2 && t1 !== t2) {
+         if (t1 > t2) { openRow = r2; closeRow = r1; }
+      } else {
+         if (r1.pl !== null && r2.pl === null) { openRow = r2; closeRow = r1; }
+      }
+
+      let side = 'Long';
+      const openAct = (openRow.action || '').toUpperCase();
+      if (openAct.includes('S') || openAct.includes('BÁN') || openAct.includes('B')) {
+         side = 'Short';
+      } else if (openAct.includes('L') || openAct.includes('MUA')) {
+         side = 'Long';
+      }
+
+      const match = openAct.match(/\d+/);
+      const lots = match ? parseInt(match[0], 10) : 1;
+
+      closedTrades.push({
+        contract: (openRow.contract || r1.contract || '').trim().toUpperCase(),
+        openDate: openRow.date || '',
+        closeDate: closeRow.date || '',
+        maturityDate: typeof matDate !== 'undefined' ? matDate(openRow.contract || r1.contract || '') : (typeof maturityDateFromCode !== 'undefined' ? maturityDateFromCode(openRow.contract || r1.contract || '') : ''),
+        side: side,
+        openPrice: num(openRow.price),
+        closePrice: num(closeRow.price),
+        lots: lots
+      });
+    }
+    
+    closedTrades = closedTrades.filter(t=>t.contract&&t.openPrice!==null&&t.closePrice!==null);
 
     renderClosedOutput();
 

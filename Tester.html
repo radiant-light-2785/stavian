@@ -380,12 +380,15 @@ const PROMPT_CLOSED = `You are reading a screenshot from an LME metals trading p
 IDENTIFY the screen type:
 
 CLOSED TRADES → return type="trades":
-• Desktop "Mua & Bán": contract name in section header (e.g. "▼ 40 LALZ"), rows alternate:
-  – Open row : "Xsố lot mua",  price,  "n/a"      (X = lot count)
-  – Close row: "Xsố lot bán",  price,  USD P/L value
-• Mobile "P & S": contract visible in page header, columns Date | Side | Price | P/L:
-  – Open row : date, "L1"/"L2" (Long N lots), price, (no P/L)
-  – Close row: date, "S1"/"S2" (Sell N lots), price, USD P/L value
+• The screen shows "Mua & Bán" or "Purchase & Sales".
+• Extract EVERY SINGLE ROW from the table as a separate JSON object, in the EXACT ORDER they appear from top to bottom.
+• DO NOT pair them yourself. Return the raw rows.
+• For each row, identify the contract it belongs to (found in a header above the rows, like "▼ 40 LALZ" or "AHDD15U26").
+• For each row, extract:
+  - date: the date text (e.g. "6/18/26" or "18/06/2026", leave empty if not present)
+  - action: the exact text indicating size and side, e.g. "1L", "1S", "1 lot mua", "1 lot bán", "1B", "1S"
+  - price: the numeric price
+  - pl: the numeric P/L value (if the text is "n/a", return null)
 
 OPEN POSITIONS → return type="positions":
 • Any screen with M/L/B/S position labels and AVG/OTE keywords or compact price+OTE columns
@@ -393,25 +396,25 @@ OPEN POSITIONS → return type="positions":
 Return ONLY valid JSON (absolutely no markdown, no text before or after the JSON):
 {
   "type": "trades" or "positions",
-  "trades": [
+  "raw_rows": [
     {
-      "contract":     "LALZ, LDKZ, CADD11U26 etc.",
-      "openDate":     "DD/MM/YY",
-      "closeDate":    "DD/MM/YY",
-      "maturityDate": "DD/MM/YY or empty",
-      "side":         "Long" or "Short",
-      "openPrice":    number,
-      "closePrice":   number,
-      "lots":         integer
+      "contract": "LALZ",
+      "date": "6/18/26",
+      "action": "1L",
+      "price": 3400.00,
+      "pl": null
+    },
+    {
+      "contract": "LALZ",
+      "date": "6/19/26",
+      "action": "1S",
+      "price": 3403.50,
+      "pl": 87.50
     }
   ]
 }
 
-Pairing rules:
-• Desktop Mua&Bán: n/a row = OPEN, USD-P/L row = CLOSE. Contract from section header.
-• Mobile P&S: L-row (no P/L) = OPEN, S-row (has P/L) = CLOSE. Contract from page header. Number in L1/S1 = lot count.
-• maturityDate from contract code: CADD11U26 → "11/09/26"; LALZ/LDKZ/LZHZ → leave empty.
-• If type="positions", return trades as []`;
+If type="positions", return raw_rows as []`;
 
 /* ──────────────────────────────────────────────────────────
    Handlers
@@ -472,16 +475,49 @@ async function handleClosed() {
       return;
     }
 
-    closedTr = (res.trades||[]).map(t=>({
-      contract    : (t.contract||'').trim().toUpperCase(),
-      openDate    : t.openDate||'',
-      closeDate   : t.closeDate||'',
-      maturityDate: t.maturityDate||matDate(t.contract||''),
-      side        : t.side||'Long',
-      openPrice   : num(t.openPrice),
-      closePrice  : num(t.closePrice),
-      lots        : Math.max(1,Math.round(num(t.lots)||1)),
-    })).filter(t=>t.contract&&t.openPrice!==null&&t.closePrice!==null);
+    const rawRows = res.raw_rows || [];
+    closedTr = [];
+    for (let i = 0; i < rawRows.length; i += 2) {
+      if (i + 1 >= rawRows.length) break;
+      const r1 = rawRows[i];
+      const r2 = rawRows[i+1];
+      
+      let openRow = r1;
+      let closeRow = r2;
+      
+      const t1 = new Date(r1.date).getTime();
+      const t2 = new Date(r2.date).getTime();
+      
+      if (t1 && t2 && t1 !== t2) {
+         if (t1 > t2) { openRow = r2; closeRow = r1; }
+      } else {
+         if (r1.pl !== null && r2.pl === null) { openRow = r2; closeRow = r1; }
+      }
+
+      let side = 'Long';
+      const openAct = (openRow.action || '').toUpperCase();
+      if (openAct.includes('S') || openAct.includes('BÁN') || openAct.includes('B')) {
+         side = 'Short';
+      } else if (openAct.includes('L') || openAct.includes('MUA')) {
+         side = 'Long';
+      }
+
+      const match = openAct.match(/\d+/);
+      const lots = match ? parseInt(match[0], 10) : 1;
+
+      closedTr.push({
+        contract: (openRow.contract || r1.contract || '').trim().toUpperCase(),
+        openDate: openRow.date || '',
+        closeDate: closeRow.date || '',
+        maturityDate: typeof matDate !== 'undefined' ? matDate(openRow.contract || r1.contract || '') : (typeof maturityDateFromCode !== 'undefined' ? maturityDateFromCode(openRow.contract || r1.contract || '') : ''),
+        side: side,
+        openPrice: num(openRow.price),
+        closePrice: num(closeRow.price),
+        lots: lots
+      });
+    }
+    
+    closedTr = closedTr.filter(t=>t.contract&&t.openPrice!==null&&t.closePrice!==null);
 
     renderClosed();
     st.className   = closedTr.length?'status':'status warn';
