@@ -27,6 +27,7 @@
       font-family: Arial, Helvetica, sans-serif;
       color: #000;
       background: #ffffff;
+      zoom: 80%;
     }
 
     .background-video {
@@ -1242,6 +1243,7 @@
       } else {
         if (reportArea) reportArea.style.display = 'none';
         contentArea.style.display = 'block';
+        contentArea.innerHTML = '<div class="empty" style="padding: 40px; margin-top: 20px;">Đang tải dữ liệu...</div>';
         if (filtersBlock) filtersBlock.style.display = '';
         if (sheetName === 'News') {
           pageTitle.textContent = 'Tin tức Daily Summary by GPT Pro 🫶';
@@ -1705,22 +1707,29 @@
     }
 
     async function loadNewsUpdatePayload() {
-      let results = [];
-      try {
-        const [fr, gd] = await Promise.allSettled([fetchFederalRegister(), fetchGdelt()]);
-        if (fr.status === 'fulfilled') results.push(...fr.value);
-        if (gd.status === 'fulfilled') results.push(...gd.value);
-      } catch (e) { }
-
-      results.push(...mockCoreFeed());
-      const liveFeeds = results.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 25);
+      let initialFeeds = mockCoreFeed();
+      
+      // Chạy nền để không bị lag giao diện
+      setTimeout(async () => {
+        let results = [...mockCoreFeed()];
+        try {
+          const [fr, gd] = await Promise.allSettled([fetchFederalRegister(), fetchGdelt()]);
+          if (fr.status === 'fulfilled') results.push(...fr.value);
+          if (gd.status === 'fulfilled') results.push(...gd.value);
+        } catch (e) { }
+        
+        window.deskCurrentFeeds = results.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 25);
+        if (currentSheet === 'NewsUpdate') {
+          updateDeskFeeds();
+        }
+      }, 0);
 
       return {
         success: true,
         sheet: 'NewsUpdate',
         updatedAt: new Date().toLocaleString('vi-VN'),
-        count: liveFeeds.length,
-        feeds: liveFeeds
+        count: initialFeeds.length,
+        feeds: initialFeeds
       };
     }
 
