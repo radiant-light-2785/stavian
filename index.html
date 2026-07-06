@@ -24,8 +24,8 @@
       margin: 0;
       padding: 0;
       min-height: 100%;
-      font-family: 'Lora', serif;
-      color: #222;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #000;
       background: #ffffff;
     }
 
@@ -105,10 +105,10 @@
     .main-nav-btn {
       border: 0;
       background: transparent;
-      color: #222;
+      color: #000;
       font-size: 16px;
       font-weight: 700;
-      font-family: 'Lora', serif;
+      font-family: Arial, Helvetica, sans-serif;
       cursor: pointer;
       padding: 0;
       transition: color 0.2s;
@@ -161,10 +161,10 @@
       height: 36px;
       border: 1px solid #ccc;
       padding: 0 10px;
-      font-family: 'Lora', serif;
+      font-family: Arial, Helvetica, sans-serif;
       font-size: 14px;
       background: #fff;
-      color: #222;
+      color: #000;
       border-radius: 4px;
     }
 
@@ -198,7 +198,7 @@
     }
 
     .bbc-panel-title {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 700;
       color: #1d766f;
       border-bottom: 2px solid #1d766f;
@@ -230,11 +230,11 @@
     }
 
     .bbc-title {
-      font-size: 18px;
+      font-size: 26px;
       font-weight: 700;
-      line-height: 1.4;
+      line-height: 1.3;
       margin: 0 0 10px 0;
-      color: #222;
+      color: #000;
       transition: color 0.2s;
     }
 
@@ -247,9 +247,9 @@
     }
 
     .bbc-summary {
-      font-size: 14px;
-      line-height: 1.6;
-      color: #444;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #333;
       margin: 0 0 10px 0;
       white-space: pre-line;
     }
@@ -973,7 +973,6 @@
     <nav class="main-nav">
       <button class="main-nav-btn tab-btn active" data-sheet="News">Tin tức</button>
       <button class="main-nav-btn tab-btn" data-sheet="Report">Báo cáo</button>
-      <button class="main-nav-btn tab-btn" data-sheet="Warehouse">Warehouse</button>
       <button class="main-nav-btn tab-btn" data-sheet="NewsUpdate">Cập nhật tin tức</button>
     </nav>
 
@@ -1358,18 +1357,36 @@
 
     function renderNews(payload) {
       const query = normalize(searchInput.value);
-      const selectedDate = dateFilter.value;
+      let selectedDate = dateFilter.value;
 
       updateDateOptions(payload.dates || []);
+      
+      if (!selectedDate && payload.dates && payload.dates.length > 0) {
+        selectedDate = payload.dates[0];
+        dateFilter.value = selectedDate;
+      }
 
-      let rows = payload.rows || [];
+      let allRows = payload.rows || [];
+      let dayRows = [];
+      let monthRows = [];
 
       if (selectedDate) {
-        rows = rows.filter(row => row.date === selectedDate);
+        dayRows = allRows.filter(row => row.date === selectedDate);
+        
+        const parts = selectedDate.split('/');
+        if (parts.length >= 3) {
+           const monthYear = '/' + parts[1] + '/' + parts[2];
+           monthRows = allRows.filter(row => row.date && row.date.includes(monthYear));
+        } else {
+           monthRows = allRows;
+        }
+      } else {
+        dayRows = allRows;
+        monthRows = allRows;
       }
 
       if (query) {
-        rows = rows.filter(row => {
+        const filterFn = row => {
           const haystack = normalize([
             row.date,
             'nhôm', row.aluminum?.summary, row.aluminum?.source, row.aluminum?.time,
@@ -1378,42 +1395,47 @@
             'khác', row.other?.summary, row.other?.source, row.other?.time
           ].join(' '));
           return haystack.includes(query);
-        });
+        };
+        dayRows = dayRows.filter(filterFn);
+        monthRows = monthRows.filter(filterFn);
       }
 
-      if (!rows.length) {
-        contentArea.innerHTML = '<div class="empty">Không có dữ liệu phù hợp.</div>';
-        return;
-      }
+      let dateListHtml = '<div style="position: sticky; top: 20px;">';
+      dateListHtml += '<h2 class="bbc-panel-title" style="border-bottom-color: #1d766f; font-size: 20px;">CHỌN NGÀY</h2>';
+      dateListHtml += '<div style="display: flex; flex-direction: column; gap: 8px; max-height: 75vh; overflow-y: auto; padding-right: 5px;">';
+      (payload.dates || []).forEach(d => {
+         const isActive = (d === selectedDate);
+         const bg = isActive ? '#1d766f' : '#f1f1f1';
+         const col = isActive ? '#fff' : '#000';
+         dateListHtml += `<button onclick="document.getElementById('dateFilter').value='${d}'; document.getElementById('dateFilter').dispatchEvent(new Event('change'));" style="background: ${bg}; color: ${col}; border: none; padding: 10px; text-align: left; font-weight: 700; cursor: pointer; border-radius: 4px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; transition: background 0.2s;">${d}</button>`;
+      });
+      dateListHtml += '</div></div>';
 
-      const dates = [...new Set(rows.map(r => r.date))];
-      let mainHtml = '';
-      dates.forEach(d => {
-        const dateRows = rows.filter(r => r.date === d);
-        mainHtml += `
-          <div class="news-day-block" style="margin-bottom: 40px;">
-            <h3 class="news-day-title" style="font-size: 20px; font-weight: 700; color: #1d766f; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e5e5e5;">${d}</h3>
-            <div class="bbc-news-container">
-              <div class="bbc-grid">
-                <section class="bbc-panel">
-                  <h2 class="bbc-panel-title aluminum">Nhôm</h2>
-                  ${dateRows.map(row => renderBbcCard(row.date, row.aluminum)).join('')}
-                </section>
-                <section class="bbc-panel">
-                  <h2 class="bbc-panel-title copper">Đồng</h2>
-                  ${dateRows.map(row => renderBbcCard(row.date, row.copper)).join('')}
-                </section>
-                <section class="bbc-panel">
-                  <h2 class="bbc-panel-title zinc">Kẽm</h2>
-                  ${dateRows.map(row => renderBbcCard(row.date, row.zinc)).join('')}
-                </section>
-              </div>
+      let gridHtml = '';
+      if (dayRows.length > 0) {
+        gridHtml = `
+          <div class="bbc-news-container" style="margin-top: 0; padding: 0;">
+            <div class="bbc-grid">
+              <section class="bbc-panel">
+                <h2 class="bbc-panel-title aluminum">Nhôm</h2>
+                ${dayRows.map(row => renderBbcCard(row.date, row.aluminum)).join('')}
+              </section>
+              <section class="bbc-panel">
+                <h2 class="bbc-panel-title copper">Đồng</h2>
+                ${dayRows.map(row => renderBbcCard(row.date, row.copper)).join('')}
+              </section>
+              <section class="bbc-panel">
+                <h2 class="bbc-panel-title zinc">Kẽm</h2>
+                ${dayRows.map(row => renderBbcCard(row.date, row.zinc)).join('')}
+              </section>
             </div>
           </div>
         `;
-      });
+      } else {
+        gridHtml = '<div class="empty">Không có dữ liệu phù hợp trong ngày này.</div>';
+      }
 
-      let otherHtml = rows.map(row => {
+      let otherHtml = monthRows.map(row => {
         if (!row.other || !row.other.summary) return '';
         let card = renderBbcCard(row.date, row.other);
         return card.replace('<h3 class="bbc-title"', `<div style="font-size: 12px; color: #757575; margin-bottom: 4px; font-weight: 700;">${row.date}</div><h3 class="bbc-title"`);
@@ -1423,11 +1445,16 @@
         <div class="main-other-grid" style="display: grid; gap: 30px; align-items: start;">
           <style>
             .main-other-grid { grid-template-columns: 3fr 1fr; }
+            .main-news-col { display: grid; grid-template-columns: 150px 1fr; gap: 30px; align-items: flex-start; }
             @media (max-width: 1200px) { .main-other-grid { grid-template-columns: 1fr; } }
+            @media (max-width: 768px) { .main-news-col { grid-template-columns: 1fr; gap: 15px; } }
           </style>
-          <div class="main-news-col">${mainHtml}</div>
-          <div class="other-news-col" style="background: #fcfcfc; padding: 20px; border-radius: 8px; border: 1px solid #e5e5e5;">
-            <h2 class="bbc-panel-title" style="border-bottom-color: #6c757d; font-size: 20px;">Tin khác / Chỉ số</h2>
+          <div class="main-news-col">
+             <div class="news-day-left">${dateListHtml}</div>
+             <div class="news-day-content">${gridHtml}</div>
+          </div>
+          <div class="other-news-col" style="background: #fcfcfc; padding: 20px; border-radius: 8px; border: 1px solid #e5e5e5; position: sticky; top: 20px; max-height: 85vh; overflow-y: auto;">
+            <h2 class="bbc-panel-title" style="border-bottom-color: #6c757d; font-size: 20px;">TIN KHÁC / CHỈ SỐ (THÁNG ${selectedDate ? selectedDate.split('/')[1] : ''})</h2>
             <div class="bbc-news-container">
               ${otherHtml || '<div class="empty" style="padding: 20px; border: none; background: transparent;">Chưa có dữ liệu.</div>'}
             </div>
@@ -1464,7 +1491,7 @@
       let sourceLinksHtml = '';
 
       if (sources.length > 0) {
-        sourceLinksHtml = '<div class="bbc-sources" style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">';
+        sourceLinksHtml = '<div class="bbc-sources" style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; flex-direction: column;">';
         sources.forEach((src, idx) => {
           let sName = src;
           let sLink = '';
@@ -1487,37 +1514,15 @@
       }
 
       const summaryParagraphs = safeSummary.split('\n').map(p => p.trim()).filter(p => p);
-      const firstParagraph = summaryParagraphs.length > 0 ? summaryParagraphs[0] : '';
-      const remainingParagraphs = summaryParagraphs.slice(1).join('<br><br>');
-
-      const id = 'card-' + Math.random().toString(36).substr(2, 9);
-      const hasMoreContent = !!(remainingParagraphs || sourceLinksHtml);
-      
-      let titleHtml = `<h3 class="bbc-title" ${hasMoreContent ? `style="cursor: pointer;" onclick="toggleExpand('${id}')"` : ''}>${safeTitle}</h3>`;
-
-      let summaryHtml = '';
-      if (firstParagraph) {
-        summaryHtml += `<p class="bbc-summary" ${hasMoreContent ? `style="cursor: pointer;" onclick="toggleExpand('${id}')"` : ''}>${firstParagraph}</p>`;
-      }
-      
-      let expandedContent = '';
-      if (remainingParagraphs || sourceLinksHtml) {
-        expandedContent = `
-          <div id="${id}-more" style="display: none; margin-top: 10px;">
-            ${remainingParagraphs ? `<p class="bbc-summary">${remainingParagraphs}</p>` : ''}
-            <div class="bbc-meta" style="flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 15px;">
-              ${sourceLinksHtml}
-            </div>
-          </div>
-          <button onclick="toggleExpand('${id}')" id="${id}-btn" class="bbc-read-more" style="margin-top: 10px; cursor: pointer; border:none; background:transparent; color:#007bff; padding:0;">Xem thêm...</button>
-        `;
+      let contentHtml = summaryParagraphs.map(p => `<p class="bbc-summary">${p}</p>`).join('');
+      if (sourceLinksHtml) {
+        contentHtml += `<div class="bbc-meta" style="align-items: flex-start; gap: 8px; margin-top: 15px;">${sourceLinksHtml}</div>`;
       }
 
       return `
         <article class="bbc-card">
-          ${titleHtml}
-          ${summaryHtml}
-          ${expandedContent}
+          <h3 class="bbc-title">${safeTitle}</h3>
+          ${contentHtml}
           <div class="bbc-meta" style="align-items: flex-start; gap: 8px; margin-top: 10px;">
             <div style="display: flex; align-items: center; gap: 12px;">
               ${time ? `<span class="bbc-time">${escapeHtml(time)}</span>` : ''}
@@ -1525,20 +1530,6 @@
           </div>
         </article>
       `;
-    }
-
-    function toggleExpand(id) {
-      const moreDiv = document.getElementById(id + '-more');
-      const btn = document.getElementById(id + '-btn');
-      if (moreDiv && btn) {
-        if (moreDiv.style.display === 'none') {
-          moreDiv.style.display = 'block';
-          btn.textContent = 'Thu gọn';
-        } else {
-          moreDiv.style.display = 'none';
-          btn.textContent = 'Xem thêm...';
-        }
-      }
     }
 
 
